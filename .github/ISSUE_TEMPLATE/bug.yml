@@ -1,0 +1,30 @@
+name: Bug
+description: Something does not work as documented.
+labels: ["type:bug"]
+body:
+  - type: input
+    id: scenario
+    attributes: { label: Scenario, description: "A scenario ID if you run one (e.g. T4-S3), or what you were doing." }
+  - type: input
+    id: platform
+    attributes: { label: Platform, description: "e.g. iOS 18.2 simulator, Pixel 8 Android 15, Node 24 backend" }
+    validations: { required: true }
+  - type: input
+    id: sdk
+    attributes: { label: SDK version, description: "Package version or release tag" }
+    validations: { required: true }
+  - type: textarea
+    id: steps
+    attributes: { label: Steps }
+    validations: { required: true }
+  - type: textarea
+    id: expected
+    attributes: { label: Expected }
+    validations: { required: true }
+  - type: textarea
+    id: actual
+    attributes: { label: Actual }
+    validations: { required: true }
+  - type: textarea
+    id: evidence
+    attributes: { label: Evidence, description: "Result JSON, runtime debug events (visibility 'runtime'), result.cost / userBudget.get(), screenshots. NEVER keys or tokens." }

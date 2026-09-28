@@ -1,0 +1,15 @@
+name: Cost or quality
+description: A turn costs more, or answers worse, than you expected.
+labels: ["type:cost-quality"]
+body:
+  - type: dropdown
+    id: kind
+    attributes: { label: Kind, options: ["Cost", "Quality", "Latency", "Cache hit rate"] }
+    validations: { required: true }
+  - type: textarea
+    id: what
+    attributes: { label: What happened, description: "The task, the numbers you saw (result.cost, tokens, cached tokens, time to first token), and what you expected." }
+    validations: { required: true }
+  - type: input
+    id: sdk
+    attributes: { label: SDK version and platform }
