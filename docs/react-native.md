@@ -41,8 +41,7 @@ An install receives a model key only after it proves it runs your app:
 - **Real iPhones and Android phones** prove it with App Attest / Play Integrity. The SDK
   does this automatically. Their usage is billed to the project's Runtime Credit.
 - **Simulators and emulators cannot.** Issue a **development key** (`cdt_…`) in Croche
-  Studio → Development keys, or use the one `npm run setup:local` wrote to
-  `.local/setup.json`, and pass it as `debugToken`. Development usage is billed to your
+  Studio → Development keys and pass it as `debugToken`. Development usage is billed to your
   weekly development allowance, never to Runtime Credit.
 
 A phone with a development key still attests first; the key is only the fallback. A
@@ -195,23 +194,6 @@ the outbox. Only a first registration and allowance changes need Cloud.
 | `output_limit`, `context_limit`, `iteration_limit` | A bound was reached | Shorten, or continue in a new turn |
 | `store_busy` | This store is already open (two Runtimes for one agent) | Open each agent once |
 | `host_budget_disabled` (from `userBudget.add/set`) | App-controlled allowances are off for the project | Turn them on in Studio |
-
-## Local Cloud during development
-
-```sh
-npm run setup:local                                   # account, project, development key → .local/setup.json
-printf 'OPENROUTER_API_KEY=sk-or-…\n' >> .local/server.env   # your own key; every dev install shares it
-npm run cloud:dev                                     # http://127.0.0.1:8787
-```
-
-The SDK accepts plain HTTP only on loopback. Point devices at the laptop:
-
-| Target | `cloudUrl` |
-| --- | --- |
-| iOS simulator | `http://127.0.0.1:8787` |
-| Android emulator | `http://127.0.0.1:8787` after `adb reverse tcp:8787 tcp:8787` |
-| Android phone over USB | the same `adb reverse` |
-| iPhone | an HTTPS tunnel to the laptop (for example `cloudflared tunnel --url http://127.0.0.1:8787`) |
 
 ## Options
 
