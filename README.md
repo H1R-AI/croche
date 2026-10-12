@@ -28,12 +28,14 @@ opens with the public beta.) It holds no SDK or Core source.
    Download the files for the version you use, then in your app:
 
    ```sh
-   npm install ./h1r-ai-croche-0.4.0.tgz                 # web backends (Node)
-   npm install ./h1r-ai-croche-react-native-0.4.0.tgz    # React Native (the native Core is inside)
-   npm install --global ./h1r-ai-croche-cli-0.4.0.tgz    # the croche CLI
+   npm install ./h1r-ai-croche-0.5.0.tgz                 # web backends (Node)
+   npm install ./h1r-ai-croche-react-native-0.5.0.tgz    # React Native (the native Core is inside)
+   npm install --global ./h1r-ai-croche-cli-0.5.0.tgz    # the croche CLI
    ```
 
-   On iOS, run `cd ios && pod install` after installing the React Native package.
+   On iOS, run `cd ios && pod install` after installing the React Native package. Native iOS and
+   Android apps install the SDK from their own package managers instead: see
+   [iOS (Swift)](#ios-swift) and [Android (Kotlin)](#android-kotlin).
 
 3. **Ask your agent for the feature.** For example: *"Add a Croche agent to this app that can
    read and change the user's tasks."* The plugin's `croche` skill walks the agent through the
@@ -41,6 +43,45 @@ opens with the public beta.) It holds no SDK or Core source.
 
 Your project key and development key come from Croche Studio or the `croche` CLI. Keep them in
 your app's own configuration; never commit them.
+
+## iOS (Swift)
+
+Add the Swift package by URL. In Xcode: **File → Add Package Dependencies…**, enter
+`https://github.com/H1R-AI/croche-swift`, choose **Exact Version** `0.5.0`, and add the product
+`CrocheRuntime` to your app target. In a `Package.swift`:
+
+```swift
+.package(url: "https://github.com/H1R-AI/croche-swift", exact: "0.5.0"),
+// in your target's dependencies:
+.product(name: "CrocheRuntime", package: "croche-swift"),
+```
+
+Then `import CrocheRuntime`. It requires iOS 15 or later; the native Core comes prebuilt.
+
+## Android (Kotlin)
+
+In `settings.gradle.kts`, add Croche's Maven repository (public, no login):
+
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven("https://maven.croche.ai")
+    }
+}
+```
+
+In `app/build.gradle.kts`:
+
+```kotlin
+dependencies {
+    implementation("ai.croche:croche-android:0.5.0")
+}
+```
+
+It requires `minSdk` 26 or later. The native Core for `arm64-v8a`, `armeabi-v7a` and `x86_64`
+is inside, and the library's own dependencies come with it.
 
 ## Examples
 
@@ -60,7 +101,6 @@ The plugin carries the documentation, and every release updates it with the SDK:
 - [Coding-agent guidance](plugins/croche/skills/croche/references/coding-agent.md)
 - [Release notes](CHANGELOG.md)
 
-iOS (Swift) and Android (Kotlin) SDKs: coming with the public beta.
 
 ## Report a problem or ask for something
 

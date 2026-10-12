@@ -5,7 +5,7 @@ of server code and one HTML file.
 
 ## Run it
 
-1. Download `h1r-ai-croche-0.4.0.tgz` from [Releases](https://github.com/H1R-AI/croche/releases)
+1. Download `h1r-ai-croche-0.5.0.tgz` from [Releases](https://github.com/H1R-AI/croche/releases)
    into this folder, then `npm install` (Node 22 or later).
 2. Set your project's values (from Croche Studio or the `croche` CLI) in the environment:
 
