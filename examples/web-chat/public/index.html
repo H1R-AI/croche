@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Croche web chat</title>
+<style>
+  body { font: 16px/1.5 system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; }
+  #log p { margin: .5rem 0; white-space: pre-wrap; }
+  .you { color: #555; } .agent { color: #111; }
+  form { display: flex; gap: .5rem; } input { flex: 1; padding: .5rem; } button { padding: .5rem 1rem; }
+</style>
+<div id="log"></div>
+<form id="form"><input id="text" autocomplete="off" placeholder="Say something"><button>Send</button></form>
+<script>
+  const log = document.getElementById('log');
+  const bubbles = new Map();   // message id -> <p>
+  const bubble = (id, cls) => {
+    if (!bubbles.has(id)) { const p = document.createElement('p'); p.className = cls; log.append(p); bubbles.set(id, p); }
+    return bubbles.get(id);
+  };
+  new EventSource('/events').onmessage = ({ data }) => {
+    const event = JSON.parse(data);
+    // Each message.delta carries the next piece of text; message.end carries the whole final text.
+    if (event.type === 'message.delta') bubble(event.id, 'agent').textContent += event.text;
+    if (event.type === 'message.end') bubble(event.id, 'agent').textContent = event.text;
+  };
+  document.getElementById('form').onsubmit = async e => {
+    e.preventDefault();
+    const input = document.getElementById('text'), text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    bubble(crypto.randomUUID(), 'you').textContent = text;
+    await fetch('/send', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text }) });
+  };
+</script>
+</html>

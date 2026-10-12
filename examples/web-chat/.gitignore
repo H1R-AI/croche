@@ -1,0 +1,4 @@
+node_modules/
+.croche/
+*.tgz
+package-lock.json

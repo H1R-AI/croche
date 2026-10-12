@@ -1,0 +1,4 @@
+interface:
+  display_name: "Croche"
+  short_description: "Build and debug apps with Croche Runtime"
+  default_prompt: "Use $croche to build or debug my Croche app with the SDK and CLI."
