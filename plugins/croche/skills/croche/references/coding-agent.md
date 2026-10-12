@@ -28,7 +28,8 @@ Croche's Runtime owns two things. Leave both to it.
      in `instructions`, unless the model needs it on most turns.
    - Put what most turns need to answer (the user's open tasks, cart, balance, today's
      schedule; a compact summary) in each message's `context`. It saves a lookup round trip on
-     most turns, and old states do not accumulate.
+     most turns. Kept earlier turns are resent exactly as they were sent, earlier states
+     included. Send the current state on every message, even when unchanged: Croche sends only what changed.
    - Mark lookups (lists, status, search) with `reads: true`: their result is the answer, so the
      agent always replies after seeing it. Do not tell the agent to "speak only after the
      commands".

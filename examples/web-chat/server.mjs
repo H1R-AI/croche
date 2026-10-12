@@ -1,4 +1,5 @@
-// A web chat on your own backend: one Croche agent per user, replies streamed to the page.
+// A web chat on your own backend: one Croche agent, replies streamed to the page.
+// Demo only: every visitor shares the one user 'demo-user' (see README.md).
 // Run: put h1r-ai-croche-0.4.0.tgz here (from Releases), npm install, set the env below, npm start.
 import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';

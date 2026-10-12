@@ -41,12 +41,15 @@ version: `@h1r-ai/croche`, `@h1r-ai/croche-react-native`, `@h1r-ai/croche-cli` a
 
 ### Changed
 
-- The packages are renamed: `@croche/runtime` is now `@h1r-ai/croche`, and the CLI is
+- The packages are renamed: `@croche/runtime` is now `@h1r-ai/croche`,
+  `@croche/react-native` is now `@h1r-ai/croche-react-native`, and the CLI is
   `@h1r-ai/croche-cli`.
 - The Runtime calls the model directly with a key that Croche Cloud delivers to a genuine
   install. The 0.2 Cloud relay is gone.
-- Croche tunes its own prompt behaviour (temperature, reasoning, time in context). These are no
-  longer app options.
+- Croche tunes its own prompt behaviour: temperature, time in context, reply commands, the
+  action record and context deltas are no longer app options.
+- `reasoning` is now one level: `default`, `off`, `low`, `medium` or `high`. The 0.3 object
+  (`{ enabled, effort, maxTokens, exclude }`) is refused with `invalid_configuration`.
 - Swift and Kotlin `onDebug` is `onDebugEvent`, the same name as in TypeScript.
 - The CLI manages project names, routing and config drafts with your development key, and reads
   usage and metadata. Key issuance and rotation, budgets, access, attestation settings and config
@@ -71,14 +74,20 @@ version: `@h1r-ai/croche`, `@h1r-ai/croche-react-native`, `@h1r-ai/croche-cli` a
 Most are refused by name. `memory.deltas` and a nested `defaultLanguage` are refused as unknown
 fields.
 
+**Command fields.**
+
+| Field | What to do instead |
+| --- | --- |
+| `confirm` on a command | Remove it: approval belongs to the app. Ask the person in your own UI, or check in your handler, before the action runs. 0.4.0 refuses the whole tool declaration with `Unknown command field: confirm`. |
+
 **API.**
 
 - Apps can no longer write keyed memory facts. The app can list, export, delete and clear
   memories; only the model writes them.
 - Automatic recall: the model reads only what it asks for.
 - Account labels. Pass your app's `user` instead.
-- The app-side prompt flags (`temperature`, `reasoning`, `timeContext`, `memoryRecall` and the
-  rest) in runtime options.
+- These runtime options, now Croche's own and refused: `replyWithCommands`, `actionRecord`,
+  `contextDeltas`, `temperature` and `timeContext`.
 - The CLI commands for keys, budgets, access, attestation, runtime blocking, and config release
   and rollback (now in Studio).
 

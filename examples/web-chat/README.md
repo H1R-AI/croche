@@ -22,8 +22,9 @@ of server code and one HTML file.
   a restart.
 - `agent.send` returns at once; the reply arrives through `agent.subscribe` as `message.delta`
   pieces and one final `message.end`, which the server forwards to the page as server-sent events.
-- `user` is fixed to `demo-user` here. `user` is an option of `Croche.open`, so a real app opens
-  one project per signed-in person (with their id) and closes it when they leave; each person
-  gets their own conversation and memory.
+- **Every visitor shares one conversation here.** The server opens one project with
+  `user: 'demo-user'` and serves it to every page, so all visitors see one conversation and
+  one memory. That keeps the demo short. `user` is an option of `Croche.open`, so a real app
+  opens one project per signed-in person (with their id) and closes it when they leave.
 
 Never commit keys, and never send the development key to a browser.

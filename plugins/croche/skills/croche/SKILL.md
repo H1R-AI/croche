@@ -75,7 +75,9 @@ const result = await pip.request({ id: messageId, text: userText, context: appSt
 - **`context`:** the current app state on **every** message: what most turns need to answer
   (cart, balance, open tasks, today's schedule, recent orders). Rich state here saves a lookup
   call on most turns and keeps the agent from answering without checking. Keep it bounded:
-  cap long lists and add a hint such as `"more": "use orders list"`.
+  cap long lists and add a hint such as `"more": "use orders list"`. Kept earlier turns are
+  resent exactly as they were sent, earlier states included. Send the current state on every
+  message, even when unchanged: Croche sends only what changed.
 - **Money:** per-user and project spending limits are the Runtime's and Cloud's; do not wrap or
   gate the SDK's `fetch` to meter calls. To show or record usage, use `onUsage`: one event for
   every paid call, including memory upkeep that belongs to no message.
@@ -139,6 +141,11 @@ const runShop: ToolHandler = ({ key, args }, context) => {   // goes in handlers
 
 - The declaration is data (a released config can replace it); the handler is code and stays in
   the app. `context` names the `agentId`, the `user` and what caused the call.
+- The model sees each command's usage line and `summary`. The tool's own `summary` (`'The inn
+  shop.'`) appears only in `help` output, so put rules in command summaries or `toolGuide`,
+  never only in the tool summary.
+- Summaries have no length limit of their own and are never cut. The whole tool list is capped
+  at 256,000 bytes of JSON, and each `help` text at 32,000 bytes. Keep each summary to one line.
 
 - `key` is global across all tools (and becomes the function name under `functions`): prefix
   it with the tool name (`shop_sell`), never a bare `list` or `get`.
@@ -154,7 +161,9 @@ mistakes with the exact usage, so you only declare:
 - a group noun and short verbs: `tasks add|list|done|delete`, `shop search|add-to-cart`;
 - required arguments first: they may be written without their flag, in order
   (`tasks done t5`, `shop cart-add notebook 2`);
-- `enum` for a few allowed values (they appear in the usage line);
+- `enum` for allowed values. The usage line lists them only when there are at most 12 and they
+  fit in 120 characters; otherwise it shows a placeholder (`--item ITEM`), so name the values
+  in the summary or give a read command that lists them;
 - `list: true` for several values (`--tags work,home`); the handler gets an array;
 - `default` on a flag or positional: the handler's `args` has it filled in when the model omits
   the argument;
@@ -191,6 +200,36 @@ model reads only what it asks for. Conversation summaries are not memory items: 
 clearing memories preserves the summary and does not rewrite kept or archived
 turns. `clearHistory()` or `Croche.deleteStore()` removes the summary.
 
+**Croche's own tools and modes, in config:**
+
+```ts
+config: {
+  toolGuide: 'Phone effects are rare: use them only when the person asks.',   // app text for run_tool
+  crocheTools: { 'memory.save': true, 'memory.history': true, 'memory.recall': true, wiki: true, schedule: false },
+  modes: {
+    room: { tools: [room], toolGuide: 'In the room, place items only where the person says.' },
+  },
+}
+// later: await agent.setMode('room'); … await agent.setMode(null);
+```
+
+- `crocheTools` is a flat object with these five dotted keys and boolean values; a nested
+  `{ memory: { save: true } }` is refused. Defaults: `memory.save`, `memory.history` and `wiki`
+  on (memory tools only while memory is on; `wiki` only while the agent sees a document),
+  `memory.recall` follows `memory.save`, `schedule` off. `memory replace` is on exactly when
+  `memory.save` is.
+- `toolGuide` and `crocheTools` are allowed at every config layer, applied in this order:
+  project → `languages.Y` → `agents.X` → `agents.X.languages.Y` → the `config` your code
+  passes to `croche.agent(id, { config })` (this agent only), so an agent's value beats a
+  project language's. `toolGuide` from a later layer replaces the
+  earlier one. `crocheTools` merges per key: a later layer changes only the keys it names
+  (project `{ wiki: false, schedule: true }` plus agent `{ schedule: false }` gives
+  `{ wiki: false, schedule: false }`). Neither has its own size limit; the whole config is
+  capped at 256 KiB.
+- `modes.<name>` takes only `tools` and `toolGuide`. While a mode is on, each one it sets
+  **replaces** the agent's (no merge); what it leaves out stays. `setMode(null)` turns it off,
+  and a `setTools` filter still applies on top.
+
 Tool-list changes are announced in the conversation. A changed app guide is
 also a tool-description change, applied at the next turn; it does not edit the
 system prompt. A changed description can prevent prefix reuse; this is not a
@@ -225,7 +264,8 @@ was written by an older Croche build whose memory this Core cannot read or conve
 changed. To continue, delete this agent's store and reopen; this permanently loses this agent's
 conversation and memories for this user. Only an older build that still runs can export them
 first." After an app update the older build no longer runs, so tell the person before deleting.
-React Native has the same calls.
+If your app tracks the input ids it sent (pending sends, a retry queue), drop the ones the old
+store accepted: their final status never comes. React Native has the same calls.
 
 ## Check it
 
