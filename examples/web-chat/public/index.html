@@ -21,6 +21,7 @@
   new EventSource('/events').onmessage = ({ data }) => {
     const event = JSON.parse(data);
     // Each message.delta carries the next piece of text; message.end carries the whole final text.
+    if (event.type === 'input' && event.kind === 'user') bubble(event.id, 'you').textContent = event.text;
     if (event.type === 'message.delta') bubble(event.id, 'agent').textContent += event.text;
     if (event.type === 'message.end') bubble(event.id, 'agent').textContent = event.text;
   };
@@ -29,7 +30,6 @@
     const input = document.getElementById('text'), text = input.value.trim();
     if (!text) return;
     input.value = '';
-    bubble(crypto.randomUUID(), 'you').textContent = text;
     await fetch('/send', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text }) });
   };
 </script>
