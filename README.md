@@ -24,6 +24,11 @@ opens with the public beta.) It holds no SDK or Core source.
    codex plugin add croche@croche
    ```
 
+   Without plugins, copy the folder [`plugins/croche/skills/croche`](plugins/croche/skills/croche)
+   (`SKILL.md` and `references/`) into your project as `.claude/skills/croche/` (Claude Code) or
+   `.agents/skills/croche/` (Codex). For every project: `~/.claude/skills/croche/` or
+   `~/.codex/skills/croche/`.
+
 2. **Install the SDK and the CLI from npm.** In your app:
 
    ```sh
