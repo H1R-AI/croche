@@ -1,8 +1,9 @@
 # Croche
 
 **AI features in your app, with no backend of your own.** Croche runs the agent loop on the
-device (iOS, Android, React Native, and web backends), calls the model directly with a key only
-a genuine install of your app receives, streams replies, remembers across sessions, and keeps
+device (iOS, Android, React Native, and web backends), calls the model directly with a key issued
+per install of your app (verified as a genuine install when you configure App Attest or Play
+Integrity), streams replies, remembers across sessions, and keeps
 per-user AI allowances that your app controls.
 
 This repository is the **public home for developers building on Croche**: the coding-agent

@@ -27,6 +27,7 @@ single `App.tsx` you drop into a new React Native app.
   pieces and one final `message.end`.
 - `project.close()` when the screen goes away.
 
-A release build gets its model key only on a genuine install of your app, through attestation;
+A release build should be verified as a genuine install: configure App Attest (iOS) and Play
+Integrity (Android) for your project;
 see the [skill](../../plugins/croche/skills/croche/SKILL.md) for the release checklist. Never
 ship a development key.
