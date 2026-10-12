@@ -3,10 +3,9 @@
 ## 0.5.0 (draft, not released)
 
 0.5.0 is the first release built on the rebuilt Core. Every package and the Core share one
-version: `@h1r-ai/croche`, `@h1r-ai/croche-react-native`, `@h1r-ai/croche-cli`, the Swift
-package `CrocheRuntime`, the Android library `ai.croche:croche-android` and the `croche`
-coding-agent plugin. Install the npm packages from the release files on
-[Releases](https://github.com/H1R-AI/croche/releases); they are not on npm yet.
+version: `@h1r-ai/croche`, `@h1r-ai/croche-react-native`, `@h1r-ai/croche-cli` and the `croche`
+coding-agent plugin. Install the packages from npm: `@h1r-ai/croche`,
+`@h1r-ai/croche-react-native` and `@h1r-ai/croche-cli`.
 
 **Upgrading from 0.3.x is a breaking change.** Read [Removed in 0.5.0](#removed-in-050) and
 [Stores from an older build](#stores-from-an-older-build) before you upgrade.
@@ -37,10 +36,6 @@ coding-agent plugin. Install the npm packages from the release files on
   phone keep separate balances.
 - **Usage events.** `onUsage` reports one event per paid call, including memory upkeep that
   belongs to no message.
-- **Native iOS and Android SDKs.** Swift: the package `https://github.com/H1R-AI/croche-swift`
-  (product `CrocheRuntime`, iOS 15+). Kotlin: `ai.croche:croche-android` from
-  `https://maven.croche.ai` (minSdk 26). Both carry the native Core prebuilt. See the
-  [README](README.md#ios-swift) for the install snippets.
 - **The `croche` plugin** for Claude Code and Codex: a skill that walks a coding agent through a
   Croche integration, with the SDK and CLI references.
 
@@ -55,7 +50,6 @@ coding-agent plugin. Install the npm packages from the release files on
   action record and context deltas are no longer app options.
 - `reasoning` is now one level: `default`, `off`, `low`, `medium` or `high`. The 0.3 object
   (`{ enabled, effort, maxTokens, exclude }`) is refused with `invalid_configuration`.
-- Swift and Kotlin `onDebug` is `onDebugEvent`, the same name as in TypeScript.
 - The CLI manages project names, routing and config drafts with your development key, and reads
   usage and metadata. Key issuance and rotation, budgets, access, attestation settings and config
   release move to Croche Studio.
@@ -107,4 +101,5 @@ deletes that agent's conversation and memories for that user, so tell the person
 
 ### Known limits
 
-- The npm packages are installed from release files, not from npm.
+- Native Swift and Kotlin SDKs are not in 0.5.0; they are planned for 0.5.1, with the same
+  `Croche.open` API.

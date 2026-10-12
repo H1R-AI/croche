@@ -24,18 +24,17 @@ opens with the public beta.) It holds no SDK or Core source.
    codex plugin add croche@croche
    ```
 
-2. **Install the SDK and the CLI from [Releases](https://github.com/H1R-AI/croche/releases).**
-   Download the files for the version you use, then in your app:
+2. **Install the SDK and the CLI from npm.** In your app:
 
    ```sh
-   npm install ./h1r-ai-croche-0.5.0.tgz                 # web backends (Node)
-   npm install ./h1r-ai-croche-react-native-0.5.0.tgz    # React Native (the native Core is inside)
-   npm install --global ./h1r-ai-croche-cli-0.5.0.tgz    # the croche CLI
+   npm install @h1r-ai/croche                                # web backends (Node)
+   npm install @h1r-ai/croche @h1r-ai/croche-react-native    # React Native (the native Core is inside)
+   npm install --global @h1r-ai/croche-cli                   # the croche CLI
    ```
 
-   On iOS, run `cd ios && pod install` after installing the React Native package. Native iOS and
-   Android apps install the SDK from their own package managers instead: see
-   [iOS (Swift)](#ios-swift) and [Android (Kotlin)](#android-kotlin).
+   On iOS, run `cd ios && pod install` after installing the React Native package. Native iOS
+   (Swift) and Android (Kotlin) SDKs are planned for 0.5.1: see
+   [Native iOS and Android](#native-ios-and-android).
 
 3. **Ask your agent for the feature.** For example: *"Add a Croche agent to this app that can
    read and change the user's tasks."* The plugin's `croche` skill walks the agent through the
@@ -44,44 +43,11 @@ opens with the public beta.) It holds no SDK or Core source.
 Your project key and development key come from Croche Studio or the `croche` CLI. Keep them in
 your app's own configuration; never commit them.
 
-## iOS (Swift)
+## Native iOS and Android
 
-Add the Swift package by URL. In Xcode: **File → Add Package Dependencies…**, enter
-`https://github.com/H1R-AI/croche-swift`, choose **Exact Version** `0.5.0`, and add the product
-`CrocheRuntime` to your app target. In a `Package.swift`:
-
-```swift
-.package(url: "https://github.com/H1R-AI/croche-swift", exact: "0.5.0"),
-// in your target's dependencies:
-.product(name: "CrocheRuntime", package: "croche-swift"),
-```
-
-Then `import CrocheRuntime`. It requires iOS 15 or later; the native Core comes prebuilt.
-
-## Android (Kotlin)
-
-In `settings.gradle.kts`, add Croche's Maven repository (public, no login):
-
-```kotlin
-dependencyResolutionManagement {
-    repositories {
-        google()
-        mavenCentral()
-        maven("https://maven.croche.ai")
-    }
-}
-```
-
-In `app/build.gradle.kts`:
-
-```kotlin
-dependencies {
-    implementation("ai.croche:croche-android:0.5.0")
-}
-```
-
-It requires `minSdk` 26 or later. The native Core for `arm64-v8a`, `armeabi-v7a` and `x86_64`
-is inside, and the library's own dependencies come with it.
+Native Swift and Kotlin SDKs are planned for 0.5.1, with the same `Croche.open` API as
+TypeScript and React Native. Until then, build a native app's Croche features with React
+Native, or run the Runtime on your web backend.
 
 ## Examples
 

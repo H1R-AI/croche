@@ -5,12 +5,12 @@ single `App.tsx` you drop into a new React Native app.
 
 ## Run it
 
-1. Create an app and install the package from [Releases](https://github.com/H1R-AI/croche/releases):
+1. Create an app and install the packages from npm:
 
    ```sh
    npx @react-native-community/cli init CrocheChat
    cd CrocheChat
-   npm install ./h1r-ai-croche-react-native-0.5.0.tgz   # the native Core is inside
+   npm install @h1r-ai/croche @h1r-ai/croche-react-native   # the native Core is inside
    cd ios && pod install && cd ..
    ```
 
