@@ -44,8 +44,8 @@ version: `@h1r-ai/croche`, `@h1r-ai/croche-react-native`, `@h1r-ai/croche-cli` a
 - The packages are renamed: `@croche/runtime` is now `@h1r-ai/croche`,
   `@croche/react-native` is now `@h1r-ai/croche-react-native`, and the CLI is
   `@h1r-ai/croche-cli`.
-- The Runtime calls the model directly with a key that Croche Cloud delivers to a genuine
-  install. The 0.2 Cloud relay is gone.
+- The Runtime calls the model directly with a key that Croche Cloud issues per install of your
+  app (verified as a genuine install when you configure App Attest or Play Integrity). The 0.2 Cloud relay is gone.
 - Croche tunes its own prompt behaviour: temperature, time in context, reply commands, the
   action record and context deltas are no longer app options.
 - `reasoning` is now one level: `default`, `off`, `low`, `medium` or `high`. The 0.3 object
