@@ -60,8 +60,11 @@ no SDK or Core source.
    Without a global CLI install, run
    `npx --package @h1r-ai/croche-cli@0.5.1 croche <command>` instead. For example,
    the user can run `npx --package @h1r-ai/croche-cli@0.5.1 croche login`.
-   In PowerShell, use `croche.cmd` as the standard command after global install
-   (for example, `croche.cmd login`); the no-global form uses `npx.cmd`.
+   In Windows PowerShell, run this once, then use plain `croche` and `npx`:
+
+   ```powershell
+   Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+   ```
 
    Native Swift: add this dependency in `Package.swift` (exact version):
 
@@ -85,7 +88,7 @@ no SDK or Core source.
 
    With an invite, sign in to [Studio](https://studio.croche.ai) and create an
    account key. Run
-   `croche login` (`croche.cmd login` in PowerShell) yourself in your terminal. Its prompt hides the key; never paste
+   `croche login` yourself in your terminal. Its prompt hides the key; never paste
    it into chat. An environment override uses `CROCHE_ACCOUNT_KEY`;
    `CROCHE_DEVELOPER_KEY` is still read. If both are set and differ, the CLI refuses
    with `invalid_configuration`. For React Native on iOS, also run
