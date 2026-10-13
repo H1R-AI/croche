@@ -1,17 +1,15 @@
 # Croche
 
-**AI features in your app, with no backend of your own.** Croche runs the agent loop on the
-device (iOS, Android, React Native, and web backends), calls the model directly with a key issued
-per install of your app (verified as a genuine install when you configure App Attest or Play
-Integrity), streams replies, remembers across sessions, and keeps
-per-user AI allowances that your app controls.
+**Add AI agents that stream replies, remember conversations, and call your app’s tools.**
 
-This repository is the **public home for developers building on Croche**: the coding-agent
-plugin, examples, releases and issues. It holds no SDK or Core source.
+[Website](https://croche.ai) · [Docs](https://docs.croche.ai) · [Studio](https://studio.croche.ai) · [Hackathon](https://croche.ai/hackathon)
+
+This is Croche’s developer home and coding-agent marketplace. Version 0.5.0 supports
+TypeScript web backends and React Native; this repository contains no SDK or Core source.
 
 ## Install in 3 steps
 
-1. **Add the Croche plugin to your coding agent.**
+1. **Install the plugin for your coding agent.**
 
    ```sh
    # Claude Code
@@ -23,70 +21,45 @@ plugin, examples, releases and issues. It holds no SDK or Core source.
    codex plugin add croche@croche
    ```
 
-   Without plugins, copy the folder [`plugins/croche/skills/croche`](plugins/croche/skills/croche)
-   (`SKILL.md` and `references/`) into your project as `.claude/skills/croche/` (Claude Code) or
-   `.agents/skills/croche/` (Codex). For every project: `~/.claude/skills/croche/` or
-   `~/.codex/skills/croche/`.
+   Without plugins, copy [the skill folder](plugins/croche/skills/croche) into your
+   project’s `.claude/skills/croche/` or `.agents/skills/croche/`.
 
-2. **Install the SDK and the CLI from npm.** In your app:
+2. **Install the SDK and CLI, then sign in.** Node 22 or later:
 
    ```sh
-   npm install @h1r-ai/croche                                # web backends (Node)
-   npm install @h1r-ai/croche @h1r-ai/croche-react-native    # React Native (the native Core is inside)
-   npm install --global @h1r-ai/croche-cli                   # the croche CLI
+   npm install @h1r-ai/croche@0.5.0
+   # React Native apps also need:
+   npm install @h1r-ai/croche-react-native@0.5.0
+   npm install --global @h1r-ai/croche-cli@0.5.0
    ```
 
-   On iOS, run `cd ios && pod install` after installing the React Native package. Native iOS
-   (Swift) and Android (Kotlin) SDKs are planned for 0.5.1: see
-   [Native iOS and Android](#native-ios-and-android).
+   Sign up in [Studio](https://studio.croche.ai), create a developer key, and run
+   `croche login` yourself in your terminal. Its prompt hides the key; never paste
+   it into chat. For React Native on iOS, also run `cd ios && pod install`.
 
-3. **Ask your agent for the feature.** For example: *"Add a Croche agent to this app that can
-   read and change the user's tasks."* The plugin's `croche` skill walks the agent through the
-   project config, your app's commands, a debug key and a first live check.
+3. **Ask your coding agent to build the feature.** For example: “Add a Croche agent
+   that can read and update the user’s tasks.” The plugin guides project setup,
+   tool handlers, a debug key, and a first live check. Keep secrets out of Git and
+   debug keys out of release builds.
 
-Your project key and debug key come from Croche Studio or the `croche` CLI. Keep them in
-your app's own configuration; never commit them.
+## What’s in this repo
 
-## Native iOS and Android
-
-Native Swift and Kotlin SDKs are planned for 0.5.1, with the same `Croche.open` API as
-TypeScript and React Native. Until then, build a native app's Croche features with React
-Native, or run the Runtime on your web backend.
-
-## Examples
-
-| Example | What it shows |
+| Path | Contents |
 | --- | --- |
-| [`examples/web-chat`](examples/web-chat) | A Node backend with one Croche agent and a browser chat page that streams replies |
-| [`examples/react-native-chat`](examples/react-native-chat) | One React Native screen: open a project, send, and render streamed replies |
+| [plugins/](plugins/) | Claude Code and Codex marketplace, skills, SDK and CLI references |
+| [examples/](examples/) | [Node web chat](examples/web-chat/) and [React Native chat](examples/react-native-chat/) |
+| [docs/](docs/) | Platform guides pointing to the release’s bundled references |
+| [Issues](https://github.com/H1R-AI/croche/issues) | Bugs, questions, developer experience, cost/quality, and feature requests |
 
-## Documentation
+Read the bundled [SDK reference](plugins/croche/skills/croche/references/sdk.md),
+[CLI reference](plugins/croche/skills/croche/references/cli.md), or
+[release notes](CHANGELOG.md). These docs ship with the plugin.
 
-The plugin carries the documentation, and every release updates it with the SDK:
+## Get help
 
-- [The skill](plugins/croche/skills/croche/SKILL.md): the recommended integration, step by step
-- [SDK reference](plugins/croche/skills/croche/references/sdk.md): projects, agents, streaming,
-  memory, React Native, web backends
-- [CLI reference](plugins/croche/skills/croche/references/cli.md): keys, project config, usage
-- [Coding-agent guidance](plugins/croche/skills/croche/references/coding-agent.md)
-- [Release notes](CHANGELOG.md)
+[Open an issue](https://github.com/H1R-AI/croche/issues/new/choose) and choose the
+matching [template](.github/ISSUE_TEMPLATE/). Include your SDK version, platform,
+and reproduction steps; never post credentials or other users’ data.
 
-
-## Report a problem or ask for something
-
-Open an issue and pick the template that fits:
-
-| Template | Use it for |
-| --- | --- |
-| Bug | Something does not work as documented |
-| Question | How do I…? Something the docs don't answer |
-| Developer experience | It works, but the SDK or the docs made it hard |
-| Cost or quality | A turn costs more, or answers worse, than you expected |
-| Feature request | Something your app needs that Croche does not do |
-
-Security issues: do **not** open an issue. See [SECURITY.md](SECURITY.md).
-The Croche maintainers handle public issues.
-
-Include the SDK version, the platform and, when you can, the runtime debug events
-(visibility `runtime`, never `full`). **Never paste keys**: provider keys, server keys (`csk_`),
-debug keys (`cdt_`), or runtime tokens.
+Report security issues privately to [security@h1r.ai](mailto:security@h1r.ai),
+or use GitHub’s private vulnerability reporting. See [SECURITY.md](SECURITY.md).
