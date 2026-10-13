@@ -43,9 +43,9 @@ opens with the public beta.) It holds no SDK or Core source.
 
 3. **Ask your agent for the feature.** For example: *"Add a Croche agent to this app that can
    read and change the user's tasks."* The plugin's `croche` skill walks the agent through the
-   project config, your app's commands, a development key and a first live check.
+   project config, your app's commands, a debug key and a first live check.
 
-Your project key and development key come from Croche Studio or the `croche` CLI. Keep them in
+Your project key and debug key come from Croche Studio or the `croche` CLI. Keep them in
 your app's own configuration; never commit them.
 
 ## Native iOS and Android
@@ -85,9 +85,9 @@ Open an issue and pick the template that fits:
 | Cost or quality | A turn costs more, or answers worse, than you expected |
 | Feature request | Something your app needs that Croche does not do |
 
-Security issues: do **not** open an issue. See [SECURITY.md](SECURITY.md). How issues are
-handled: [TRIAGE.md](TRIAGE.md).
+Security issues: do **not** open an issue. See [SECURITY.md](SECURITY.md).
+The Croche maintainers handle public issues.
 
 Include the SDK version, the platform and, when you can, the runtime debug events
 (visibility `runtime`, never `full`). **Never paste keys**: provider keys, server keys (`csk_`),
-development keys (`cdt_`), or runtime tokens.
+debug keys (`cdt_`), or runtime tokens.

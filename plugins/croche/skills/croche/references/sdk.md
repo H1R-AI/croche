@@ -13,18 +13,18 @@ and receives a report of every call in the background. **A Cloud outage does not
 
 The shared Rust Core owns conversations, command routing, receipts, spending and
 Cloud synchronization. This package embeds its WebAssembly build for browsers,
-Node, and WebViews. Swift and Kotlin hosts use the same native Core; their source
-and build guides are in `sdk/swift` and `sdk/kotlin` in the release checkout.
-For React Native, install `@h1r-ai/croche-react-native` beside this package; its tarball carries
+Node, and WebViews. Native iOS (Swift) and Android (Kotlin) SDKs are planned for
+0.5.1, with the same `Croche.open` API.
+For React Native, install `@h1r-ai/croche-react-native` beside this package; it carries
 the native Core ([React Native](#react-native)).
 Croche chooses and tunes the model for your project; the app does not configure it.
 
-## Install the local release
+## Install
 
-From the release files (an app; no Rust and no Croche checkout needed):
+From npm (an app; no Rust and no Croche checkout needed):
 
 ```sh
-npm install /absolute/path/to/h1r-ai-croche-0.4.0.tgz
+npm install @h1r-ai/croche
 ```
 
 To build the tarball yourself, from the Croche repository:
@@ -69,7 +69,7 @@ const runShop: ToolHandler = ({ key, args }, context) => {
 };
 
 const croche = await Croche.open({
-  cloudUrl, projectKey, debugToken,                       // debugToken: development only
+  projectKey, debugKey,                       // debugKey: development only
   user: playerId,
   storage: new FileStorage(join(dataDir, 'croche')),      // one directory for the whole project
   config: {
@@ -120,7 +120,7 @@ await croche.close();
 `CrocheRuntime.create` below is the same Core for one agent without a project, and the rest of
 this reference shows it. Its behaviour (memory, documents, streaming, markers, errors) is the
 same for project agents; its agent options (`instructions`, `tools`, `memory`, `wiki`, …) are
-fields of `config`, and its host options (`cloudUrl`, `storage`, `user`, …) are options of
+fields of `config`, and its host options (`storage`, `user`, …) are options of
 `Croche.open`.
 
 ## First conversation
@@ -132,17 +132,16 @@ provide Studio access.
 An installation receives a model key only once it has proved it runs your app.
 Phones prove it with App Attest or Play Integrity (the native SDKs do this). A browser,
 Node, a simulator or an emulator cannot, so during development issue a **development
-key** (`cdt_…`) in Studio → Development keys and pass it as `debugToken`. Development
+key** (`cdt_…`) in Studio → Debug keys and pass it as `debugKey`. Development
 usage is billed to your weekly development allowance, never to the project's Runtime
-Credit. Never ship a development key in a release build.
+Credit. Never ship a debug key in a release build.
 
 ```ts
 import { CrocheRuntime, WebStorage } from '@h1r-ai/croche';
 
 const runtime = await CrocheRuntime.create({
-  cloudUrl: 'https://your-croche-cloud.example',
   projectKey: 'YOUR_PUBLIC_PROJECT_KEY',
-  debugToken: 'cdt_…', // development only: a browser cannot attest
+  debugKey: 'cdt_…', // development only: a browser cannot attest
   storage: new WebStorage(),
   instructions: 'You are Pip, a small, dry-witted but considerate companion. Keep replies brief.',
 });
@@ -163,9 +162,7 @@ console.log(runtime.userBudget.get());
 await runtime.close();
 ```
 
-Use `cloudUrl: location.origin` when the app is served by the same Cloud worker.
-Local development permits `http://localhost:8787` and `http://127.0.0.1:8787`.
-Other hosts require HTTPS.
+The SDK connects to Croche automatically; no service URL setup is needed.
 
 ## Web apps: run the Runtime on your backend
 
@@ -181,7 +178,6 @@ import { FileStorage } from '@h1r-ai/croche/node';
 // One Runtime per end user, keyed by your own stable user id.
 async function runtimeFor(userId: string) {
   return CrocheRuntime.create({
-    cloudUrl: process.env.CROCHE_CLOUD_URL!,
     projectKey: process.env.CROCHE_PROJECT_KEY!,
     serverKey: process.env.CROCHE_SERVER_KEY!,          // a server secret
     user: userId,                                       // one Croche user and allowance per end user
@@ -256,7 +252,6 @@ const memoTool: RuntimeTool = {
 };
 
 const runtime = await CrocheRuntime.create({
-  cloudUrl: location.origin,
   projectKey: 'YOUR_PUBLIC_PROJECT_KEY',
   storage: new WebStorage(),
   instructions: 'You are Pip. Offer to remember explicit notes. Confirm only actual tool results.',
@@ -443,7 +438,9 @@ The project's `config.defaultLanguage` is the single default language tag
 contains alternate app configurations. `language` on `Croche.open()` is the app's
 preference for the current user. If omitted, a browser supplies `navigator.language`;
 otherwise Core uses the project's default. It never detects language from user text
-or translates app data or Croche's English mechanics.
+or translates app data or Croche's English mechanics. The language selects the
+configuration only; the model is not told it, so a reply's language follows your
+instructions and the user's own message.
 
 The former host `defaultLanguage` option is removed and refused by name. Put the
 default inside project config, not in `CrocheRuntime.create()` or project host
@@ -527,7 +524,7 @@ as a substitute.
 The single-agent TypeScript `CrocheRuntime` has no delete method. With its
 default storage key, the measured recovery is the same project call, using
 `config: {instructions: '…'}`, `agent: 'default'` (or the
-original `agentId`), and the same `cloudUrl`, `projectKey`, `user`, `serverKey`
+original `agentId`), and the same `projectKey`, `user`, `serverKey`
 and storage object. Only an older build that still runs can export first. A custom `storageKey` is not
 addressed by that call: no public helper is bound for it. Use the storage owner's
 scoped recovery procedure, including its log/archive/secrets; do not erase a
@@ -963,7 +960,7 @@ The dynamic observer API is:
 
 ```ts
 // debug is a createLocalDebugger(...) transport configured by your dev adapter.
-runtime.setDebugObserver({ onDebugEvent: debug.onEvent, visibility: 'full' });
+runtime.setDebugObserver({ onDebugEvent: debug.onEvent, visibility: 'runtime' });
 const delivery = await debug.flush(); // delivers the immediate runtime.ready snapshot
 
 // Detach diagnostics only. The conversation and any active turn keep running.
@@ -978,8 +975,15 @@ tool effects. Attaching during a turn can produce a partial capture.
 
 Diagnostics are absent by default. `visibility: 'runtime'` includes app inputs,
 context, tools, results, markers and usage summaries. The current CLI development
-workflow explicitly requests `'full'`, which adds the model exchange, usage and actual
-cost. Authentication headers, Runtime bearer credentials and
+workflow uses `'runtime'` in public builds. Untyped `'full'` requests fail with
+`invalid_configuration` naming `debugVisibility` before effects, including observer
+replacement. A debug key cannot enable it. Private builds explicitly enable
+the default-off Core `internal-debug` feature to capture full model exchanges,
+without a key. [Internal-build recipes and artifact gates](../../docs/INTERNAL-DEBUG.md)
+keep those libraries out of public packages and app-store builds. This removes the
+flag-only extraction path, not access by a determined device owner.
+Runtime visibility needs no debug key and works in release builds.
+Authentication headers, Runtime bearer credentials and
 provider keys are excluded. Keep pairing links and tokens out of prompts and
 repository files; full traces deliberately contain private application content.
 
@@ -1000,7 +1004,6 @@ import { CrocheRuntime } from '@h1r-ai/croche';
 import { FileStorage } from '@h1r-ai/croche/node';
 
 const runtime = await CrocheRuntime.create({
-  cloudUrl: process.env.CROCHE_CLOUD_URL!,
   projectKey: process.env.CROCHE_PROJECT_KEY!,
   storage: new FileStorage('./private-runtime-state'),
   instructions: 'You are Pip, a concise, considerate companion.',
@@ -1109,19 +1112,18 @@ with the shared Core compiled natively for iOS and Android. React Native 0.76+ w
 the New Architecture; iOS 15.1+, Android API 26+.
 
 ```sh
-npm install /absolute/path/to/h1r-ai-croche-0.4.0.tgz \
-            /absolute/path/to/h1r-ai-croche-react-native-0.4.0.tgz
+npm install @h1r-ai/croche @h1r-ai/croche-react-native
 cd ios && pod install
 ```
 
-The React Native tarball carries the native Core (the iOS xcframework and the Android
+The React Native package carries the native Core (the iOS xcframework and the Android
 libraries for arm64-v8a, armeabi-v7a and x86_64), so the app needs no Rust toolchain and no
 Croche checkout. Android needs no further step.
 
 ```ts
 import { Croche } from '@h1r-ai/croche-react-native';
 
-const croche = await Croche.open({ cloudUrl, projectKey, debugToken: __DEV__ ? devKey : undefined,
+const croche = await Croche.open({ projectKey, debugKey: __DEV__ ? devKey : undefined,
   user: playerId, config: { instructions: MARA, tools: [inventory] }, handlers: { inventory: runInventory } });
 const mara = await croche.agent();
 ```
@@ -1130,18 +1132,17 @@ const mara = await croche.agent();
   and secrets in the Keychain or Keystore.
 - **Real phones attest themselves** (App Attest, Play Integrity). For Play Integrity, pass
   `android: { cloudProjectNumber }`, the Google Cloud project linked in Play Console.
-  Simulators and emulators cannot attest: use a development key as `debugToken`, and never
+  Simulators and emulators cannot attest: use a debug key as `debugKey`, and never
   ship one in a release build.
-- The package's own README (inside the tarball) covers its options, background delivery and
+- The package's own README covers its options, background delivery and
   errors.
 
 ## Account CLI and local Runtime control
 
-Install the `h1r-ai-croche-cli-0.4.0.tgz` package globally, then create a developer key in
+Install the CLI globally with `npm install --global @h1r-ai/croche-cli`, then create a developer key in
 **Studio → Developer keys**. Cloud stores its hash and shows the secret once.
 
 ```sh
-export CROCHE_CLOUD_URL='https://your-croche-cloud.example'
 export CROCHE_DEVELOPER_KEY='YOUR_DEVELOPER_KEY'
 croche auth whoami
 croche projects list --json

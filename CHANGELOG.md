@@ -50,7 +50,7 @@ coding-agent plugin. Install the packages from npm: `@h1r-ai/croche`,
   action record and context deltas are no longer app options.
 - `reasoning` is now one level: `default`, `off`, `low`, `medium` or `high`. The 0.3 object
   (`{ enabled, effort, maxTokens, exclude }`) is refused with `invalid_configuration`.
-- The CLI manages project names, routing and config drafts with your development key, and reads
+- The CLI manages project names, routing and config drafts with your debug key, and reads
   usage and metadata. Key issuance and rotation, budgets, access, attestation settings and config
   release move to Croche Studio.
 

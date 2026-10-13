@@ -1,1 +1,1 @@
-{ "cloudUrl": "https://YOUR-CLOUD-URL", "projectKey": "YOUR-PROJECT-KEY", "debugToken": "YOUR-DEVELOPMENT-KEY" }
+{ "projectKey": "YOUR-PROJECT-KEY", "debugKey": "YOUR-DEBUG-KEY" }

@@ -7,4 +7,4 @@ Report a vulnerability **privately**, never in an issue.
 - From the public beta: GitHub's private vulnerability reporting on this repository.
 
 Include what you found, how to reproduce it, and what it lets an attacker do.
-<!-- TODO(founder): add a dedicated security contact address before the public beta. -->
+Dedicated security contact: [address pending founder confirmation].

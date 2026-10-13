@@ -25,11 +25,13 @@ and a second copy costs tokens on every call. Never call the model provider your
 Ask for anything you do not have; never invent a value.
 
 - Croche Cloud URL and the project's **public project key**.
-- The SDK file `h1r-ai-croche-0.4.0.tgz` (install that file; it is not on npm). For
-  React Native, also `h1r-ai-croche-react-native-0.4.0.tgz` (the native Core is inside;
+- The SDK from npm: `npm install @h1r-ai/croche@0.5.0`. For React Native, also
+  `npm install @h1r-ai/croche-react-native@0.5.0` (the native Core is inside;
   see the [SDK reference](references/sdk.md), React Native).
-- In development (Node, simulator, browser): a **development key** (`cdt_…`) passed as
-  `debugToken`. Release builds on phones use platform attestation instead; web apps run the
+- Native iOS (Swift) and Android (Kotlin) apps: the native SDKs are planned for 0.5.1, with the
+  same `Croche.open` API. Until then, use React Native, or run the Runtime on a web backend.
+- In development (Node, simulator, browser): a **debug key** (`cdt_…`) passed as
+  `debugKey`. Release builds on phones use platform attestation instead; web apps run the
   Runtime on their backend with a server key (`csk_…`). See [SDK reference](references/sdk.md)
   only if you are in one of those cases.
 
@@ -43,7 +45,7 @@ import { Croche } from '@h1r-ai/croche';
 import { FileStorage } from '@h1r-ai/croche/node';
 
 const croche = await Croche.open({
-  cloudUrl, projectKey, debugToken,             // from .env; never hard-code or log keys
+  projectKey, debugKey,             // from .env; never hard-code or log keys
   user: playerId,                               // your app's id for this person
   storage: new FileStorage(join(dataDir, 'croche')),  // one directory for the whole project
   config: { instructions: PIP, tools: [shop] }, // who the agent is (short: paid on every call), and the app's actions, below
@@ -77,7 +79,7 @@ const result = await pip.request({ id: messageId, text: userText, context: appSt
   call on most turns and keeps the agent from answering without checking. Keep it bounded:
   cap long lists and add a hint such as `"more": "use orders list"`. Kept earlier turns are
   resent exactly as they were sent, earlier states included. Send the current state on every
-  message, even when unchanged: Croche sends only what changed.
+  message, even when unchanged: Croche sends only what changed, and resends it in full after older turns are folded.
 - **Money:** per-user and project spending limits are the Runtime's and Cloud's; do not wrap or
   gate the SDK's `fetch` to meter calls. To show or record usage, use `onUsage`: one event for
   every paid call, including memory upkeep that belongs to no message.

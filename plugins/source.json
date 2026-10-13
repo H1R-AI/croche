@@ -1,0 +1,16 @@
+{
+  "repository": "H1R-AI/croche-runtime",
+  "commit": "301f78d1162062a2412b01d26cd14a54e991b36f",
+  "version": "0.5.0",
+  "files": {
+    ".agents/plugins/marketplace.json": "0eee96044219f5ffad7c7a06e756354ec83254651c17bec605d2afc7cf6bfedf",
+    ".claude-plugin/marketplace.json": "43abe406ce8c79cab4c3173870f919cc9a3be2deb6253115fda3901bf3158d7f",
+    "plugins/croche/.claude-plugin/plugin.json": "715901078dafb76cd78cc34a7a84ee66ae3808198e239a2da387c9de8b4ff5ee",
+    "plugins/croche/.codex-plugin/plugin.json": "f928e5ae6461689dc56b6d7b6f533333e59e485a19df8759e9512c207b59c718",
+    "plugins/croche/skills/croche/SKILL.md": "d94a41240d9fc17ba133caf714973520982599b7998badc89161b37da56f5574",
+    "plugins/croche/skills/croche/agents/openai.yaml": "8738f2b785aaaf564181ca79c6e2e5ec7d971c15b162c6d1fd88385d17bee5ed",
+    "plugins/croche/skills/croche/references/cli.md": "af01e4c21752afbab903c6a3760d701139a53c6df96b1ceab21ea6fee8125602",
+    "plugins/croche/skills/croche/references/coding-agent.md": "82c7689f724a188c44f5d9fdc5e044d94445cf9d46f167610da51b18fe957fab",
+    "plugins/croche/skills/croche/references/sdk.md": "bae38e3ed274e2393a8b3a83ca80fd4cb51f556d2ff5508f43f91c89f46cea3f"
+  }
+}

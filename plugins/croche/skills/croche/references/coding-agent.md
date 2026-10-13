@@ -29,7 +29,7 @@ Croche's Runtime owns two things. Leave both to it.
    - Put what most turns need to answer (the user's open tasks, cart, balance, today's
      schedule; a compact summary) in each message's `context`. It saves a lookup round trip on
      most turns. Kept earlier turns are resent exactly as they were sent, earlier states
-     included. Send the current state on every message, even when unchanged: Croche sends only what changed.
+     included. Send the current state on every message, even when unchanged: Croche sends only what changed, and resends it in full after older turns are folded.
    - Mark lookups (lists, status, search) with `reads: true`: their result is the answer, so the
      agent always replies after seeing it. Do not tell the agent to "speak only after the
      commands".
@@ -50,7 +50,7 @@ Studio, never with an app public key. Do not copy Croche Chat's model loop; the 
 none. Do not call a model provider, add an orchestration framework, or read SDK internals
 to connect an ordinary character app.
 
-1. Install the supplied `h1r-ai-croche-0.4.0.tgz` into the app. Supply Cloud URL
+1. Install `@h1r-ai/croche` from npm into the app. Supply Cloud URL
    and a Studio project's public key. The project must allow anonymous enrollment
    and have an account allocation and active budget.
 2. Open one `CrocheRuntime` with a durable storage adapter and personality

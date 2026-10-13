@@ -9,9 +9,8 @@ of server code and one HTML file.
 2. Set your project's values (from Croche Studio or the `croche` CLI) in the environment:
 
    ```sh
-   export CROCHE_CLOUD_URL=…          # your Croche Cloud URL
    export CROCHE_PROJECT_KEY=…        # the project key
-   export CROCHE_DEBUG_TOKEN=…        # a development key: development only, never in a release
+   export CROCHE_DEBUG_KEY=…        # a debug key: development only, never in a release
    npm start                          # http://localhost:3000
    ```
 
@@ -26,4 +25,4 @@ of server code and one HTML file.
   one memory. That keeps the demo short. `user` is an option of `Croche.open`, so a real app
   opens one project per signed-in person (with their id) and closes it when they leave.
 
-Never commit keys, and never send the development key to a browser.
+Never commit keys, and never send the debug key to a browser.

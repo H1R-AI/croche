@@ -5,7 +5,7 @@
 `@h1r-ai/croche-cli` is an independently installable Node 22+ CLI for Croche Cloud accounts and explicitly attached local Runtimes. It has no production npm dependencies and never needs a model provider key.
 
 ```sh
-npm install --global ./h1r-ai-croche-cli-0.4.0.tgz
+npm install --global @h1r-ai/croche-cli
 croche --help
 croche projects --help --json
 ```
@@ -105,10 +105,10 @@ croche debug connect --runtime-id RUNTIME_ID --visibility runtime   # or: croche
 ```
 
 This prints the local viewer link and a one-time Studio link. Without
-`--visibility runtime`, `connect` attaches the complete `full` trace for the local
-viewer, and Studio shows those events as withheld. An app that sends its own events
-with `createLocalDebugger` observes in `runtime` unless it sets
-`debugVisibility: 'full'`.
+`--visibility`, `connect` defaults to `runtime`. Public builds refuse `full` even
+with a debug key. Explicit `--visibility full` is for owner-only Core builds
+with `internal-debug`; never publish those artifacts. Studio withholds those
+private entries. See [private builds](../../docs/INTERNAL-DEBUG.md).
 
 The CLI generates credentials once and stores them in private mode-0600 JSON
 files under the OS user state directory. On Linux, the default paths are:
@@ -154,7 +154,7 @@ collector; no command stops the broker or rotates a token.
 
 ## Account and project commands
 
-Create a developer key in an authenticated Studio session. Cloud returns its secret once, stores only a SHA-256 hash, and supports revocation. Set `CROCHE_DEVELOPER_KEY` and `CROCHE_CLOUD_URL` in your process environment through your preferred secret manager. Credentials are never command arguments or URL parameters. Cloud URLs must be HTTPS, except local HTTP development origins.
+Create a developer key in an authenticated Studio session. Cloud returns its secret once, stores only a SHA-256 hash, and supports revocation. Run `croche login` yourself once in your terminal; enter the key in its hidden prompt. Coding agents must never run login or ask for the key in chat. `CROCHE_DEVELOPER_KEY` remains an optional environment override. The CLI connects to Croche automatically. Credentials are never command arguments or URL parameters.
 
 ```sh
 croche auth whoami --json
@@ -167,8 +167,8 @@ croche projects cost PROJECT_ID --json
 croche runtimes list --project-id PROJECT_ID
 ```
 
-New projects have no budget and disable app access. Set budgets and enable app access in
-web Studio. Use web Studio for key issuance/revocation/rotation, security and attestation
+New projects have a $10 monthly production budget and app access enabled.
+Change production budgets in web Studio. Use web Studio for server-key issuance/revocation/rotation, security and attestation
 settings, allowances, project pause/archive, Runtime blocking and production promotion.
 The CLI uses only a `dk_` developer key for Cloud requests; Cloud enforces its agent scope.
 An explicit bearer never falls back to a browser cookie. The account remains an evaluation
@@ -188,12 +188,16 @@ issuance and revocation are available only in web Studio.
 ## App credentials, attestation and usage
 
 Inspect credential metadata, attestation and usage with the developer key.
-Issue and revoke app credentials, and edit attestation, in web Studio.
+The coding agent can issue and revoke debug keys with the CLI. Server credentials and attestation changes stay in web Studio.
 
 ```sh
-# Simulators, emulators and your own devices: a development key, used as `debugToken` in debug
+# Simulators, emulators and your own devices: a debug key, used as `debugKey` in debug
 # builds only. Calls use your weekly development allowance, never Runtime Credit.
-croche keys development list PROJECT_ID
+croche debug-keys create --project PROJECT_ID
+# Writes CROCHE_DEBUG_KEY to ./.env without printing it. Use --env-file PATH to choose
+# the destination. Existing values require --force; tracked files are refused.
+croche debug-keys list --project PROJECT_ID
+croche debug-keys revoke --project PROJECT_ID KEY_ID
 
 # A web app's own backend (one Runtime per end user): a server key, kept on the server.
 croche keys server list PROJECT_ID
@@ -286,12 +290,13 @@ array member; `|null` marks a nullable value. Empty lists have no members.
 Config content follows the project-config grammar, so its application fields
 are not required on every document. Local `debug`, `control` and `runtime`
 commands use their separate local protocols and are outside this Cloud freeze.
+Human-only `login` and `logout` are also outside the agent-callable freeze.
 
 Success is `{ok:true,data}`; refusal is `{ok:false,error:{code,message,details?}}`.
 Exit classes stay 0 success, 1 remote failure, 2 usage/configuration,
 3 authentication/authorization and 4 transport/timeout. Cloud human-only
 operations continue to refuse agent authority with `human_session_required`.
-No agent-callable Cloud command returns a one-time secret. Credential metadata
+Default agent-callable Cloud output never contains a one-time secret. Credential metadata
 uses `prefix`; project `public_key` is returned only in project views.
 `decryption_key` must never appear, even when attestation is configured.
 
@@ -317,10 +322,11 @@ uses `prefix`; project `public_key` is returned only in project views.
 | `draft` | `revision_id`: string; `schema`: number; `document`: object; `document.schema`: number; `document.config`: object; `updated_by`: string; `updated_at`: string |
 | `version` | `project_id`: string; `version`: number; `revision_id`: string; `kind`: string; `from_version`: number\|null; `note`: string\|null; `released_by`: string; `released_at`: string; `applied_7d`: number |
 | `unverified_install` | `installation_id`: string; `attestation_outcome`: string\|null; `attestation_reason`: string\|null; `platform`: string\|null; `sdk`: string; `sdk_version`: string; `app_version`: string\|null |
+| `debug_key` | `warning`: string\|null |
 
 | Command / variant | Frozen paths (relative to the JSON envelope) |
 | --- | --- |
-| `auth whoami` / account | `ok`: boolean; `data`: object; `data.account`: object; `data.account` → `account`; `data.account.plan` → `plan` |
+| `auth whoami` / account | `ok`: boolean; `data`: object; `data.account`: object; `data.credential.source`: string; `data.credential.prefix`: string; `data.account` → `account`; `data.account.plan` → `plan` |
 | `projects list` / projects-list | `ok`: boolean; `data`: object; `data.projects`: array; `data.projects[]` → `project` |
 | `projects create` / project-create | `ok`: boolean; `data`: object; `data.project`: object; `data.project` → `project` |
 | `projects get` / project-get | `ok`: boolean; `data`: object; `data.project`: object; `data.project` → `project` |
@@ -344,7 +350,7 @@ uses `prefix`; project `public_key` is returned only in project views.
 | `config get` / config-get-version-output | `ok`: boolean; `data`: object; `data.file`: string; `data.revision_id`: string\|null; `data.version`: number |
 | `config save` / config-save | `ok`: boolean; `data`: object; `data.revision_id`: string; `data.created`: boolean |
 | `config list` / config-list | `ok`: boolean; `data`: object; `data.versions`: array; `data.draft`: object\|null; `data.versions[]` → `version`; `data.draft` → `draft` |
-| `auth whoami` / account-no-plan | `ok`: boolean; `data`: object; `data.account`: object; `data.account.plan`: null; `data.account` → `account` |
+| `auth whoami` / account-no-plan | `ok`: boolean; `data`: object; `data.account`: object; `data.account.plan`: null; `data.credential.source`: string; `data.credential.prefix`: string; `data.account` → `account` |
 | `projects operations` / empty-operations | `ok`: boolean; `data`: object; `data.operations`: array; `data.has_more`: boolean; `data.next_cursor`: null |
 | `keys development list` / empty-development-keys | `ok`: boolean; `data`: object; `data.debug_tokens`: array |
 | `keys server list` / empty-server-keys | `ok`: boolean; `data`: object; `data.server_keys`: array |
@@ -356,6 +362,9 @@ uses `prefix`; project `public_key` is returned only in project views.
 | `config get` / empty-config-output | `ok`: boolean; `data`: object; `data.file`: string; `data.revision_id`: null |
 | `config list` / empty-config-list | `ok`: boolean; `data`: object; `data.versions`: array; `data.draft`: null |
 | `projects list` / empty-projects-list | `ok`: boolean; `data`: object; `data.projects`: array |
+| `debug-keys create` / debug-keys-create | `ok`: boolean; `data`: object; `data.debug_key`: object; `data.env_file`: string; `data.debug_key` → `key_metadata`; `data.debug_key` → `debug_key` |
+| `debug-keys list` / debug-keys-list | `ok`: boolean; `data`: object; `data.debug_keys`: array; `data.debug_keys[]` → `key_metadata`; `data.debug_keys[]` → `debug_key` |
+| `debug-keys revoke` / debug-keys-revoke | `ok`: boolean; `data`: object; `data.debug_key`: object; `data.debug_key` → `key_metadata`; `data.debug_key` → `debug_key` |
 
 | Refusal / exit class | Frozen paths |
 | --- | --- |
@@ -375,7 +384,6 @@ PowerShell's documented rules; they have not yet been run on Windows.
 ```powershell
 # Configuration is process environment, as with export in sh. Take secrets from your secret
 # manager rather than typing them on the command line.
-$env:CROCHE_CLOUD_URL = 'https://cloud.example'
 
 # Exit status of the last native command (0-4, see above). $? is only true or false.
 croche projects list --json
@@ -422,8 +430,7 @@ From this repository, run `npm run test --workspace @h1r-ai/croche-cli`, `npm ru
 
 ## Project configuration
 
-Set `CROCHE_DEVELOPER_KEY`, `CROCHE_CLOUD_URL`, and `CROCHE_PROJECT` (or pass
-`--project ID` and `--cloud-url ORIGIN` on a config command).
+Set `CROCHE_DEVELOPER_KEY` and `CROCHE_PROJECT` (or pass `--project ID`).
 
 ```sh
 croche config get -o draft.json
@@ -446,3 +453,19 @@ by releasing older content as a new higher version in web Studio; these approval
 are human-only. Drafts are delivered only to development-key
 Runtimes whose key follows drafts. Other Runtimes receive the highest compatible
 released version above their bundled version, at their next open.
+
+### Human credential setup
+
+Sign up in Studio, create a developer key, then run `croche login` once in
+your terminal. The prompt hides the key; redirected stdin is also supported.
+Never put a key in command arguments or a chat conversation. Coding agents
+must ask the user to run login themselves; agents must never run login.
+The CLI validates the key against Cloud before saving it.
+
+Saved credentials live in `croche/credentials.json` beneath `$XDG_CONFIG_HOME`
+(or `~/.config`) on Linux, `~/Library/Application Support` on macOS, and
+`%APPDATA%` inside your user profile on Windows. POSIX directories are 0700
+and credential files are created 0600, with atomic replacement.
+`CROCHE_DEVELOPER_KEY` overrides the saved key. `croche auth whoami --json`
+shows the account, credential source (`env` or `stored`), and prefix only.
+`croche logout` removes the saved credential; an environment key remains set.

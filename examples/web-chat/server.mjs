@@ -8,16 +8,15 @@ import { join } from 'node:path';
 import { Croche } from '@h1r-ai/croche';
 import { FileStorage } from '@h1r-ai/croche/node';
 
-const { CROCHE_CLOUD_URL, CROCHE_PROJECT_KEY, CROCHE_DEBUG_TOKEN, PORT = '3000' } = process.env;
-if (!CROCHE_CLOUD_URL || !CROCHE_PROJECT_KEY) {
-  console.error('Set CROCHE_CLOUD_URL and CROCHE_PROJECT_KEY (and CROCHE_DEBUG_TOKEN in development).');
+const { CROCHE_PROJECT_KEY, CROCHE_DEBUG_KEY, PORT = '3000' } = process.env;
+if (!CROCHE_PROJECT_KEY) {
+  console.error('Set CROCHE_PROJECT_KEY (and CROCHE_DEBUG_KEY in development).');
   process.exit(2);
 }
 
 const croche = await Croche.open({
-  cloudUrl: CROCHE_CLOUD_URL,
   projectKey: CROCHE_PROJECT_KEY,
-  debugToken: CROCHE_DEBUG_TOKEN,                         // development only, never in a release
+  debugKey: CROCHE_DEBUG_KEY,                         // development only, never in a release
   user: 'demo-user',                                      // your app's id for the signed-in person
   storage: new FileStorage(join(import.meta.dirname, '.croche')),
   config: { instructions: 'You are a friendly assistant. Answer in a few short sentences.' },

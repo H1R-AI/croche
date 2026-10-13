@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, FlatList, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Croche, type AgentEvent, type CrocheAgent } from '@h1r-ai/croche-react-native';
-import croche from './croche.config.json';   // { cloudUrl, projectKey, debugToken }: gitignored, never committed
+import croche from './croche.config.json';   // { projectKey, debugKey }: gitignored, never committed
 
 type Line = { id: string; who: 'you' | 'agent'; text: string };
 const describe = (e: any) => e?.code ? `${e.code}: ${e.message}` : String(e);   // CrocheError has code and message
@@ -19,9 +19,8 @@ export default function App() {
     let subscription: { close(): void } | undefined;
     (async () => {
       project = await Croche.open({
-        cloudUrl: croche.cloudUrl,
         projectKey: croche.projectKey,
-        debugToken: __DEV__ ? croche.debugToken : undefined,   // development only
+        debugKey: __DEV__ ? croche.debugKey : undefined,   // development only
         user: 'demo-user',                                       // your app's id for the person
         config: { instructions: 'You are a friendly assistant. Answer in a few short sentences.' },
       });
