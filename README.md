@@ -17,6 +17,10 @@
   </p>
 </div>
 
+**Early Access:** Croche is in Early Access. Studio and the Cloud are open to
+invited developers; [request access](https://croche.ai/en#waitlist)
+([Korean](https://croche.ai/#waitlist)).
+
 This is Croche’s developer home and coding-agent marketplace. Version 0.5.1 supports
 TypeScript web backends, React Native, native Swift, and Kotlin; this repository contains
 no SDK or Core source.
@@ -68,7 +72,8 @@ no SDK or Core source.
    implementation("ai.croche:croche-android:0.5.1")
    ```
 
-   Sign up in [Studio](https://studio.croche.ai), create an account key, and run
+   With an invite, sign in to [Studio](https://studio.croche.ai) and create an
+   account key. Run
    `croche login` yourself in your terminal. Its prompt hides the key; never paste
    it into chat. An environment override uses `CROCHE_ACCOUNT_KEY`;
    `CROCHE_DEVELOPER_KEY` is still read. If both are set and differ, the CLI refuses
