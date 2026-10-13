@@ -59,15 +59,21 @@ no SDK or Core source.
 
    ```kotlin
    // Repository configuration
-   maven { url = uri("https://maven.croche.ai") }
+   repositories {
+       google()
+       mavenCentral()
+       maven { url = uri("https://maven.croche.ai") }
+   }
    // App dependencies
    implementation("ai.croche:croche-android:0.5.1")
    ```
 
    Sign up in [Studio](https://studio.croche.ai), create an account key, and run
    `croche login` yourself in your terminal. Its prompt hides the key; never paste
-   it into chat. An environment override uses `CROCHE_ACCOUNT_KEY`. For React Native
-   on iOS, also run `cd ios && pod install`.
+   it into chat. An environment override uses `CROCHE_ACCOUNT_KEY`;
+   `CROCHE_DEVELOPER_KEY` is still read. If both are set and differ, the CLI refuses
+   with `invalid_configuration`. For React Native on iOS, also run
+   `cd ios && pod install`.
 
 3. **Ask your coding agent to build the feature.** For example: “Add a Croche agent
    that can read and update the user’s tasks.” The plugin guides project setup,

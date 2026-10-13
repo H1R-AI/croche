@@ -7,7 +7,14 @@
   `ai.croche:croche-android:0.5.1` from `https://maven.croche.ai`.
 - **Account key naming.** The `dk_` credential is now called an Account key;
   its environment variable is `CROCHE_ACCOUNT_KEY`. `CROCHE_DEVELOPER_KEY` is
-  still read for compatibility.
+  still read for compatibility. If both variables are set and differ, the CLI
+  refuses with `invalid_configuration`.
+- **React Native language.** When the app omits `language`, it defaults to the
+  device locale; an explicit app language still wins.
+- **React Native upgrade from 0.5.0.** `Croche.open` now refuses
+  `backgroundDelivery: true` and `backgroundDelivery: { iosTaskIdentifier }` with
+  `invalid_configuration`; 0.5.0 silently dropped them. Remove those enabled
+  options when upgrading (`backgroundDelivery: false` remains accepted).
 - **Guided integration.** The coding-agent skill asks which platform you are
   building for and guides you through the first turn.
 - **Optional app state.** Request `context` is optional. Send app state when a
