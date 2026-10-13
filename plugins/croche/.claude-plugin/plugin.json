@@ -1,12 +1,16 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "croche",
-  "version": "0.5.0",
-  "description": "Build apps on Croche: add scoped AI agents with the Croche SDK, and manage project drafts and inspect keys and usage with the croche CLI.",
+  "version": "0.5.1",
+  "description": "Build with Croche: guided SDK setup, CLI workflows, app config, platform integration and troubleshooting.",
   "author": {
     "name": "Croche"
   },
   "skills": [
-    "./skills/croche"
+    "./skills/croche",
+    "./skills/croche-cli",
+    "./skills/croche-config",
+    "./skills/croche-platforms",
+    "./skills/croche-troubleshoot"
   ]
 }

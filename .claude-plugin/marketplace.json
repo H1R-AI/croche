@@ -11,7 +11,7 @@
     {
       "name": "croche",
       "source": "./plugins/croche",
-      "description": "Build apps on Croche: add scoped AI agents with the Croche SDK, and manage project drafts and inspect keys and usage with the croche CLI.",
+      "description": "Build with Croche: guided SDK setup, CLI workflows, app config, platform integration and troubleshooting.",
       "version": "0.5.1"
     }
   ]

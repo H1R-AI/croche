@@ -1,6 +1,8 @@
 # Release notes
 
-## 0.5.1
+## 0.5.1 — 2026-10-13
+
+Published on npm, Swift Package Manager and the Croche Maven repository.
 
 - **Native Swift and Kotlin SDKs.** Install Swift through SPM from
   `https://github.com/H1R-AI/croche-swift` at exact version `0.5.1`, or Kotlin as
@@ -16,7 +18,9 @@
   `invalid_configuration`; 0.5.0 silently dropped them. Remove those enabled
   options when upgrading (`backgroundDelivery: false` remains accepted).
 - **Guided integration.** The coding-agent skill asks which platform you are
-  building for and guides you through the first turn.
+  building for, uses the CLI for setup, and guides you through the first turn
+  and “Watch it in Studio”. It documents markers and the Windows PowerShell
+  RemoteSigned setup with plain `croche`.
 - **Optional app state.** Request `context` is optional. Send app state when a
   request needs it; you do not need to supply it on every request.
 
@@ -121,5 +125,5 @@ deletes that agent's conversation and memories for that user, so tell the person
 
 ### Known limits
 
-- Native Swift and Kotlin SDKs are not in 0.5.0; they are planned for 0.5.1, with the same
+- Native Swift and Kotlin SDKs were not included in 0.5.0; they shipped in 0.5.1, with the same
   `Croche.open` API.

@@ -44,8 +44,8 @@ no SDK or Core source.
    that project’s directory. Codex’s verified `plugin add` command has no scope
    flag; use the project skill-copy option below for project-only guidance.
 
-   Without plugins, copy [the skill folder](plugins/croche/skills/croche) into your
-   project’s `.claude/skills/croche/` or `.agents/skills/croche/`.
+   Without plugins, copy all five folders from [the skills directory](plugins/croche/skills/)
+   into your project’s `.claude/skills/` or `.agents/skills/`.
 
 2. **Install your platform’s SDK and the CLI, then sign in.** The CLI requires
    Node 22 or later. Choose the SDK for your app:
@@ -108,8 +108,8 @@ no SDK or Core source.
 | [docs/](docs/) | Platform guides pointing to the release’s bundled references |
 | [Issues](https://github.com/H1R-AI/croche/issues) | Bugs, questions, developer experience, cost/quality, and feature requests |
 
-Read the bundled [SDK reference](plugins/croche/skills/croche/references/sdk.md),
-[CLI reference](plugins/croche/skills/croche/references/cli.md), or
+Read the bundled [platform guides](plugins/croche/skills/croche-platforms/SKILL.md),
+[CLI reference](plugins/croche/skills/croche-cli/SKILL.md), or
 [release notes](CHANGELOG.md). These docs ship with the plugin.
 
 ## Get help
