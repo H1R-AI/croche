@@ -1,0 +1,4 @@
+interface:
+  display_name: "Croche Platforms"
+  short_description: "Set up Croche on mobile or web backends"
+  default_prompt: "Use $croche-platforms to choose and verify the integration for my app platform."

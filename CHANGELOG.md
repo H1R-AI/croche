@@ -1,6 +1,30 @@
 # Release notes
 
-## 0.5.0 (draft, not released)
+## 0.5.1 — 2026-10-13
+
+Published on npm, Swift Package Manager and the Croche Maven repository.
+
+- **Native Swift and Kotlin SDKs.** Install Swift through SPM from
+  `https://github.com/H1R-AI/croche-swift` at exact version `0.5.1`, or Kotlin as
+  `ai.croche:croche-android:0.5.1` from `https://maven.croche.ai`.
+- **Account key naming.** The `dk_` credential is now called an Account key;
+  its environment variable is `CROCHE_ACCOUNT_KEY`. `CROCHE_DEVELOPER_KEY` is
+  still read for compatibility. If both variables are set and differ, the CLI
+  refuses with `invalid_configuration`.
+- **React Native language.** When the app omits `language`, it defaults to the
+  device locale; an explicit app language still wins.
+- **React Native upgrade from 0.5.0.** `Croche.open` now refuses
+  `backgroundDelivery: true` and `backgroundDelivery: { iosTaskIdentifier }` with
+  `invalid_configuration`; 0.5.0 silently dropped them. Remove those enabled
+  options when upgrading (`backgroundDelivery: false` remains accepted).
+- **Guided integration.** The coding-agent skill asks which platform you are
+  building for, uses the CLI for setup, and guides you through the first turn
+  and “Watch it in Studio”. It documents markers and the Windows PowerShell
+  RemoteSigned setup with plain `croche`.
+- **Optional app state.** Request `context` is optional. Send app state when a
+  request needs it; you do not need to supply it on every request.
+
+## 0.5.0 — 2026-10-13
 
 0.5.0 is the first release built on the rebuilt Core. Every package and the Core share one
 version: `@h1r-ai/croche`, `@h1r-ai/croche-react-native`, `@h1r-ai/croche-cli` and the `croche`
@@ -50,9 +74,9 @@ coding-agent plugin. Install the packages from npm: `@h1r-ai/croche`,
   action record and context deltas are no longer app options.
 - `reasoning` is now one level: `default`, `off`, `low`, `medium` or `high`. The 0.3 object
   (`{ enabled, effort, maxTokens, exclude }`) is refused with `invalid_configuration`.
-- The CLI manages project names, routing and config drafts with your debug key, and reads
-  usage and metadata. Key issuance and rotation, budgets, access, attestation settings and config
-  release move to Croche Studio.
+- The CLI manages project names, routing and config drafts with a `dk_` account credential,
+  reads usage and metadata, and creates/lists/revokes debug keys. Server-key issuance and
+  rotation, budgets, access, attestation settings and config release stay in Croche Studio.
 
 ### Removed in 0.5.0
 
@@ -87,7 +111,7 @@ fields.
 - Account labels. Pass your app's `user` instead.
 - These runtime options, now Croche's own and refused: `replyWithCommands`, `actionRecord`,
   `contextDeltas`, `temperature` and `timeContext`.
-- The CLI commands for keys, budgets, access, attestation, runtime blocking, and config release
+- The CLI commands for server-key issuance, budgets, access, attestation, runtime blocking, and config release
   and rollback (now in Studio).
 
 ### Stores from an older build
@@ -101,5 +125,5 @@ deletes that agent's conversation and memories for that user, so tell the person
 
 ### Known limits
 
-- Native Swift and Kotlin SDKs are not in 0.5.0; they are planned for 0.5.1, with the same
+- Native Swift and Kotlin SDKs were not included in 0.5.0; they shipped in 0.5.1, with the same
   `Croche.open` API.

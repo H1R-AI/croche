@@ -5,14 +5,27 @@ of server code and one HTML file.
 
 ## Run it
 
-1. In this folder, run `npm install` (Node 22 or later); it installs `@h1r-ai/croche` from npm.
-2. Set your project's values (from Croche Studio or the `croche` CLI) in the environment:
+1. In this folder, run `npm install` (Node 22 or later); it installs `@h1r-ai/croche@0.5.1` from npm.
+2. For development, set your project key and debug key (from Studio or the `croche` CLI):
 
    ```sh
    export CROCHE_PROJECT_KEY=…        # the project key
    export CROCHE_DEBUG_KEY=…        # a debug key: development only, never in a release
    npm start                          # http://localhost:3000
    ```
+
+For a production backend, create a server key in Studio and use this form instead:
+
+```sh
+export CROCHE_PROJECT_KEY=…
+export CROCHE_SERVER_KEY=…         # secret: backend only
+unset CROCHE_DEBUG_KEY             # never use a debug key in a release
+NODE_ENV=production npm start
+```
+
+The app passes `serverKey: process.env.CROCHE_SERVER_KEY`. It suppresses `debugKey`
+when a server key is set or `NODE_ENV=production`; production refuses to start
+without a server key. Choose one proof, never both. Neither secret goes to the browser.
 
 ## What it shows
 

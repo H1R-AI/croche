@@ -9,14 +9,17 @@ import { Croche } from '@h1r-ai/croche';
 import { FileStorage } from '@h1r-ai/croche/node';
 
 const { CROCHE_PROJECT_KEY, CROCHE_DEBUG_KEY, PORT = '3000' } = process.env;
-if (!CROCHE_PROJECT_KEY) {
-  console.error('Set CROCHE_PROJECT_KEY (and CROCHE_DEBUG_KEY in development).');
+const production = process.env.NODE_ENV === 'production';
+if (!CROCHE_PROJECT_KEY || (production && !process.env.CROCHE_SERVER_KEY)) {
+  console.error('Set CROCHE_PROJECT_KEY; production also requires CROCHE_SERVER_KEY.');
   process.exit(2);
 }
 
 const croche = await Croche.open({
   projectKey: CROCHE_PROJECT_KEY,
-  debugKey: CROCHE_DEBUG_KEY,                         // development only, never in a release
+  // Development only: never pass a debug key in a release, or alongside a server key.
+  debugKey: production || process.env.CROCHE_SERVER_KEY ? undefined : CROCHE_DEBUG_KEY,
+  serverKey: process.env.CROCHE_SERVER_KEY,               // production backend; never sent to the browser
   user: 'demo-user',                                      // your app's id for the signed-in person
   storage: new FileStorage(join(import.meta.dirname, '.croche')),
   config: { instructions: 'You are a friendly assistant. Answer in a few short sentences.' },

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Croche Troubleshooting"
+  short_description: "Diagnose errors and guide safe recovery"
+  default_prompt: "Use $croche-troubleshoot to diagnose my error and tell me the next safe step."

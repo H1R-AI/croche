@@ -1,0 +1,4 @@
+interface:
+  display_name: "Croche CLI"
+  short_description: "Inspect projects and edit Croche drafts"
+  default_prompt: "Use $croche-cli to inspect my project and guide any required Studio steps."

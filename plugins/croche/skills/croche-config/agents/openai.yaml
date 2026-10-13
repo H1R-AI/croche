@@ -1,0 +1,4 @@
+interface:
+  display_name: "Croche Config"
+  short_description: "Edit app config and select user language"
+  default_prompt: "Use $croche-config to review my draft, tools, and user-language selection."
