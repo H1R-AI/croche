@@ -7,8 +7,7 @@ Integrity), streams replies, remembers across sessions, and keeps
 per-user AI allowances that your app controls.
 
 This repository is the **public home for developers building on Croche**: the coding-agent
-plugin, examples, releases and issues. (During the closed beta it is private and invite-only; it
-opens with the public beta.) It holds no SDK or Core source.
+plugin, examples, releases and issues. It holds no SDK or Core source.
 
 ## Install in 3 steps
 
