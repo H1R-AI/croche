@@ -1,8 +1,21 @@
-# Croche
-
-**Add AI agents that stream replies, remember conversations, and call your app’s tools.**
-
-[Website](https://croche.ai) · [Docs](https://docs.croche.ai) · [Studio](https://studio.croche.ai) · [Hackathon](https://croche.ai/hackathon)
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/croche-logo-dark.svg">
+    <img src="assets/croche-logo.svg" alt="Croche" width="320">
+  </picture>
+  <p><strong>AI agents that stream replies, remember conversations, and call your app’s tools.</strong></p>
+  <p>
+    <a href="https://www.npmjs.com/package/@h1r-ai/croche"><img src="https://img.shields.io/npm/v/%40h1r-ai%2Fcroche?style=flat-square&amp;color=6c3fc4" alt="npm version: @h1r-ai/croche"></a>
+    <a href="docs/SDK-LICENSE.md"><img src="https://img.shields.io/badge/SDK_license-Croche_(beta)-6c3fc4?style=flat-square" alt="Croche SDK License (beta)"></a>
+    <a href="https://docs.croche.ai"><img src="https://img.shields.io/badge/docs-online-6c3fc4?style=flat-square" alt="Online documentation"></a>
+  </p>
+  <p>
+    <a href="https://croche.ai">Website</a> ·
+    <a href="https://docs.croche.ai">Docs</a> ·
+    <a href="https://studio.croche.ai">Studio</a> ·
+    <a href="https://croche.ai/hackathon">Hackathon</a>
+  </p>
+</div>
 
 This is Croche’s developer home and coding-agent marketplace. Version 0.5.0 supports
 TypeScript web backends and React Native; this repository contains no SDK or Core source.
