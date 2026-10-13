@@ -39,6 +39,11 @@ no SDK or Core source.
    codex plugin add croche@croche
    ```
 
+   Claude Code installs to user scope by default. To install for the current app
+   project instead, run `claude plugin install croche@croche --scope project` in
+   that project’s directory. Codex’s verified `plugin add` command has no scope
+   flag; use the project skill-copy option below for project-only guidance.
+
    Without plugins, copy [the skill folder](plugins/croche/skills/croche) into your
    project’s `.claude/skills/croche/` or `.agents/skills/croche/`.
 
@@ -51,6 +56,12 @@ no SDK or Core source.
    npm install @h1r-ai/croche-react-native@0.5.1
    npm install --global @h1r-ai/croche-cli@0.5.1
    ```
+
+   Without a global CLI install, run
+   `npx --package @h1r-ai/croche-cli@0.5.1 croche <command>` instead. For example,
+   the user can run `npx --package @h1r-ai/croche-cli@0.5.1 croche login`.
+   In PowerShell, use `croche.cmd` as the standard command after global install
+   (for example, `croche.cmd login`); the no-global form uses `npx.cmd`.
 
    Native Swift: add this dependency in `Package.swift` (exact version):
 
@@ -74,7 +85,7 @@ no SDK or Core source.
 
    With an invite, sign in to [Studio](https://studio.croche.ai) and create an
    account key. Run
-   `croche login` yourself in your terminal. Its prompt hides the key; never paste
+   `croche login` (`croche.cmd login` in PowerShell) yourself in your terminal. Its prompt hides the key; never paste
    it into chat. An environment override uses `CROCHE_ACCOUNT_KEY`;
    `CROCHE_DEVELOPER_KEY` is still read. If both are set and differ, the CLI refuses
    with `invalid_configuration`. For React Native on iOS, also run
