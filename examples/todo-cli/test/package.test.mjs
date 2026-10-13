@@ -24,3 +24,16 @@ test('no real credentials, internal endpoints or retired SDK names in example so
     assert.doesNotMatch(text, /H1R-AI\/croche-runtime|api-dev\.|studio-dev\./, entry);
   }
 });
+
+test('published setup uses Account key, one-time PowerShell policy and JSON only for agent-parsed project creation', () => {
+  const guide = readFileSync(join(root, 'README.md'), 'utf8');
+  assert.match(guide, /published `@h1r-ai\/croche` 0\.5\.1/);
+  assert.match(guide, /Account → Account keys/);
+  assert.match(guide, /Set-ExecutionPolicy -Scope CurrentUser RemoteSigned/);
+  assert.match(guide, /uses plain `croche`/);
+  assert.doesNotMatch(guide, /not (?:yet )?published|candidate|developer[\s-]+key|CLI keys/i);
+  assert.ok(!guide.includes(['croche', 'cmd'].join('.')));
+  assert.equal((guide.match(/--json/g) ?? []).length, 1);
+  assert.match(guide, /coding agent can use `croche projects create[^`]+--json` and parse/);
+  assert.doesNotMatch(guide, /croche login[^`\n]*--json/);
+});

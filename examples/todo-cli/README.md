@@ -36,8 +36,8 @@ reply status and closes the project; the tool handler validates current app data
 ## Run in three commands
 
 **Node 22+ on macOS/Linux. Windows verification pending.** The example pins
-`@h1r-ai/croche` **0.5.1**. TODO verify: installation and live text/image requests against
-that release; if it is not published yet, wait rather than substituting another package.
+**published `@h1r-ai/croche` 0.5.1**. TODO verify: live text/image requests and
+file protections in your own app environment. Publication is not a live integration test.
 The offline tests need only Node, not an SDK installation or account.
 
 From this folder, after the account/project setup below:
@@ -55,17 +55,26 @@ editing and deleting tasks are intentionally outside this small example.
 
 ### Account setup: human login, agent does the rest
 
-Your only account step is to sign up at [Studio](https://studio.croche.ai), create a developer
-key under **Account → CLI keys**, and run **`croche login` yourself** in a private terminal
+Your only account step is to sign up at [Studio](https://studio.croche.ai), create an Account
+key under **Account → Account keys**, and run **`croche login` yourself** in a private terminal
 on the same machine/account as the coding agent. The agent can install the
-`@h1r-ai/croche-cli` package first with permission. The hidden login prompt is the only
+`@h1r-ai/croche-cli@0.5.1` package first with permission. The hidden login prompt is the only
 place you paste the key—never into agent chat or a command argument.
 
-The coding agent can use `croche projects create --name "Todo CLI" --json` to create the
-project, then `croche debug-keys create --project PROJECT_ID --env-file .env --json` from
+For PowerShell, the human runs this once, then uses plain `croche`:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+This changes only the current-user policy; follow your organization's policy on a managed
+device. CLI login has been run on Windows; this example's SDK workflow remains unverified there.
+
+The coding agent can use `croche projects create --name "Todo CLI" --json` and parse the
+response for the project ID and public key, then `croche debug-keys create --project PROJECT_ID --env-file .env` from
 **this example's folder**. The CLI writes the debug key directly to `.env`. The agent adds
 `CROCHE_PROJECT_KEY` using the returned public project key, preserving the private line.
-The developer/account key belongs to CLI login, not to this app.
+The Account key belongs to CLI login, not to this app.
 
 CLI JSON can contain key prefixes: agent subprocesses capture it privately and report only
 success/project ID/path, not raw output or any part of a key. An existing private env file
@@ -119,7 +128,7 @@ One input can involve several tool/model calls; it is not a one-charge guarantee
 - One message without a terminal UI: `npm start -- --prompt "Add buy milk"`.
 - Current app state: `npm start -- --prompt "/list"`.
 - A photo: `npm start -- --prompt "/photo /path/to/shopping-list.jpg"`.
-- Offline checks: `npm test` (no network, account or usage charges).
+- Offline checks: `npm test` (no network, account or usage charges); `npm run build` checks JavaScript syntax without downloading or executing the SDK.
 - With usage permission, `npm run smoke` makes **three live requests**: add, complete,
   restart, then ask for a missing deadline. It uses a unique temporary profile and removes
   **only its own local test data in a finally block**, including failure paths. Your normal
