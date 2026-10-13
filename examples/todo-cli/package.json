@@ -1,0 +1,12 @@
+{
+  "name": "croche-todo-cli-example",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node --env-file=.env src/main.mjs",
+    "smoke": "node --env-file=.env scripts/smoke.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": { "@h1r-ai/croche": "0.5.1" }
+}
