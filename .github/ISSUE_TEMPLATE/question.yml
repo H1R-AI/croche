@@ -1,0 +1,14 @@
+name: Question
+description: How do I…? Something the docs don't answer.
+labels: ["type:question"]
+body:
+  - type: textarea
+    id: question
+    attributes: { label: Your question }
+    validations: { required: true }
+  - type: textarea
+    id: tried
+    attributes: { label: What you tried or read, description: "Code, config, or the doc section you followed. NEVER keys or tokens." }
+  - type: input
+    id: sdk
+    attributes: { label: SDK version and platform, description: "e.g. 0.5.0, React Native 0.81 on iOS 18 simulator" }

@@ -1,0 +1,10 @@
+{
+  "name": "croche-web-chat-example",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": { "start": "node server.mjs" },
+  "dependencies": {
+    "@h1r-ai/croche": "0.5.0"
+  }
+}

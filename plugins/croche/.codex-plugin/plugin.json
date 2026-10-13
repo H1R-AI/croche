@@ -1,0 +1,18 @@
+{
+  "name": "croche",
+  "version": "0.5.0",
+  "description": "Build apps on Croche: add scoped AI agents with the Croche SDK, and manage project drafts and inspect keys and usage with the croche CLI.",
+  "author": {
+    "name": "Croche"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Croche",
+    "shortDescription": "Build and debug apps with Croche Runtime.",
+    "longDescription": "SDK integration guidance, grouped command tools, marker presentation, Cloud project management and opt-in local Runtime control.",
+    "developerName": "Croche",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Use Croche to build or debug my AI application."
+  }
+}
