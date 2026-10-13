@@ -17,8 +17,9 @@
   </p>
 </div>
 
-This is Croche’s developer home and coding-agent marketplace. Version 0.5.0 supports
-TypeScript web backends and React Native; this repository contains no SDK or Core source.
+This is Croche’s developer home and coding-agent marketplace. Version 0.5.1 supports
+TypeScript web backends, React Native, native Swift, and Kotlin; this repository contains
+no SDK or Core source.
 
 ## Install in 3 steps
 
@@ -37,18 +38,36 @@ TypeScript web backends and React Native; this repository contains no SDK or Cor
    Without plugins, copy [the skill folder](plugins/croche/skills/croche) into your
    project’s `.claude/skills/croche/` or `.agents/skills/croche/`.
 
-2. **Install the SDK and CLI, then sign in.** Node 22 or later:
+2. **Install your platform’s SDK and the CLI, then sign in.** The CLI requires
+   Node 22 or later. Choose the SDK for your app:
 
    ```sh
-   npm install @h1r-ai/croche@0.5.0
+   npm install @h1r-ai/croche@0.5.1
    # React Native apps also need:
-   npm install @h1r-ai/croche-react-native@0.5.0
-   npm install --global @h1r-ai/croche-cli@0.5.0
+   npm install @h1r-ai/croche-react-native@0.5.1
+   npm install --global @h1r-ai/croche-cli@0.5.1
    ```
 
-   Sign up in [Studio](https://studio.croche.ai), create a developer key, and run
+   Native Swift: add this dependency in `Package.swift` (exact version):
+
+   ```swift
+   .package(url: "https://github.com/H1R-AI/croche-swift", exact: "0.5.1")
+   ```
+
+   Native Kotlin: add the Maven repository to your repository configuration and
+   the library to your app’s dependencies:
+
+   ```kotlin
+   // Repository configuration
+   maven { url = uri("https://maven.croche.ai") }
+   // App dependencies
+   implementation("ai.croche:croche-android:0.5.1")
+   ```
+
+   Sign up in [Studio](https://studio.croche.ai), create an account key, and run
    `croche login` yourself in your terminal. Its prompt hides the key; never paste
-   it into chat. For React Native on iOS, also run `cd ios && pod install`.
+   it into chat. An environment override uses `CROCHE_ACCOUNT_KEY`. For React Native
+   on iOS, also run `cd ios && pod install`.
 
 3. **Ask your coding agent to build the feature.** For example: “Add a Croche agent
    that can read and update the user’s tasks.” The plugin guides project setup,
