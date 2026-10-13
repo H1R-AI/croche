@@ -72,18 +72,23 @@ no SDK or Core source.
    .package(url: "https://github.com/H1R-AI/croche-swift", exact: "0.5.1")
    ```
 
-   Native Kotlin: add the Maven repository to your repository configuration and
-   the library to your app’s dependencies:
+   Native Kotlin: add the Maven repository to the existing
+   `dependencyResolutionManagement` block in `settings.gradle.kts`, then add the
+   library in `app/build.gradle.kts`:
 
    ```kotlin
-   // Repository configuration
-   repositories {
-       google()
-       mavenCentral()
-       maven { url = uri("https://maven.croche.ai") }
+   // settings.gradle.kts
+   dependencyResolutionManagement {
+       repositories {
+           google()
+           mavenCentral()
+           maven { url = uri("https://maven.croche.ai") }
+       }
    }
-   // App dependencies
-   implementation("ai.croche:croche-android:0.5.1")
+   // app/build.gradle.kts
+   dependencies {
+       implementation("ai.croche:croche-android:0.5.1")
+   }
    ```
 
    With an invite, sign in to [Studio](https://studio.croche.ai) and create an
