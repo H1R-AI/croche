@@ -60,7 +60,7 @@ TypeScript web backends and React Native; this repository contains no SDK or Cor
 | Path | Contents |
 | --- | --- |
 | [plugins/](plugins/) | Claude Code and Codex marketplace, skills, SDK and CLI references |
-| [examples/](examples/) | [To-do CLI](examples/todo-cli/) (0.5.1 candidate), [Node web chat](examples/web-chat/) and [React Native chat](examples/react-native-chat/) |
+| [examples/](examples/) | [To-do CLI](examples/todo-cli/), [Node web chat](examples/web-chat/) and [React Native chat](examples/react-native-chat/) |
 | [docs/](docs/) | Platform guides pointing to the release’s bundled references |
 | [Issues](https://github.com/H1R-AI/croche/issues) | Bugs, questions, developer experience, cost/quality, and feature requests |
 
