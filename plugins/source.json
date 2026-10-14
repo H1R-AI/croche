@@ -1,6 +1,6 @@
 {
   "repository": "H1R-AI/croche-runtime",
-  "commit": "c1df905b5cc74f1ee2fd49ccb374d95ef6a8f0af",
+  "commit": "856e3b193f8cf47109d3ae48a78fb2e2ed4c8059",
   "version": "0.5.2",
   "files": {
     ".agents/plugins/marketplace.json": "0eee96044219f5ffad7c7a06e756354ec83254651c17bec605d2afc7cf6bfedf",

@@ -109,14 +109,6 @@ no SDK or Core source.
    tool handlers, a debug key, and a first live check. Keep secrets out of Git and
    debug keys out of release builds.
 
-## Built-in web search
-
-On Runtime **0.5.2 or later**, enable web search in Studio’s tool settings or set
-`config.crocheTools` to include `{"web.search": true}` in a schema 3 Cloud config.
-The agent can search and open a numbered source reference; results return to the
-agent as text. No app handler or new SDK option is needed. See the bundled
-[web-search guide](plugins/croche/skills/croche/references/web-search.md).
-
 ## What’s in this repo
 
 | Path | Contents |
