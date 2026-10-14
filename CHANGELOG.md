@@ -1,5 +1,20 @@
 # Release notes
 
+## 0.5.2 — 2026-10-14
+
+Published on npm, Swift Package Manager and the Croche Maven repository.
+
+- **Built-in web search.** `web.search` returns a summary with numbered source
+  references; `web.open_reference` reads a reference from the latest search.
+  Results go back to the agent as text; no app handler or new SDK option is needed.
+- **Studio/Cloud configuration.** Enable web search with `"web.search": true` under
+  `config.crocheTools` in a schema 3 document, or use Studio’s web-search settings.
+  This requires Runtime **0.5.2 or later**; older apps keep their compatible config.
+- **Usage reporting.** `onUsage` identifies search calls as `tool.search` and
+  reference reads as `tool.search_ref`.
+- **Aligned packages.** TypeScript, CLI, React Native, Swift and Kotlin install
+  versions are 0.5.2. Image generation is not included in this release.
+
 ## 0.5.1 — 2026-10-13
 
 Published on npm, Swift Package Manager and the Croche Maven repository.

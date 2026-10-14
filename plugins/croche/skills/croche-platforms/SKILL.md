@@ -16,11 +16,11 @@ use the usage and limits shown in Studio, not a separate model-service setup.
 | Local Node check | `@h1r-ai/croche`, durable `FileStorage`, SDK debug key | Core `croche` skill |
 | React Native | `Croche` from `@h1r-ai/croche-react-native`, SDK-managed storage | [react-native.md](references/react-native.md) |
 | Web (local and production) | `Croche` on the app's Node backend, server key stays there | [web-backend.md](references/web-backend.md) |
-| iOS · Swift | SPM, exact **0.5.1**, `Croche.open` | [ios.md](references/ios.md) |
-| Android · Kotlin | Maven, exact **0.5.1**, `Croche.open` | [android.md](references/android.md) |
+| iOS · Swift | SPM, exact **0.5.2**, `Croche.open` | [ios.md](references/ios.md) |
+| Android · Kotlin | Maven, exact **0.5.2**, `Croche.open` | [android.md](references/android.md) |
 
 Node.js 22+ on macOS/Linux; Windows verification pending. PowerShell syntax does not establish
-Windows support. SDK 0.5.1 is published on npm; verify the installed version and platform behavior.
+Windows support. SDK 0.5.2 is published on npm; verify the installed version and platform behavior.
 Node and RN do not automatically load the CLI-created `.env`: Node needs `--env-file` or an
 existing dotenv loader, web secrets stay server-side only, and RN needs debug-only build config
 with no secret in release artifacts. Read the matching reference above before the first turn.
@@ -38,13 +38,13 @@ Use `croche-config` for the complete selection and next-open rules.
 
 ## Native gate
 
-**Native Swift and Kotlin SDKs exist.** Their shared **project/agent `Croche.open` API** is
-coming in **0.5.1**. Do not describe a pending API/release as nonexistent SDKs.
-Candidate installation and `Croche.open` first-turn examples are in [ios.md](references/ios.md)
+**Native Swift and Kotlin SDKs are published as 0.5.2**, including the shared
+**project/agent `Croche.open` API**. Do not describe published SDKs as nonexistent.
+Installation and `Croche.open` first-turn examples are in [ios.md](references/ios.md)
 and [android.md](references/android.md). For a native request, read the matching reference,
-prepare the integration and check exact 0.5.1 availability. TODO verify: package resolution,
-simulator/emulator first turn and release credential exclusion. Do not substitute the native
-0.5.0 single-agent API or claim the candidate was run. Use git-ignored `.xcconfig` (iOS) or
+prepare the integration and resolve exactly 0.5.2. Verify simulator/emulator first turn
+and release credential exclusion in the target app. Do not substitute the native
+0.5.0 single-agent API or claim an example was run without running it. Use git-ignored `.xcconfig` (iOS) or
 `local.properties` (Android), wired only into Debug and excluded from Release at build time.
 If a native release is unavailable, report that blocker; offer TypeScript/React Native for a
 new hackathon app, but never rewrite an existing native app into a different stack unasked.

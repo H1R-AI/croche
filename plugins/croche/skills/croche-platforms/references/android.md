@@ -2,12 +2,12 @@
 
 # Android · Kotlin project API
 
-Use this guide for a native Android app, not the single-agent API. It targets **0.5.1** and
+Use this guide for a native Android app, not the single-agent API. It targets **0.5.2** and
 `Croche.open` → `agent()` → `request()`.
 
-> TODO verify: 0.5.1 Maven availability, Gradle integration, emulator first turn and release
-> credential exclusion. These are candidate instructions, not a claim of a published or tested
-> native release. If the exact package is unavailable, report that blocker; do not downgrade the API.
+> Version 0.5.2 is published on Maven. Verify Gradle integration, emulator first turn and
+> release credential exclusion in the target app; package publication is not proof of those checks.
+> If the exact package cannot be resolved, report that blocker; do not downgrade the API.
 
 ## Install from Maven
 
@@ -27,7 +27,7 @@ Add the exact dependency in `app/build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("ai.croche:croche-android:0.5.1")
+    implementation("ai.croche:croche-android:0.5.2")
 }
 ```
 
@@ -178,7 +178,7 @@ Choose a model using [Models](https://docs.croche.ai/models.md).
 
 ## Verify before shipping
 
-- Resolve exactly 0.5.1, build Debug and run on the selected emulator. Confirm a nonempty,
+- Resolve exactly 0.5.2, build Debug and run on the selected emulator. Confirm a nonempty,
   completed reply; report the real error if it fails. In Studio, inspect **Monitoring → Logs**
   with the development filter. Never paste credentials or private app data into the report.
 - Inspect a clean Release APK/AAB without printing secrets: no debug key in classes/resources,

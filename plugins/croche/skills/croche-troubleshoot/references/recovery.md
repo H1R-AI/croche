@@ -30,4 +30,4 @@ agent without deleting the whole project directory or another user's data.
 
 Do not apply this recipe blindly to custom single-agent storage or an instance-specific case;
 confirm the installed SDK's scoped deletion API first. A busy store must be closed, not forcibly
-erased. Native 0.5.1 recovery requires its reviewed API; do not translate this snippet by guesswork.
+erased. Native 0.5.2 recovery requires its reviewed API; do not translate this snippet by guesswork.

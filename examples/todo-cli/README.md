@@ -36,7 +36,7 @@ reply status and closes the project; the tool handler validates current app data
 ## Run in three commands
 
 **Node 22+ on macOS/Linux. Windows verification pending.** The example pins
-**published `@h1r-ai/croche` 0.5.1**. TODO verify: live text/image requests and
+**published `@h1r-ai/croche` 0.5.2**. TODO verify: live text/image requests and
 file protections in your own app environment. Publication is not a live integration test.
 The offline tests need only Node, not an SDK installation or account.
 
@@ -58,7 +58,7 @@ editing and deleting tasks are intentionally outside this small example.
 Your only account step is to sign up at [Studio](https://studio.croche.ai), create an Account
 key under **Account → Account keys**, and run **`croche login` yourself** in a private terminal
 on the same machine/account as the coding agent. The agent can install the
-`@h1r-ai/croche-cli@0.5.1` package first with permission. The hidden login prompt is the only
+`@h1r-ai/croche-cli@0.5.2` package first with permission. The hidden login prompt is the only
 place you paste the key—never into agent chat or a command argument.
 
 For PowerShell, the human runs this once, then uses plain `croche`:
