@@ -36,7 +36,7 @@ reply status and closes the project; the tool handler validates current app data
 ## Run in three commands
 
 **Node 22+ on macOS/Linux. Windows verification pending.** The example pins
-**published `@h1r-ai/croche` 0.5.2**. TODO verify: live text/image requests and
+**published `@h1r-ai/croche` 0.5.3**. TODO verify: live text/image requests and
 file protections in your own app environment. Publication is not a live integration test.
 The offline tests need only Node, not an SDK installation or account.
 

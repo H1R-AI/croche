@@ -102,7 +102,10 @@ croche config save croche.config.json --project PROJECT_ID
 
 Preserve the full project document. If no draft exists, prepare `schema: 2` with the complete
 app config in `config`, not the returned `null`. Use `schema: 3` when `crocheTools` sets an object for
-`web.search` (see the `croche` skill's web-search.md). On a conflict, keep the local edit, fetch the
+`web.search` (see the `croche` skill's web-search.md). Use `schema: 4` when setting
+`temperature`: number 0–2, absent uses a tuned default, null = omit. This field requires SDK 0.5.3+
+and structured calls always omit it. Preserve schema 4 when later editing web tools;
+never downlabel a document carrying temperature. On a conflict, keep the local edit, fetch the
 latest draft separately and reconcile; do not force an empty base or blindly overwrite.
 Saving affects debug-key apps, not production: every debug key follows drafts. Verify all tool
 handlers, allow sync and reopen; the change applies on the **next open after sync**, never

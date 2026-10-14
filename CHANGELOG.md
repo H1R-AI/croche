@@ -1,5 +1,24 @@
 # Release notes
 
+## 0.5.3 — Unreleased
+
+- **App-controlled temperature.** Set `config.temperature` to a finite number from
+  0 to 2, or `null` to leave it to the provider. Omitting it uses Croche’s tuned
+  default; in an override, omission inherits and `null` disables the inherited value.
+  Structured-output calls always omit temperature, including fallback and retry
+  requests; summary calls keep their existing behavior.
+- **Schema 4 configuration.** Studio/CLI documents containing `temperature` use
+  schema 4 and reach only SDKs 0.5.3+ that advertise schema-4 support. Local code
+  config selects its compatible schema automatically. Existing schema-2/3 config
+  identities remain unchanged.
+- **Clearer structured-output errors.** A provider 404 that explicitly reports
+  unsupported parameter routing becomes `structured_output_unsupported`.
+  Data-policy refusals remain `provider_rejected`; neither causes a paid retry or
+  weakens privacy constraints.
+- **Aligned packages and plugin.** TypeScript, CLI, React Native, Swift, Kotlin
+  and the coding-agent marketplace move to 0.5.3. npm install commands remain
+  unversioned; native dependencies stay within the compatible minor release.
+
 ## 0.5.2 — 2026-10-14
 
 Published on npm, Swift Package Manager and the Croche Maven repository.
@@ -46,7 +65,7 @@ version: `@h1r-ai/croche`, `@h1r-ai/croche-react-native`, `@h1r-ai/croche-cli` a
 coding-agent plugin. Install the packages from npm: `@h1r-ai/croche`,
 `@h1r-ai/croche-react-native` and `@h1r-ai/croche-cli`.
 
-**Upgrading from 0.3.x is a breaking change.** Read [Removed in 0.5.0](#removed-in-050) and
+**Upgrading from a pre-0.5.0 build is a breaking change.** Read [Removed in 0.5.0](#removed-in-050) and
 [Stores from an older build](#stores-from-an-older-build) before you upgrade.
 
 ### New
@@ -87,7 +106,7 @@ coding-agent plugin. Install the packages from npm: `@h1r-ai/croche`,
   app (verified as a genuine install when you configure App Attest or Play Integrity). The 0.2 Cloud relay is gone.
 - Croche tunes its own prompt behaviour: temperature, time in context, reply commands, the
   action record and context deltas are no longer app options.
-- `reasoning` is now one level: `default`, `off`, `low`, `medium` or `high`. The 0.3 object
+- `reasoning` is now one level: `default`, `off`, `low`, `medium` or `high`. The older object
   (`{ enabled, effort, maxTokens, exclude }`) is refused with `invalid_configuration`.
 - The CLI manages project names, routing and config drafts with a `dk_` account credential,
   reads usage and metadata, and creates/lists/revokes debug keys. Server-key issuance and
@@ -131,7 +150,7 @@ fields.
 
 ### Stores from an older build
 
-A store written by 0.3.x (keyed memory) is refused before anything is written:
+A store written by an older keyed-memory build is refused before anything is written:
 `croche.agent(id)` rejects with `memory_store_too_old`. `Croche.open` itself succeeds, and other
 agents open normally. The Core cannot read or convert that memory. To continue, delete that
 agent's store with `Croche.deleteStore({ ...openOptions, agent })` and reopen. This permanently
