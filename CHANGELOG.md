@@ -65,7 +65,7 @@ version: `@h1r-ai/croche`, `@h1r-ai/croche-react-native`, `@h1r-ai/croche-cli` a
 coding-agent plugin. Install the packages from npm: `@h1r-ai/croche`,
 `@h1r-ai/croche-react-native` and `@h1r-ai/croche-cli`.
 
-**Upgrading from a pre-0.5.0 build is a breaking change.** Read [Removed in 0.5.0](#removed-in-050) and
+**Upgrading from 0.3.x is a breaking change.** Read [Removed in 0.5.0](#removed-in-050) and
 [Stores from an older build](#stores-from-an-older-build) before you upgrade.
 
 ### New
@@ -106,7 +106,7 @@ coding-agent plugin. Install the packages from npm: `@h1r-ai/croche`,
   app (verified as a genuine install when you configure App Attest or Play Integrity). The 0.2 Cloud relay is gone.
 - Croche tunes its own prompt behaviour: temperature, time in context, reply commands, the
   action record and context deltas are no longer app options.
-- `reasoning` is now one level: `default`, `off`, `low`, `medium` or `high`. The older object
+- `reasoning` is now one level: `default`, `off`, `low`, `medium` or `high`. The 0.3 object
   (`{ enabled, effort, maxTokens, exclude }`) is refused with `invalid_configuration`.
 - The CLI manages project names, routing and config drafts with a `dk_` account credential,
   reads usage and metadata, and creates/lists/revokes debug keys. Server-key issuance and
@@ -150,7 +150,7 @@ fields.
 
 ### Stores from an older build
 
-A store written by an older keyed-memory build is refused before anything is written:
+A store written by 0.3.x (keyed memory) is refused before anything is written:
 `croche.agent(id)` rejects with `memory_store_too_old`. `Croche.open` itself succeeds, and other
 agents open normally. The Core cannot read or convert that memory. To continue, delete that
 agent's store with `Croche.deleteStore({ ...openOptions, agent })` and reopen. This permanently
