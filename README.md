@@ -51,25 +51,26 @@ no SDK or Core source.
    Node 22 or later. Choose the SDK for your app:
 
    ```sh
-   npm install @h1r-ai/croche@0.5.2
-   # React Native apps also need:
-   npm install @h1r-ai/croche-react-native@0.5.2
-   npm install --global @h1r-ai/croche-cli@0.5.2
+   npm install @h1r-ai/croche
+   # React Native apps install both:
+   npm install @h1r-ai/croche @h1r-ai/croche-react-native
+   npm install --global @h1r-ai/croche-cli
    ```
 
    Without a global CLI install, run
-   `npx --package @h1r-ai/croche-cli@0.5.2 croche <command>` instead. For example,
-   the user can run `npx --package @h1r-ai/croche-cli@0.5.2 croche login`.
+   `npx --package @h1r-ai/croche-cli croche <command>` instead. For example,
+   the user can run `npx --package @h1r-ai/croche-cli croche login`.
    In Windows PowerShell, run this once, then use plain `croche` and `npx`:
 
    ```powershell
    Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
    ```
 
-   Native Swift: add this dependency in `Package.swift` (exact version):
+   Native Swift: choose **Up to Next Minor Version** from **0.5.2** in Xcode,
+   or add this dependency in `Package.swift`:
 
    ```swift
-   .package(url: "https://github.com/H1R-AI/croche-swift", exact: "0.5.2")
+   .package(url: "https://github.com/H1R-AI/croche-swift", .upToNextMinor(from: "0.5.2"))
    ```
 
    Native Kotlin: add the Maven repository to the existing
@@ -87,9 +88,13 @@ no SDK or Core source.
    }
    // app/build.gradle.kts
    dependencies {
-       implementation("ai.croche:croche-android:0.5.2")
+       implementation("ai.croche:croche-android:0.5.+")
    }
    ```
+
+   npm installs the latest published version; commit your project’s lockfile to
+   pin its resolved dependencies. Because 0.x minor releases may break compatibility,
+   native dependencies stay within 0.5.x with the ranges above.
 
    With an invite, sign in to [Studio](https://studio.croche.ai) and create an
    account key. Run

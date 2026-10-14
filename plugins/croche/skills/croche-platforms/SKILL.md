@@ -16,8 +16,11 @@ use the usage and limits shown in Studio, not a separate model-service setup.
 | Local Node check | `@h1r-ai/croche`, durable `FileStorage`, SDK debug key | Core `croche` skill |
 | React Native | `Croche` from `@h1r-ai/croche-react-native`, SDK-managed storage | [react-native.md](references/react-native.md) |
 | Web (local and production) | `Croche` on the app's Node backend, server key stays there | [web-backend.md](references/web-backend.md) |
-| iOS · Swift | SPM, exact **0.5.2**, `Croche.open` | [ios.md](references/ios.md) |
-| Android · Kotlin | Maven, exact **0.5.2**, `Croche.open` | [android.md](references/android.md) |
+| iOS · Swift | SPM, **Up to Next Minor Version** from **0.5.2**, `Croche.open` | [ios.md](references/ios.md) |
+| Android · Kotlin | Maven, **0.5.+**, `Croche.open` | [android.md](references/android.md) |
+
+Install npm packages without a version suffix; the project lockfile records resolved versions.
+Minor releases in 0.x may break compatibility, so the native ranges above stay within 0.5.x.
 
 Node.js 22+ on macOS/Linux; Windows verification pending. PowerShell syntax does not establish
 Windows support. SDK 0.5.2 is published on npm; verify the installed version and platform behavior.
@@ -42,7 +45,8 @@ Use `croche-config` for the complete selection and next-open rules.
 **project/agent `Croche.open` API**. Do not describe published SDKs as nonexistent.
 Installation and `Croche.open` first-turn examples are in [ios.md](references/ios.md)
 and [android.md](references/android.md). For a native request, read the matching reference,
-prepare the integration and resolve exactly 0.5.2. Verify simulator/emulator first turn
+prepare the integration using the declared 0.5.x range and record its resolved version.
+Verify simulator/emulator first turn
 and release credential exclusion in the target app. Do not substitute the native
 0.5.0 single-agent API or claim an example was run without running it. Use git-ignored `.xcconfig` (iOS) or
 `local.properties` (Android), wired only into Debug and excluded from Release at build time.

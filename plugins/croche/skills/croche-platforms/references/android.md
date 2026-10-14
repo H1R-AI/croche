@@ -7,7 +7,7 @@ Use this guide for a native Android app, not the single-agent API. It targets **
 
 > Version 0.5.2 is published on Maven. Verify Gradle integration, emulator first turn and
 > release credential exclusion in the target app; package publication is not proof of those checks.
-> If the exact package cannot be resolved, report that blocker; do not downgrade the API.
+> If the package cannot be resolved within the declared range, report that blocker; do not downgrade the API.
 
 ## Install from Maven
 
@@ -23,16 +23,17 @@ dependencyResolutionManagement {
 }
 ```
 
-Add the exact dependency in `app/build.gradle.kts`:
+Add the dependency range in `app/build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("ai.croche:croche-android:0.5.2")
+    implementation("ai.croche:croche-android:0.5.+")
 }
 ```
 
 The distribution supplies the native binary and dependency metadata. No manual Rust/NDK build
 or copied AAR is needed for this install path. Preserve the app's existing Android/Kotlin setup.
+Minor releases in 0.x may break compatibility, so `0.5.+` stays within 0.5.x.
 Windows verification is pending; these Gradle examples are not a Windows support claim.
 
 ## One human step; the agent sets up the project
@@ -178,7 +179,8 @@ Choose a model using [Models](https://docs.croche.ai/models.md).
 
 ## Verify before shipping
 
-- Resolve exactly 0.5.2, build Debug and run on the selected emulator. Confirm a nonempty,
+- Resolve the latest available 0.5.x patch, record the resolved version, build Debug and run on the
+  selected emulator. Confirm a nonempty,
   completed reply; report the real error if it fails. In Studio, inspect **Monitoring → Logs**
   with the development filter. Never paste credentials or private app data into the report.
 - Inspect a clean Release APK/AAB without printing secrets: no debug key in classes/resources,
