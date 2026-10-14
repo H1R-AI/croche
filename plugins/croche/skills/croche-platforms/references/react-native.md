@@ -3,7 +3,7 @@
 # React Native
 
 Requirements: React Native 0.76+ with New Architecture, iOS 15.1+ / Android API 26+.
-Version 0.5.2 packages are published on npm; use the app's existing package manager.
+Version 0.5.3 packages are published on npm; use the app's existing package manager.
 With permission:
 
 ```sh

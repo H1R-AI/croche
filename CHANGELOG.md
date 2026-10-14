@@ -1,5 +1,24 @@
 # Release notes
 
+## 0.5.3 - 2026-10-14
+
+- **App-controlled temperature.** Set `config.temperature` to a finite number from
+  0 to 2, or `null` to leave it to the provider. Omitting it uses Croche’s tuned
+  default; in an override, omission inherits and `null` disables the inherited value.
+  Structured-output calls always omit temperature, including fallback and retry
+  requests; summary calls keep their existing behavior.
+- **Schema 4 configuration.** Studio/CLI documents containing `temperature` use
+  schema 4 and reach only SDKs 0.5.3+ that advertise schema-4 support. Local code
+  config selects its compatible schema automatically. Existing schema-2/3 config
+  identities remain unchanged.
+- **Clearer structured-output errors.** A provider 404 that explicitly reports
+  unsupported parameter routing becomes `structured_output_unsupported`.
+  Data-policy refusals remain `provider_rejected`; neither causes a paid retry or
+  weakens privacy constraints.
+- **Aligned packages and plugin.** TypeScript, CLI, React Native, Swift, Kotlin
+  and the coding-agent marketplace move to 0.5.3. npm install commands remain
+  unversioned; native dependencies stay within the compatible minor release.
+
 ## 0.5.2 — 2026-10-14
 
 Published on npm, Swift Package Manager and the Croche Maven repository.

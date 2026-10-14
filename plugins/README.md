@@ -2,7 +2,7 @@
 
 The root README lists the Claude Code and Codex install commands. For local checks,
 replace `H1R-AI/croche` with this checkout’s absolute path in marketplace add; the
-marketplace name remains `croche`. Both manifests install the same 0.5.2 plugin.
+marketplace name remains `croche`. Both manifests install the same 0.5.3 plugin.
 
 This directory contains skills and public SDK/CLI references, never SDK or Runtime
 source. The plugin and both root marketplace catalogs are copied unchanged from

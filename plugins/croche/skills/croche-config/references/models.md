@@ -2,6 +2,16 @@
 
 # Allowed model IDs
 
+## Temperature (0.5.3)
+
+The app's `config.temperature` is a finite number 0–2. Absent uses a tuned default;
+null omits the parameter, overriding an inherited value. Structured calls always
+omit it, even when the app set a number; summaries keep their current behavior.
+Use project document schema 4 for this field. Cloud delivers schema 4 only to SDK
+0.5.3+ that report support; existing schema-2/3 documents keep their identities.
+Local code config needs no explicit schema number. This is app configuration,
+not a Croche setting or a host credential option.
+
 Use an exact ID below for the `model` field in a Croche project config. These are the IDs
 supported by the current SDK candidate; public package availability remains pending verification.
 

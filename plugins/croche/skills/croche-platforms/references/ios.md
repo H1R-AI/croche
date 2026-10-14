@@ -2,10 +2,10 @@
 
 # iOS · Swift project API
 
-Use this guide for a native iOS app, not the single-agent API. It targets **0.5.2** and
+Use this guide for a native iOS app, not the single-agent API. It targets **0.5.3** and
 `Croche.open` → `agent()` → `request()`.
 
-> Version 0.5.2 is published through SPM. Verify Xcode integration, simulator first turn and
+> Version 0.5.3 is published through SPM. Verify Xcode integration, simulator first turn and
 > release credential exclusion in the target app; package publication is not proof of those checks.
 > If the package cannot be resolved within the declared range, report that blocker; do not downgrade the API.
 
