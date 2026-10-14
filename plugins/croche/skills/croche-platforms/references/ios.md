@@ -7,26 +7,27 @@ Use this guide for a native iOS app, not the single-agent API. It targets **0.5.
 
 > Version 0.5.2 is published through SPM. Verify Xcode integration, simulator first turn and
 > release credential exclusion in the target app; package publication is not proof of those checks.
-> If the exact package cannot be resolved, report that blocker; do not downgrade the API.
+> If the package cannot be resolved within the declared range, report that blocker; do not downgrade the API.
 
 ## Install with Swift Package Manager
 
 Requires iOS 15+ and a Swift 6-capable Xcode. In Xcode, **File → Add Package Dependencies…**:
 
 - URL: `https://github.com/H1R-AI/croche-swift`
-- Dependency rule: **Exact Version**, **0.5.2**
+- Dependency rule: **Up to Next Minor Version**, from **0.5.2**
 - Add the **CrocheRuntime** product to your app target; import `CrocheRuntime`.
 
 For a Swift package target, add the dependency and product to its existing manifest:
 
 ```swift
-.package(url: "https://github.com/H1R-AI/croche-swift", exact: "0.5.2")
+.package(url: "https://github.com/H1R-AI/croche-swift", .upToNextMinor(from: "0.5.2"))
 // In the app target's dependencies:
 .product(name: "CrocheRuntime", package: "croche-swift")
 ```
 
 The distribution supplies the native binary; an app developer does not need a Rust toolchain.
-Do not replace the app's existing package dependencies.
+Do not replace the app's existing package dependencies. Minor releases in 0.x may break
+compatibility, so this range accepts 0.5.x patches from 0.5.2 and stops before 0.6.0.
 
 ## One human step; the agent sets up the project
 
@@ -158,7 +159,8 @@ Choose a model using [Models](https://docs.croche.ai/models.md).
 
 ## Verify before shipping
 
-- Resolve exactly 0.5.2, build Debug and run on the selected simulator. Confirm a nonempty,
+- Resolve the configured 0.5.x range, record the resolved version, build Debug and run on the
+  selected simulator. Confirm a nonempty,
   completed reply; report the real error if it fails. In Studio, inspect **Monitoring → Logs**
   with the development filter. Never paste credentials or private app data into the report.
 - Inspect a clean Release archive without printing secrets: no debug key in the binary/plist,

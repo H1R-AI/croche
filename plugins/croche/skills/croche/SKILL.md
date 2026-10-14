@@ -76,8 +76,9 @@ Choose the matching path:
   detected shell rather than assuming Bash; `croche-cli` has PowerShell guidance.
 
 The TypeScript SDK, React Native SDK and CLI **0.5.2 are published on npm**. Use
-`npm install @h1r-ai/croche` and `npm install -g @h1r-ai/croche-cli`; check the installed
-version and command help. Publication alone does not prove the user's platform or first turn.
+`npm install @h1r-ai/croche` and `npm install -g @h1r-ai/croche-cli` without version suffixes;
+for React Native, install `@h1r-ai/croche` and `@h1r-ai/croche-react-native` together. Commit
+the project lockfile to record resolved versions. Check the installed version and command help. Publication alone does not prove the user's platform or first turn.
 TODO verify: the matching release's first-turn and login workflows. The examples use
 `debugKey`, Studio **Debug keys**, and automatic connection setup; do not substitute a
 source build or guessed package. Native project API availability remains a separate gate.

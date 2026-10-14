@@ -58,7 +58,7 @@ editing and deleting tasks are intentionally outside this small example.
 Your only account step is to sign up at [Studio](https://studio.croche.ai), create an Account
 key under **Account → Account keys**, and run **`croche login` yourself** in a private terminal
 on the same machine/account as the coding agent. The agent can install the
-`@h1r-ai/croche-cli@0.5.2` package first with permission. The hidden login prompt is the only
+`@h1r-ai/croche-cli` package first with permission. The hidden login prompt is the only
 place you paste the key—never into agent chat or a command argument.
 
 For PowerShell, the human runs this once, then uses plain `croche`:
