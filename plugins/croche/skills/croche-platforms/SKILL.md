@@ -16,7 +16,7 @@ use the usage and limits shown in Studio, not a separate model-service setup.
 | Local Node check | `@h1r-ai/croche`, durable `FileStorage`, SDK debug key | Core `croche` skill |
 | React Native | `Croche` from `@h1r-ai/croche-react-native`, SDK-managed storage | [react-native.md](references/react-native.md) |
 | Web (local and production) | `Croche` on the app's Node backend, server key stays there | [web-backend.md](references/web-backend.md) |
-| iOS · Swift | SPM, **Up to Next Minor Version** from **0.5.3**, `Croche.open` | [ios.md](references/ios.md) |
+| iOS · Swift | SPM, **Up to Next Minor Version** from **0.5.2**, `Croche.open` | [ios.md](references/ios.md) |
 | Android · Kotlin | Maven, **0.5.+**, `Croche.open` | [android.md](references/android.md) |
 
 Install npm packages without a version suffix; the project lockfile records resolved versions.

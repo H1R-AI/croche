@@ -66,11 +66,11 @@ no SDK or Core source.
    Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
    ```
 
-   Native Swift: choose **Up to Next Minor Version** from **0.5.3** in Xcode,
+   Native Swift: choose **Up to Next Minor Version** from **0.5.2** in Xcode,
    or add this dependency in `Package.swift`:
 
    ```swift
-   .package(url: "https://github.com/H1R-AI/croche-swift", .upToNextMinor(from: "0.5.3"))
+   .package(url: "https://github.com/H1R-AI/croche-swift", .upToNextMinor(from: "0.5.2"))
    ```
 
    Native Kotlin: add the Maven repository to the existing

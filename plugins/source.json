@@ -1,6 +1,6 @@
 {
   "repository": "H1R-AI/croche-runtime",
-  "commit": "7013bf6ac2958e21a64ba2bafc0f9bb695315bb5",
+  "commit": "46058d92fc236a97c6b7d0a8003cbe5ef9627dc7",
   "version": "0.5.3",
   "files": {
     ".agents/plugins/marketplace.json": "0eee96044219f5ffad7c7a06e756354ec83254651c17bec605d2afc7cf6bfedf",
@@ -13,10 +13,10 @@
     "plugins/croche/skills/croche-config/SKILL.md": "bde54ccdf3fffd0299c5a5e2440a7fa54de51ea39cfee2ab53b3ec211b71942e",
     "plugins/croche/skills/croche-config/agents/openai.yaml": "ba3c4a1f7258d9d21c3f36bf52410d860aa0f440ebf6e9bac9c6f1598dfed4e4",
     "plugins/croche/skills/croche-config/references/models.md": "647fda98bb29982717be8e08b1559c6073d54894f560e5574168c8fd6b0f777f",
-    "plugins/croche/skills/croche-platforms/SKILL.md": "8586dd37fb9a92535b000541465f130b064aa3e6956738233c12373f19ee28d3",
+    "plugins/croche/skills/croche-platforms/SKILL.md": "1f7b1dee88f60e98ba9da6a43f0d5b78b8e730771357a5355b5170c31ef10178",
     "plugins/croche/skills/croche-platforms/agents/openai.yaml": "8830ba27620733d3b33f30b6555cc9d0c94fac9947a705d240b1a12e9d976733",
     "plugins/croche/skills/croche-platforms/references/android.md": "bc4f08c3c29a54e5a69f67091213a1c41722df91923fa45e8bd95e3948425e9a",
-    "plugins/croche/skills/croche-platforms/references/ios.md": "bfe38241ea425e06069d92924136c30e03fa24a879520fe08013a70f691a5f17",
+    "plugins/croche/skills/croche-platforms/references/ios.md": "fe5ce8c7b69889d8bb2b5291e03d2254c944ed06aa3d285ef110a5782095d483",
     "plugins/croche/skills/croche-platforms/references/react-native.md": "cd8e4d0b9c539619984089d9cace44ba5674bf794b2688516205b81fab0cae0d",
     "plugins/croche/skills/croche-platforms/references/web-backend.md": "8aa72bf49cbf7931f60693d04464eda6be41a8a67a8793f85b88e001c8cf96f9",
     "plugins/croche/skills/croche-troubleshoot/SKILL.md": "7a95a155e6069a02c8361a3fbe5c3c8b215263338cb591ed97d4622a0336f9d1",
