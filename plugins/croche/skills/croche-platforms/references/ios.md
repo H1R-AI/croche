@@ -2,25 +2,25 @@
 
 # iOS · Swift project API
 
-Use this guide for a native iOS app, not the single-agent API. It targets **0.5.1** and
+Use this guide for a native iOS app, not the single-agent API. It targets **0.5.2** and
 `Croche.open` → `agent()` → `request()`.
 
-> TODO verify: 0.5.1 package availability, Xcode integration, simulator first turn and release
-> credential exclusion. These are candidate instructions, not a claim of a published or tested
-> native release. If the exact package is unavailable, report that blocker; do not downgrade the API.
+> Version 0.5.2 is published through SPM. Verify Xcode integration, simulator first turn and
+> release credential exclusion in the target app; package publication is not proof of those checks.
+> If the exact package cannot be resolved, report that blocker; do not downgrade the API.
 
 ## Install with Swift Package Manager
 
 Requires iOS 15+ and a Swift 6-capable Xcode. In Xcode, **File → Add Package Dependencies…**:
 
 - URL: `https://github.com/H1R-AI/croche-swift`
-- Dependency rule: **Exact Version**, **0.5.1**
+- Dependency rule: **Exact Version**, **0.5.2**
 - Add the **CrocheRuntime** product to your app target; import `CrocheRuntime`.
 
 For a Swift package target, add the dependency and product to its existing manifest:
 
 ```swift
-.package(url: "https://github.com/H1R-AI/croche-swift", exact: "0.5.1")
+.package(url: "https://github.com/H1R-AI/croche-swift", exact: "0.5.2")
 // In the app target's dependencies:
 .product(name: "CrocheRuntime", package: "croche-swift")
 ```
@@ -158,7 +158,7 @@ Choose a model using [Models](https://docs.croche.ai/models.md).
 
 ## Verify before shipping
 
-- Resolve exactly 0.5.1, build Debug and run on the selected simulator. Confirm a nonempty,
+- Resolve exactly 0.5.2, build Debug and run on the selected simulator. Confirm a nonempty,
   completed reply; report the real error if it fails. In Studio, inspect **Monitoring → Logs**
   with the development filter. Never paste credentials or private app data into the report.
 - Inspect a clean Release archive without printing secrets: no debug key in the binary/plist,

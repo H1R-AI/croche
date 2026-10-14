@@ -10,7 +10,7 @@ single `App.tsx` you drop into a new React Native app.
    ```sh
    npx @react-native-community/cli init CrocheChat
    cd CrocheChat
-   npm install @h1r-ai/croche@0.5.1 @h1r-ai/croche-react-native@0.5.1   # the native Core is inside
+   npm install @h1r-ai/croche@0.5.2 @h1r-ai/croche-react-native@0.5.2   # the native Core is inside
    cd ios && pod install && cd ..
    ```
 

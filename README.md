@@ -21,7 +21,7 @@
 invited developers; [request access](https://croche.ai/en#waitlist)
 ([Korean](https://croche.ai/#waitlist)).
 
-This is Croche’s developer home and coding-agent marketplace. Version 0.5.1 supports
+This is Croche’s developer home and coding-agent marketplace. Version 0.5.2 supports
 TypeScript web backends, React Native, native Swift, and Kotlin; this repository contains
 no SDK or Core source.
 
@@ -51,15 +51,15 @@ no SDK or Core source.
    Node 22 or later. Choose the SDK for your app:
 
    ```sh
-   npm install @h1r-ai/croche@0.5.1
+   npm install @h1r-ai/croche@0.5.2
    # React Native apps also need:
-   npm install @h1r-ai/croche-react-native@0.5.1
-   npm install --global @h1r-ai/croche-cli@0.5.1
+   npm install @h1r-ai/croche-react-native@0.5.2
+   npm install --global @h1r-ai/croche-cli@0.5.2
    ```
 
    Without a global CLI install, run
-   `npx --package @h1r-ai/croche-cli@0.5.1 croche <command>` instead. For example,
-   the user can run `npx --package @h1r-ai/croche-cli@0.5.1 croche login`.
+   `npx --package @h1r-ai/croche-cli@0.5.2 croche <command>` instead. For example,
+   the user can run `npx --package @h1r-ai/croche-cli@0.5.2 croche login`.
    In Windows PowerShell, run this once, then use plain `croche` and `npx`:
 
    ```powershell
@@ -69,7 +69,7 @@ no SDK or Core source.
    Native Swift: add this dependency in `Package.swift` (exact version):
 
    ```swift
-   .package(url: "https://github.com/H1R-AI/croche-swift", exact: "0.5.1")
+   .package(url: "https://github.com/H1R-AI/croche-swift", exact: "0.5.2")
    ```
 
    Native Kotlin: add the Maven repository to the existing
@@ -87,7 +87,7 @@ no SDK or Core source.
    }
    // app/build.gradle.kts
    dependencies {
-       implementation("ai.croche:croche-android:0.5.1")
+       implementation("ai.croche:croche-android:0.5.2")
    }
    ```
 
@@ -103,6 +103,14 @@ no SDK or Core source.
    that can read and update the user’s tasks.” The plugin guides project setup,
    tool handlers, a debug key, and a first live check. Keep secrets out of Git and
    debug keys out of release builds.
+
+## Built-in web search
+
+On Runtime **0.5.2 or later**, enable web search in Studio’s tool settings or set
+`config.crocheTools` to include `{"web.search": true}` in a schema 3 Cloud config.
+The agent can search and open a numbered source reference; results return to the
+agent as text. No app handler or new SDK option is needed. See the bundled
+[web-search guide](plugins/croche/skills/croche/references/web-search.md).
 
 ## What’s in this repo
 

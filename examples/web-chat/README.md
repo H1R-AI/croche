@@ -5,7 +5,7 @@ of server code and one HTML file.
 
 ## Run it
 
-1. In this folder, run `npm install` (Node 22 or later); it installs `@h1r-ai/croche@0.5.1` from npm.
+1. In this folder, run `npm install` (Node 22 or later); it installs `@h1r-ai/croche@0.5.2` from npm.
 2. For development, set your project key and debug key (from Studio or the `croche` CLI):
 
    ```sh

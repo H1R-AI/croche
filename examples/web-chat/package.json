@@ -5,6 +5,6 @@
   "engines": { "node": ">=22" },
   "scripts": { "start": "node server.mjs" },
   "dependencies": {
-    "@h1r-ai/croche": "0.5.1"
+    "@h1r-ai/croche": "0.5.2"
   }
 }

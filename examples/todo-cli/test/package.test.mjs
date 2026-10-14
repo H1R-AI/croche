@@ -4,9 +4,9 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 const root = fileURLToPath(new URL('../', import.meta.url));
-test('package pins SDK 0.5.1, uses native env loading and ignores credentials/data', () => {
+test('package pins SDK 0.5.2, uses native env loading and ignores credentials/data', () => {
   const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
-  assert.deepEqual(pkg.dependencies, { '@h1r-ai/croche': '0.5.1' });
+  assert.deepEqual(pkg.dependencies, { '@h1r-ai/croche': '0.5.2' });
   assert.equal(pkg.scripts.start, 'node --env-file=.env src/main.mjs');
   assert.equal(pkg.scripts.smoke, 'node --env-file=.env scripts/smoke.mjs');
   const ignored = readFileSync(join(root, '.gitignore'), 'utf8').split('\n');
@@ -27,7 +27,7 @@ test('no real credentials, internal endpoints or retired SDK names in example so
 
 test('published setup uses Account key, one-time PowerShell policy and JSON only for agent-parsed project creation', () => {
   const guide = readFileSync(join(root, 'README.md'), 'utf8');
-  assert.match(guide, /published `@h1r-ai\/croche` 0\.5\.1/);
+  assert.match(guide, /published `@h1r-ai\/croche` 0\.5\.2/);
   assert.match(guide, /Account → Account keys/);
   assert.match(guide, /Set-ExecutionPolicy -Scope CurrentUser RemoteSigned/);
   assert.match(guide, /uses plain `croche`/);
