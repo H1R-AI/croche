@@ -1,6 +1,6 @@
 # Release notes
 
-## 0.5.3 — Unreleased
+## 0.5.3 - 2026-10-14
 
 - **App-controlled temperature.** Set `config.temperature` to a finite number from
   0 to 2, or `null` to leave it to the provider. Omitting it uses Croche’s tuned
