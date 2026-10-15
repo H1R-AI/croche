@@ -9,5 +9,5 @@
     "test": "node --test test/*.test.mjs",
     "build": "node scripts/check-syntax.mjs"
   },
-  "dependencies": { "@h1r-ai/croche": "0.5.3" }
+  "dependencies": { "@h1r-ai/croche": "0.5.4" }
 }

@@ -1,5 +1,14 @@
 # Release notes
 
+## 0.5.4 - 2026-10-15
+
+- **JavaScript SDK: memory released on close.** Closing a Runtime now frees its
+  memory. Servers that open and close a Runtime for each request no longer grow
+  without bound from those closed Runtimes.
+- **Typed errors after close.** Calls made after `close()` reject with the typed
+  `closed` error.
+- iOS, Android and React Native are unaffected. No API change is required.
+
 ## 0.5.3 - 2026-10-14
 
 - **App-controlled temperature.** Set `config.temperature` to a finite number from
