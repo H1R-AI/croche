@@ -7,9 +7,6 @@
   longer grow with every closed Runtime. Release completes when the event loop
   runs, so a loop that opens and closes Runtimes without yielding can still hold
   them until it does.
-- **Typed errors after close.** After `close()`, operations fail with the typed
-  `closed` error instead of an internal error. Identity properties keep their last
-  values.
 - iOS, Android and React Native are unaffected. No API change is required.
 
 ## 0.5.3 - 2026-10-14
