@@ -12,7 +12,7 @@
       "name": "croche",
       "source": "./plugins/croche",
       "description": "Build with Croche: guided SDK setup, CLI workflows, app config, platform integration and troubleshooting.",
-      "version": "0.5.3"
+      "version": "0.5.4"
     }
   ]
 }

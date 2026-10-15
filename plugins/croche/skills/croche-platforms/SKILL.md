@@ -23,7 +23,7 @@ Install npm packages without a version suffix; the project lockfile records reso
 Minor releases in 0.x may break compatibility, so the native ranges above stay within 0.5.x.
 
 Node.js 22+ on macOS/Linux; Windows verification pending. PowerShell syntax does not establish
-Windows support. SDK 0.5.3 is published on npm; verify the installed version and platform behavior.
+Windows support. SDK 0.5.4 is published on npm; verify the installed version and platform behavior.
 Node and RN do not automatically load the CLI-created `.env`: Node needs `--env-file` or an
 existing dotenv loader, web secrets stay server-side only, and RN needs debug-only build config
 with no secret in release artifacts. Read the matching reference above before the first turn.
@@ -41,7 +41,7 @@ Use `croche-config` for the complete selection and next-open rules.
 
 ## Native gate
 
-**Native Swift and Kotlin SDKs are published as 0.5.3**, including the shared
+**Native Swift and Kotlin SDKs are published as 0.5.4**, including the shared
 **project/agent `Croche.open` API**. Do not describe published SDKs as nonexistent.
 Installation and `Croche.open` first-turn examples are in [ios.md](references/ios.md)
 and [android.md](references/android.md). For a native request, read the matching reference,
