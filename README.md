@@ -21,7 +21,7 @@
 invited developers; [request access](https://croche.ai/en#waitlist)
 ([Korean](https://croche.ai/#waitlist)).
 
-This is Croche’s developer home and coding-agent marketplace. Version 0.5.3 supports
+This is Croche’s developer home and coding-agent marketplace. Version 0.5.4 supports
 TypeScript web backends, React Native, native Swift, and Kotlin; this repository contains
 no SDK or Core source.
 

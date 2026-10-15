@@ -9,7 +9,7 @@ description: Use the Croche CLI to create an app project and private debug-key f
 
 Do the permitted CLI work and explain the next user action. Node.js 22+ on macOS/Linux;
 Windows verification pending. Check `croche --help` and installed version before relying on
-a command. CLI 0.5.3 is published on npm; platform and login verification remain separate.
+a command. CLI 0.5.4 is published on npm; platform and login verification remain separate.
 With installation permission:
 
 ```sh

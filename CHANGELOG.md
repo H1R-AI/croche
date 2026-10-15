@@ -1,5 +1,14 @@
 # Release notes
 
+## 0.5.4 - 2026-10-15
+
+- **JavaScript SDK: memory released on close.** A closed Runtime's memory is now
+  released for reuse. Servers that open and close a Runtime for each request no
+  longer grow with every closed Runtime. Release completes when the event loop
+  runs, so a loop that opens and closes Runtimes without yielding can still hold
+  them until it does.
+- iOS, Android and React Native are unaffected. No API change is required.
+
 ## 0.5.3 - 2026-10-14
 
 - **App-controlled temperature.** Set `config.temperature` to a finite number from

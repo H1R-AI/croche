@@ -3,7 +3,7 @@
 # Node: one real reply
 
 Use for a Node script or the first local check before adding UI. Node.js 22+ on macOS/Linux;
-Windows verification pending. SDK 0.5.3 is published on npm; a real first turn on the user’s
+Windows verification pending. SDK 0.5.4 is published on npm; a real first turn on the user’s
 platform still needs verification. With installation permission, install the published SDK:
 
 ```sh

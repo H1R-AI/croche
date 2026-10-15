@@ -67,7 +67,7 @@ Choose the matching path:
 
 - **Node script or web backend:** `@h1r-ai/croche`, Node.js 22+ on macOS/Linux.
 - **React Native:** `@h1r-ai/croche` + `@h1r-ai/croche-react-native`; same project/agent API.
-- **Native Swift/Kotlin SDKs are published as 0.5.3**, including the shared `Croche.open` project API.
+- **Native Swift/Kotlin SDKs are published as 0.5.4**, including the shared `Croche.open` project API.
   Read the `croche-platforms` iOS/Android reference for installation and the first turn.
   Verify package resolution and native execution in the target app; publication is not a test pass.
   If its exact release is unavailable, offer TypeScript/React Native as an alternative, not an
@@ -75,7 +75,7 @@ Choose the matching path:
 - **Windows:** verification pending; command forms are not a support claim. Use the
   detected shell rather than assuming Bash; `croche-cli` has PowerShell guidance.
 
-The TypeScript SDK, React Native SDK and CLI **0.5.3 are published on npm**. Use
+The TypeScript SDK, React Native SDK and CLI **0.5.4 are published on npm**. Use
 `npm install @h1r-ai/croche` and `npm install -g @h1r-ai/croche-cli` without version suffixes;
 for React Native, install `@h1r-ai/croche` and `@h1r-ai/croche-react-native` together. Commit
 the project lockfile to record resolved versions. Check the installed version and command help. Publication alone does not prove the user's platform or first turn.
