@@ -1,45 +1,75 @@
 <!-- Generated Croche skill content. -->
 
-# App actions
+# App actions in 0.6
 
-Use when implementing a tool, not for a text-only first turn. Put serializable declarations
-in `config.tools` and executable handlers in `handlers`, indexed by the tool's name.
+A tool is a JSON manifest plus an app handler. Create it with `defineTool`, then
+register the returned definition in `Croche.open({tools:[definition]})`. Tools do
+not live in the config bundle or Cloud patch.
 
 ```ts
-import type { ToolDeclaration, ToolHandler } from '@h1r-ai/croche';
+import { defineTool, ToolError, type Json } from '@h1r-ai/croche';
 
-const inventory: ToolDeclaration = {
-  name: 'inventory',
-  summary: 'The player inventory.',
-  commands: [{
-    key: 'inventory_list', name: 'list', reads: true,
-    summary: 'List the items this player owns when asked about their inventory.',
-  }],
-};
-// app.inventoryFor is your app function, not a Croche API.
-const inventoryHandler: ToolHandler = async ({ key }, context) => {
-  if (key !== 'inventory_list') return { status: 'rejected', reason: 'Unknown action.' };
-  return { items: await app.inventoryFor(context.user) };
-};
-// In Croche.open: config: { instructions, tools: [inventory] },
-//                handlers: { inventory: inventoryHandler }
+export function inventoryTool(load: (sku: string, signal: AbortSignal) => Promise<Json>) {
+  return defineTool({
+    manifestVersion: 1, name: 'inventory', summary: 'Look up product stock',
+    commands: [{ key: 'inventory_stock', summary: 'Find stock for one product',
+      positionals: [{ name: 'sku', type: 'string', required: true }] }],
+  }, async (call, ctx) => {
+    if (typeof call.args.sku !== 'string') throw new ToolError('A product SKU is required.');
+    return load(call.args.sku, ctx.signal);
+  });
+}
 ```
 
-- Use a globally unique command `key` (for example `inventory_list`). Group related commands;
-  flags support `type`, `enum`, `required`, `minimum`, `maximum`, and `list`.
-- Mark every read-only command `reads: true`. Its summary should explain when to use it.
-- For mutations, say **when the user must request the action** in the command summary or
-  `toolGuide`. Enforce authorization, allowed values and current app state in the handler;
-  the description is not an access-control boundary.
-- For a purchase, deletion or other action needing consent, use the app's confirmation UI.
-  Return `{ status: 'waiting_for_approval' }` while waiting; only execute after real approval.
-  Croche does not supply a `confirm` declaration field. Do not invent one.
-- Return structured expected rejections (reason and next step). A thrown handler error ends
-  the turn; do not report a successful change when nothing changed.
-- Keep authoritative balances/inventory in the app. Pass bounded current app state as input
-  `context`, and deduplicate business operations in app code; a new model request is not a
-  guarantee that an earlier effect did not happen.
-- Studio drafts must include **every tool the app uses**. Omitting a declaration removes the
-  agent's access at the next open; a declaration without a registered handler is not delivered.
+- Command keys are unique across registered tools. For multiple commands, all but
+  at most one also need a route `name`. Load the same manifest JSON on every SDK.
+- Select registered tools in `agent(id, {tools:[...]})`. Entries are names or
+  `{tool, commands?, bind?, guide?}`. Omitted/null/`'all'` selects all; `[]` none.
+- A registration may be `{tool:definition, bind:{tenant}}`. An agent's bind
+  replaces it as a whole, without merging. Bound arguments are hidden from the
+  model; the handler still enforces authorization from the app's trusted session.
+- Forward `ctx.signal` to cancellable backend operations. Use `ctx.causedBy` plus
+  app transaction/idempotency rules to prevent duplicate business effects.
+- Return ordinary JSON, or use `toolResult(...)` for branded text/image content.
+  A plain object with `json` or `content` members is still ordinary JSON.
+- `ToolError` sends its message to the model verbatim. Other throws produce a
+  fixed tool failure; never put credentials/private diagnostics in a `ToolError`.
+- Consent is app logic. Only execute a purchase/deletion after the real user's
+  approval; a tool description or a model's argument cannot grant permission.
+- `setTools(list)` takes effect from the next turn and may select from all
+  registered tools. `resetTools()` restores the scope used at agent open.
 
-Verify one safe read/action and one denial against app state, not just the assistant's words.
+Verify one successful action and one denied action against authoritative app
+state. Never infer that a business mutation succeeded from the assistant's words.
+
+## Request structured output
+
+`responseFormat` is a send/request option, not a tool result or an open option.
+This example accepts a caller-supplied agent and verifies the returned JSON before use:
+
+```ts
+import type { Agent } from '@h1r-ai/croche';
+
+export async function classify(agent: Agent, text: string): Promise<string[]> {
+  const result = await agent.request(text, {responseFormat: {
+    type: 'json_schema', json_schema: {
+      name: 'classification', strict: true,
+      schema: {type: 'object', properties: {label: {type: 'string'}},
+        required: ['label'], additionalProperties: false},
+    },
+  }});
+  const replies = result.messages.filter(message => message.inReplyTo.includes(result.id));
+  if (result.status !== 'answered' || result.gap || replies.length === 0)
+    throw new Error('No complete structured result');
+  return replies.map(reply => {
+    if (reply.status !== 'completed') throw new Error('Structured reply failed');
+    const value = JSON.parse(reply.text);
+    if (!value || typeof value.label !== 'string') throw new Error('Invalid classification');
+    return value.label;
+  });
+}
+```
+
+A requested schema is not proof of success: handle refusals, failed/empty replies and invalid
+JSON. Choose a model/provider that supports the requested response format. Never execute
+business effects solely because a response is valid JSON.

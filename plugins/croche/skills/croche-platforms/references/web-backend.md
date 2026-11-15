@@ -33,8 +33,7 @@ PowerShell is syntax guidance only; Windows verification is pending. Do not use 
 `VITE_`, `NEXT_PUBLIC_` or similar public build variables for secrets.
 
 ```ts
-import { Croche } from '@h1r-ai/croche';
-import { FileStorage } from '@h1r-ai/croche/node';
+import { Croche, FileStorage } from '@h1r-ai/croche';
 
 // userId comes from a verified app session; userStoragePath is an app-owned isolated path.
 const croche = await Croche.open({
@@ -43,9 +42,13 @@ const croche = await Croche.open({
   user: userId,
   language: userLocale,
   storage: new FileStorage(userStoragePath),
-  config: { model: 'deepseek/deepseek-v4.1-flash', instructions: 'Help this person use our app.' },
+  bundledConfig: {
+    schema: 7,
+    project: {defaults: {model: 'openai/gpt-6-luna'}, languages: {default: 'en', supported: ['en']}},
+    agents: {helper: {instructions: 'Help this person use our app.'}},
+  },
 });
-const agent = await croche.agent();
+const agent = await croche.agent('helper');
 ```
 
 Reuse one open project per authenticated user; do not open overlapping writers to the same

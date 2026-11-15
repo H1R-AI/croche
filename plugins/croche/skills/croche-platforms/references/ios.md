@@ -2,37 +2,37 @@
 
 # iOS · Swift project API
 
-Use this guide for a native iOS app, not the single-agent API. It targets **0.5.4** and
-`Croche.open` → `agent()` → `request()`.
+Use this guide for the native **0.6** App API: `Croche.open` → `agent()` → `request()`.
+Use the supplied artifact until the matching version is published. Verify Xcode integration,
+simulator first turn and release credential exclusion; package publication is not proof of those checks.
 
-> Version 0.5.4 is published through SPM. Verify Xcode integration, simulator first turn and
-> release credential exclusion in the target app; package publication is not proof of those checks.
-> If the package cannot be resolved within the declared range, report that blocker; do not downgrade the API.
+## Install the supplied Swift Package Manager distribution
 
-## Install with Swift Package Manager
+Requires iOS 15+ and a Swift 6-capable Xcode. Find the prebuilt Swift distribution in the
+bundle manifest (`roles.swift_package`, resolved relative to the bundle root) and add it with Xcode's **Add Local…** package flow. Add its **CrocheRuntime**
+product to the app target; import `CrocheRuntime`. For a Swift package, use the supplied local
+package path, for example:
 
-Requires iOS 15+ and a Swift 6-capable Xcode. In Xcode, **File → Add Package Dependencies…**:
-
-- URL: `https://github.com/H1R-AI/croche-swift`
-- Dependency rule: **Up to Next Minor Version**, from **0.5.2**
-- Add the **CrocheRuntime** product to your app target; import `CrocheRuntime`.
-
-For a Swift package target, add the dependency and product to its existing manifest:
+<!-- CI compiles every Swift block in this guide against the SDK (scripts/check-swift-doc-blocks.py); keep each block self-contained. -->
 
 ```swift
-.package(url: "https://github.com/H1R-AI/croche-swift", .upToNextMinor(from: "0.5.2"))
+.package(path: "../supplied-bundle/swift/CrocheRuntime")
 // In the app target's dependencies:
-.product(name: "CrocheRuntime", package: "croche-swift")
+.product(name: "CrocheRuntime", package: "CrocheRuntime")
 ```
 
-The distribution supplies the native binary; an app developer does not need a Rust toolchain.
-Do not replace the app's existing package dependencies. Minor releases in 0.x may break
-compatibility, so this range accepts 0.5.x patches from 0.5.2 and stops before 0.6.0.
+The bundle contains `swift/CrocheRuntime/`; its package, directory and product are
+`CrocheRuntime`. Adjust only the path to the bundle on this machine. Keep the complete prebuilt package and its binary together; a source-only
+checkout is not a substitute. Do not require the app developer to build Rust. If the distribution
+is absent or does not resolve, report that blocker instead of installing an older release.
+After a matching 0.6 version is published, the SPM repository is
+`https://github.com/H1R-AI/croche-swift`; pin the version recorded in the bundle manifest rather
+than a 0.5 range. Preserve the app's existing dependencies.
 
 ## One human step; the agent sets up the project
 
 The coding agent installs the CLI with permission. The human signs up at
-[Studio](https://studio.croche.ai), creates one account key under **Account → Account keys**, and
+the Studio that `croche auth whoami --json` names (`studio_url`, or `error.details.studio_url` before login), creates one account key under **Account → Account keys**, and
 runs **`croche login`** privately. Never ask for a key in chat or run login for them. Reuse a
 confirmed login. After the human says done, re-check authentication and the private key file,
 then continue setup and the first authorized live turn in the same turn. Capture CLI JSON
@@ -54,7 +54,7 @@ not load the CLI's default `.env`. The agent creates the `Config` directory firs
 file is not tracked by Git, and runs:
 
 ```sh
-croche debug-keys create --project PROJECT_ID --env-file Config/Croche.Debug.xcconfig --json
+croche debug-keys create --project PROJECT_ID --dotenv-file Config/Croche.Debug.xcconfig --json
 ```
 
 Use the project ID returned above. The CLI prints metadata only and adds the destination to
@@ -88,14 +88,15 @@ Do not log expanded build settings or a Debug plist: those can expose the key.
 ## First completed reply
 
 Replace `projectKey` with the public key obtained by the agent and `userID` with the app's
-stable user ID. Call this async function from your app; display its returned reply in the UI.
+stable user ID. Pass the schema-7 `bundledConfig` loaded by the app, and an `agentID`
+that it declares. Call this async function from your app; display its returned reply in the UI.
 This one-shot check closes its project; a real app keeps one project open for the user session.
 
 ```swift
 import Foundation
 import CrocheRuntime
 
-func firstCrocheReply(projectKey: String, userID: String) async throws -> String {
+func firstCrocheReply(projectKey: String, userID: String, bundledConfig: JSON, agentID: String) async throws -> String {
     let debugKey: String?
     #if DEBUG
     guard let value = Bundle.main.object(forInfoDictionaryKey: "CROCHE_DEBUG_KEY") as? String,
@@ -108,16 +109,15 @@ func firstCrocheReply(projectKey: String, userID: String) async throws -> String
     debugKey = nil
     #endif
 
-    let config = try JSON(#"{"model":"deepseek/deepseek-v4.1-flash","instructions":"Help the user with this app."}"#)
     let croche = try await Croche.open(OpenOptions(
         projectKey: projectKey,
-        config: config,
+        bundledConfig: bundledConfig,
         user: userID,
         debugKey: debugKey
     ))
     do {
-        let agent = try await croche.agent()
-        let result = try await agent.request(SendInput(id: UUID().uuidString, text: "Hello!"))
+        let agent = try await croche.agent(agentID)
+        let result = try await agent.request(SendInput(id: UUID().uuidString, input: [.text("Hello!")]))
         let text = result.messages.filter { $0.status == .completed }
             .map(\.text).joined(separator: "\n")
         guard result.status == .answered, !text.isEmpty else {
@@ -142,24 +142,23 @@ payload when retrying the same input. Respect the app's usage authorization befo
 | Option | App-visible meaning |
 | --- | --- |
 | `projectKey` | Public project key returned by CLI project creation |
-| `config` | Complete app code config; set `model` explicitly when you want a particular model |
+| `bundledConfig` | Schema-7 bundle declaring agent IDs; choose `project.defaults.model` explicitly |
 | `user` | Stable app user ID; do not mix different users in one open project |
 | `debugKey` | SDK debug credential loaded only for Debug; `nil` in Release |
-| `language` | User's BCP-47 language; defaults to the device locale when omitted in 0.5.1 |
+| `language` | User's BCP-47 language; defaults to the device locale when omitted |
 
-`language` selects `config.languages.<tag>` by exact tag, then primary subtag. If none matches,
-the base config is used as is, written in `config.defaultLanguage` (default `en`): that is the
-config's authored language, **not** the user's. An English-only config can serve a Korean user.
-The model is not told `language`; it replies in the language the user writes unless instructions
-say otherwise. See [config and language](https://docs.croche.ai/concepts/config.md).
+`language` selects the supported wording in `bundledConfig.project.languages` and
+`agents.<id>.languages`; the authored default must be in the supported set. It does not force
+the model's reply language. See [config and language](https://docs.croche.ai/concepts/config.md).
 
-A Studio config replaces the whole code config at the **next open after sync**, never mid-session.
-Debug-key installs follow drafts. Include **every tool** the app uses and register its handlers.
+The Cloud supplies a patch over the schema-7 bundle; it does not replace the app's entire
+bundle. Debug-key installs follow development drafts. Reopen the agent after synchronization
+and verify the applied config. Register tools in app code, not config.
 Choose a model using [Models](https://docs.croche.ai/models.md).
 
 ## Verify before shipping
 
-- Resolve the configured 0.5.x range, record the resolved version, build Debug and run on the
+- Verify the supplied 0.6 artifact version, build Debug and run on the
   selected simulator. Confirm a nonempty,
   completed reply; report the real error if it fails. In Studio, inspect **Monitoring → Logs**
   with the development filter. Never paste credentials or private app data into the report.
