@@ -27,7 +27,7 @@ test('no real credentials, internal endpoints or retired SDK names in example so
 
 test('published setup uses Account key, one-time PowerShell policy and JSON only for agent-parsed project creation', () => {
   const guide = readFileSync(join(root, 'README.md'), 'utf8');
-  assert.match(guide, /published `@h1r-ai\/croche` 0\.6\.0/);
+  assert.match(guide, /published `@h1r-ai\/croche` 0\.6\.1/);
   assert.match(guide, /Account → Account keys/);
   assert.match(guide, /Set-ExecutionPolicy -Scope CurrentUser RemoteSigned/);
   assert.match(guide, /uses plain `croche`/);
