@@ -32,7 +32,7 @@ const croche = await Croche.open({
   storage: new FileStorage('./.croche'),
   bundledConfig: {
     schema: 7,
-    project: { defaults: { model: 'openai/gpt-6-luna' }, languages: { default: 'en', supported: ['en'] } },
+    project: { defaults: { model: 'deepseek/deepseek-v4.1-flash' }, languages: { default: 'en', supported: ['en'] } },
     agents: { helper: { instructions: 'You are a friendly guide. Reply in one or two sentences.' } },
   },
 });
