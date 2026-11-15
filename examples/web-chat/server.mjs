@@ -1,6 +1,6 @@
 // A web chat on your own backend: one Croche agent, replies streamed to the page.
 // Demo only: every visitor shares the one user 'demo-user' (see README.md).
-// Run: npm install, set the env below, npm start.
+// Run: npm install, put the keys in .env (see README.md), npm start (node --env-file=.env).
 import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
@@ -10,7 +10,7 @@ import { Croche, FileStorage } from '@h1r-ai/croche';
 const { CROCHE_PROJECT_KEY, CROCHE_DEBUG_KEY, PORT = '3000' } = process.env;
 const production = process.env.NODE_ENV === 'production';
 if (!CROCHE_PROJECT_KEY || (production && !process.env.CROCHE_SERVER_KEY)) {
-  console.error('Set CROCHE_PROJECT_KEY; production also requires CROCHE_SERVER_KEY.');
+  console.error('Set CROCHE_PROJECT_KEY in .env (npm start loads it); production also requires CROCHE_SERVER_KEY.');
   process.exit(2);
 }
 
@@ -41,7 +41,11 @@ const server = createServer(async (req, res) => {
     res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
     res.end(await readFile(join(import.meta.dirname, 'public/index.html')));
   } else if (req.method === 'GET' && req.url === '/events') {
-    res.writeHead(200, { 'content-type': 'text/event-stream', 'cache-control': 'no-cache' });
+    res.writeHead(200, {
+      'content-type': 'text/event-stream', 'cache-control': 'no-cache',
+      connection: 'keep-alive', 'x-accel-buffering': 'no',              // no proxy buffering
+    });
+    res.flushHeaders();                                                 // send headers now, not with the first event
     pages.add(res);
     req.on('close', () => pages.delete(res));
   } else if (req.method === 'POST' && req.url === '/send') {
