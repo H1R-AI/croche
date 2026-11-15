@@ -13,8 +13,6 @@ Requires iOS 15+ and a Swift 6-capable Xcode. In Xcode, add the package
 product to the app target, and import `CrocheRuntime`. A Swift package can also use a downloaded
 copy of that package by path, for example:
 
-<!-- CI compiles every Swift block in this guide against the SDK (scripts/check-swift-doc-blocks.py); keep each block self-contained. -->
-
 ```swift
 .package(path: "../supplied-bundle/swift/CrocheRuntime")
 // In the app target's dependencies:

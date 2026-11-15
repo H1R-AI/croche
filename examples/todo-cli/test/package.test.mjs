@@ -4,9 +4,9 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 const root = fileURLToPath(new URL('../', import.meta.url));
-test('package pins SDK 0.6.0, uses native env loading and ignores credentials/data', () => {
+test('package pins SDK 0.6.1, uses native env loading and ignores credentials/data', () => {
   const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
-  assert.deepEqual(pkg.dependencies, { '@h1r-ai/croche': '0.6.0' });
+  assert.deepEqual(pkg.dependencies, { '@h1r-ai/croche': '0.6.1' });
   assert.equal(pkg.scripts.start, 'node --env-file=.env src/main.mjs');
   assert.equal(pkg.scripts.smoke, 'node --env-file=.env scripts/smoke.mjs');
   const ignored = readFileSync(join(root, '.gitignore'), 'utf8').split('\n');
