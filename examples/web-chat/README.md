@@ -8,13 +8,15 @@ of server code and one HTML file.
 1. In this folder, run `npm install` (Node 22 or later); it installs the SDK declared
    in this example’s `package.json`. For a new app, use `npm install @h1r-ai/croche`
    and commit its lockfile.
-2. For development, set your project key and debug key (from Studio or the `croche` CLI):
-
-   ```sh
-   export CROCHE_PROJECT_KEY=…        # the project key
-   export CROCHE_DEBUG_KEY=…        # a debug key: development only, never in a release
-   npm start                          # http://localhost:3000
-   ```
+2. For development, put your keys in this folder's `.env`, the same way as the CLI and
+   [todo-cli](../todo-cli/README.md). From **this example's folder**, run
+   `croche projects create --name "Web chat" --json` for the project ID and public key, then
+   `croche debug-keys create --project PROJECT_ID --dotenv-file .env`. The CLI writes the debug
+   key directly to `.env`; add `CROCHE_PROJECT_KEY=` with the public project key, preserving
+   the private line. [.env.example](.env.example) lists the field names only. `.env` is
+   git-ignored; never print it or commit it.
+3. Run `npm start` (http://localhost:3000). It runs **`node --env-file=.env server.mjs`**,
+   so Node loads the file without printing it; plain `node server.mjs` does not load `.env`.
 
 For a production backend, create a server key in Studio and use this form instead:
 
@@ -22,7 +24,7 @@ For a production backend, create a server key in Studio and use this form instea
 export CROCHE_PROJECT_KEY=…
 export CROCHE_SERVER_KEY=…         # secret: backend only
 unset CROCHE_DEBUG_KEY             # never use a debug key in a release
-NODE_ENV=production npm start
+NODE_ENV=production node server.mjs   # no .env in production: keys come from your host's environment
 ```
 
 The app passes `serverKey: process.env.CROCHE_SERVER_KEY`. It suppresses `debugKey`

@@ -26,7 +26,7 @@ single `App.tsx` you drop into a new React Native app.
   `bundledConfig` declares the model and one agent, `chat`, opened with `croche.agent('chat')`.
 - `agent.send` returns once the input is accepted; the reply arrives through `agent.subscribe` as `message.delta`
   pieces and one final `message.end`.
-- `project.close()` when the screen goes away.
+- `close()` on the `Croche` when the screen goes away.
 
 A release build should be verified as a genuine install: configure App Attest (iOS) and Play
 Integrity (Android) for your project;
