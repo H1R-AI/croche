@@ -245,11 +245,7 @@ module.exports = api => {
 };
 ```
 
-## Verification provenance
+## Verify your build
 
-Rook verified RN 0.88.1 / New Architecture / Xcode 27: a Debug first turn,
-an iOS Release simulator `.app` (Hermes bundle and binary), Android non-development
-Metro bundle, generated-module and Hermes-bytecode positive controls, and a Babel
-swap A/B. The Android bundle check is not an Android native Release build proof.
-A Release app was deliberately not launched against Cloud. Repeat the artifact checks
-on your own app and target; do not substitute `__DEV__` folding for the Babel swap.
+Check the Release artifacts of your own app and target: the bundle and binary must not
+contain the debug key. Do not substitute `__DEV__` folding for the Babel swap.

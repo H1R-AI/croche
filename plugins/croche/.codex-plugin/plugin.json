@@ -1,6 +1,6 @@
 {
   "name": "croche",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Build with Croche: guided SDK setup, CLI workflows, app config, platform integration and troubleshooting.",
   "author": {
     "name": "Croche"

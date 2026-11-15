@@ -70,8 +70,7 @@ Choose the matching **0.6** release for the requested platform:
 - Swift/Kotlin: the matching native 0.6 package and its platform setup.
 
 Check the installed SDK AND CLI versions before coding. This guide describes 0.6;
-a published 0.5 package cannot run these examples. Before a 0.6 release is public,
-use its checked pre-release artifact only with the required installation approval.
+a published 0.5 package cannot run these examples.
 Do not substitute an older package, mix binding versions, claim a release is
 available without checking, or silently change the user's platform. Verify the
 actual target runtime/device; publication alone is not a platform test.
@@ -83,9 +82,9 @@ installed package help; never guess an API.
 
 ## Install the CLI, then make one combined request
 
-Install a missing CLI yourself with appropriate permission, at the same version as the app's
-`@h1r-ai/croche`: `npm install --global @h1r-ai/croche-cli@0.6.0`.
-For a project-local install instead, run `npm install @h1r-ai/croche-cli@0.6.0` in the app,
+Install a missing CLI yourself with appropriate permission; 0.6.1 is the CLI for every 0.6 app:
+`npm install --global @h1r-ai/croche-cli@0.6.1`.
+For a project-local install instead, run `npm install @h1r-ai/croche-cli@0.6.1` in the app,
 then `export PATH="$PWD/node_modules/.bin:$PATH"` in that shell. Commands below use
 that selected binary. The user runs `./node_modules/.bin/croche login` from the app
 (or `npx --no-install croche login`) for a local install; global installs use `croche login`.
@@ -97,7 +96,7 @@ CROCHE_CLI_BIN="$(command -v croche)" || exit 1
 "$CROCHE_CLI_BIN" --help
 ```
 
-Compare that version to the app's `@h1r-ai/croche` version. A mismatch,
+That version must be 0.6.1 for any 0.6 app (a React Native app's `@h1r-ai/croche` stays 0.6.0). Another version,
 `unknown_command`, or a missing executable is a blocker: fix PATH/installation before login.
 Never install a 0.5 package for a 0.6 app.
 In PowerShell, use plain `croche` too. If it is refused because running scripts is disabled, that

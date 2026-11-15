@@ -20,8 +20,9 @@ use the usage and limits shown in Studio, not a separate model-service setup.
 | iOS · Swift | SPM `https://github.com/H1R-AI/croche-swift`, `Croche.open` | [ios.md](references/ios.md) |
 | Android · Kotlin | Maven `ai.croche:croche-android` from `https://maven.croche.ai`, `Croche.open` | [android.md](references/android.md) |
 
-Install the published 0.6 packages at one exact version (0.6.0), preserving the app's package
-manager and lockfile. Do not resolve an older 0.5 package or mix SDK, CLI and native versions.
+Install the published packages at their exact versions, preserving the app's package manager and
+lockfile: 0.6.1 for web and Node (`@h1r-ai/croche`, `@h1r-ai/croche-cli`); 0.6.0 for React Native,
+Android and iOS, which 0.6.1 does not change. Do not resolve an older 0.5 package.
 Both plugin formats follow the SDK version.
 
 Node.js 22+ on macOS/Linux; Windows verification pending. PowerShell syntax does not establish
