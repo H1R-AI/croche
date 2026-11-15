@@ -17,14 +17,12 @@ use the usage and limits shown in Studio, not a separate model-service setup.
 | React Native | `Croche` from `@h1r-ai/croche-react-native`, SDK-managed storage | [react-native.md](references/react-native.md) |
 | Web (local and production) | `Croche` on the app's Node backend, server key stays there | [web-backend.md](references/web-backend.md) |
 | Serverless · Workers + Durable Objects | Customer-deployed Worker, explicit durable StoragePal | [serverless.md](references/serverless.md) |
-| iOS · Swift | Supplied 0.6 SPM distribution, `Croche.open` | [ios.md](references/ios.md) |
-| Android · Kotlin | Supplied 0.6 local Maven repository, `Croche.open` | [android.md](references/android.md) |
+| iOS · Swift | SPM `https://github.com/H1R-AI/croche-swift`, `Croche.open` | [ios.md](references/ios.md) |
+| Android · Kotlin | Maven `ai.croche:croche-android` from `https://maven.croche.ai`, `Croche.open` | [android.md](references/android.md) |
 
-Until the matching 0.6 release is published, install only the supplied artifacts from the bundle
-manifest, preserving the app's package manager and lockfile. Do not resolve an older registry
-package or mix SDK, CLI and native versions. Both plugin formats follow the SDK version. `MANIFEST.json.roles` names `runtime_tgz`,
-`rn_tgz`, `swift_package`, `android_maven`, `docs` and `plugin`; resolve each path relative
-to the bundle root. A null role means not built, never permission to guess or downgrade.
+Install the published 0.6 packages at one exact version (0.6.0), preserving the app's package
+manager and lockfile. Do not resolve an older 0.5 package or mix SDK, CLI and native versions.
+Both plugin formats follow the SDK version.
 
 Node.js 22+ on macOS/Linux; Windows verification pending. PowerShell syntax does not establish
 Windows support. Verify the installed version and platform behavior.
@@ -52,7 +50,7 @@ Use the matching native **0.6** artifacts, not an older published SDK. Installat
 Verify a simulator/emulator first turn and release credential exclusion in the target app.
 Never claim an example was run without running it. Use git-ignored `.xcconfig` (iOS) or
 `local.properties` (Android), wired only into Debug and excluded from Release at build time.
-If the supplied native artifact is missing, report that blocker; do not downgrade the API or
+If the 0.6 native package does not resolve, report that blocker; do not downgrade the API or
 rewrite an existing native app into a different stack unasked.
 
 ## Verify the actual target

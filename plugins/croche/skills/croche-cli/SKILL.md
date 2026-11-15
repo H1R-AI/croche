@@ -9,22 +9,21 @@ description: Use the Croche CLI to create an app project and private debug-key f
 
 Do the permitted CLI work and explain the next user action. Node.js 22+ on macOS/Linux;
 Windows verification pending. Check `croche --help` and installed version before relying on
-a command. Use the supplied 0.6 CLI artifact until that version is published; platform and login
-verification remain separate. Resolve `MANIFEST.json` → `roles.cli_tgz` relative to the bundle root into `CROCHE_CLI_TGZ`.
-A null role means the artifact is not built: report that blocker rather than guessing a path.
+a command. Install `@h1r-ai/croche-cli` at the same version as the app's `@h1r-ai/croche`
+(for 0.6.0: `@h1r-ai/croche-cli@0.6.0`); never a 0.5 CLI for a 0.6 app.
 With installation permission:
 
 ```sh
-npm install --global "$CROCHE_CLI_TGZ"
+npm install --global @h1r-ai/croche-cli@0.6.0
 croche --help
 ```
 
-Alternatively install locally with `npm install "$CROCHE_CLI_TGZ"`, then prepend
+Alternatively install locally with `npm install @h1r-ai/croche-cli@0.6.0`, then prepend
 `$PWD/node_modules/.bin` to PATH. From the app directory the human uses
 `./node_modules/.bin/croche login` (or `npx --no-install croche login`); don't let npx
 fetch a substitute. For either install, resolve `CROCHE_CLI_BIN="$(command -v croche)"`,
-run `"$CROCHE_CLI_BIN" --version`, and compare with the bundle version before using it.
-A stale PATH command is not proof the supplied CLI is broken; stop and select the right binary.
+run `"$CROCHE_CLI_BIN" --version`, and compare with the app's `@h1r-ai/croche` version before using it.
+A stale PATH command is not proof the installed CLI is broken; stop and select the right binary.
 
 The package is `@h1r-ai/croche-cli`; its executable is `croche`.
 
@@ -68,7 +67,7 @@ not the key. The account key is different from the SDK debug key (`cdt_`).
 
 **Never run login as the agent**, feed a key to its stdin, put one in argv, or open stored
 credentials into the transcript. The user runs login; no shell export or agent restart is required.
-TODO verify: the login/logout/identity contract against the matching released CLI:
+The login/logout/identity contract (check `croche login --help` on the installed CLI):
 
 - `croche login` validates the key before storing it and prints the account. Non-TTY login can
   read stdin but never argv; that is for user-controlled private automation, not agent collection.
@@ -105,7 +104,7 @@ never run a broad diff that could expose its contents. Project creation returns 
 and `data.project.public_key` with `--json`. Reuse an existing intended project when appropriate
 and keep account identity out of unnecessary reports.
 
-**Candidate commands — TODO verify** against the matching published CLI:
+**Commands** (check each one's `--help` on the installed CLI):
 
 - `croche debug-keys create --project PROJECT_ID --json` writes `CROCHE_DEBUG_KEY` (`cdt_`)
   to `./.env`. Use only `data.debug_key.id` and `data.dotenv_file` from privately captured

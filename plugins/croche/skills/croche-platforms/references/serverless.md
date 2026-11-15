@@ -3,10 +3,10 @@
 # Customer-hosted serverless
 
 Croche runs inside the customer's deployment, not a hosted app backend supplied by Croche.
-Use the matching bundle's `docs/sdks/typescript.md#cloudflare-workers` as the **single deployment
-walkthrough**. The [published TypeScript guide](https://docs.croche.ai/sdks/typescript/#cloudflare-workers)
-is equivalent only when its displayed SDK/source version matches the artifact you install.
-If the supplied package or docs lack Workers support, obtain the matching artifact; do not
+Use the [published TypeScript guide](https://docs.croche.ai/sdks/typescript/#cloudflare-workers)
+as the **single deployment walkthrough**, and only when its displayed SDK/source version matches
+the `@h1r-ai/croche` version you install.
+If the installed package or docs lack Workers support, install the matching 0.6 package; do not
 substitute an older SDK, a custom WASM loader, or an unverified serverless host.
 
 Follow that guide's app files, user authentication, Durable Object ownership/storage,

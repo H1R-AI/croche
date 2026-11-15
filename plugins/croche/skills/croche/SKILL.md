@@ -83,9 +83,9 @@ installed package help; never guess an API.
 
 ## Install the CLI, then make one combined request
 
-Install a missing CLI yourself with appropriate permission from the supplied artifact:
-`npm install --global "$CROCHE_CLI_TGZ"`, where `CROCHE_CLI_TGZ` resolves `MANIFEST.json` → `roles.cli_tgz` relative to the bundle root.
-For a project-local install instead, run `npm install "$CROCHE_CLI_TGZ"` in the app,
+Install a missing CLI yourself with appropriate permission, at the same version as the app's
+`@h1r-ai/croche`: `npm install --global @h1r-ai/croche-cli@0.6.0`.
+For a project-local install instead, run `npm install @h1r-ai/croche-cli@0.6.0` in the app,
 then `export PATH="$PWD/node_modules/.bin:$PATH"` in that shell. Commands below use
 that selected binary. The user runs `./node_modules/.bin/croche login` from the app
 (or `npx --no-install croche login`) for a local install; global installs use `croche login`.
@@ -97,9 +97,9 @@ CROCHE_CLI_BIN="$(command -v croche)" || exit 1
 "$CROCHE_CLI_BIN" --help
 ```
 
-Compare that version to the supplied bundle's version in `MANIFEST.json`. A mismatch,
+Compare that version to the app's `@h1r-ai/croche` version. A mismatch,
 `unknown_command`, or a missing executable is a blocker: fix PATH/installation before login.
-Do not assume 0.6 is published on npm or install an older registry package.
+Never install a 0.5 package for a 0.6 app.
 In PowerShell, use plain `croche` too. If it is refused because running scripts is disabled, that
 is a human step: fold `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` (run once) into the
 login request below; never change the policy yourself. See `croche-cli`'s PowerShell reference.
@@ -163,8 +163,8 @@ the CLI; no key is a user input.
 Stored login works across terminals for that OS account. A remote/container agent has a different credential
 context; explain that genuine mismatch without collecting or transporting the secret yourself.
 
-**Login workflow — TODO verify:** hidden prompt, validation before storage and
-cross-terminal reuse against the matching published CLI. Package `@h1r-ai/croche-cli` provides
+**Login workflow:** a hidden prompt, validation before storage, and reuse across terminals;
+check `croche login --help` on the installed CLI. Package `@h1r-ai/croche-cli` provides
 the `croche` executable. If the command is unavailable, report the release blocker instead of
 inventing a login command or asking for a key in chat. Use the selected local or global executable for the human login request. Login is
 user-run only, accepts no key argument, and stores a protected credential; never read that file
@@ -214,8 +214,7 @@ it identifies the project and is not an account, debug or server credential. Tho
 must never be committed. A public key does not authorize privileged account/server operations. For a picked existing project, take its ID and
 public key from `croche projects list --json`; do not create a duplicate. The account `dk_` key never goes into app code or the SDK's `debugKey`.
 
-**CLI workflow — TODO verify:** debug-key commands are implemented; check the installed
-release’s help and verify its behavior before use. If unavailable, report the release blocker; do not improvise a secret-
+**CLI workflow:** check the installed CLI's `croche debug-keys --help` before use. If unavailable, report the release blocker; do not improvise a secret-
 printing command or make the user paste another key. The command writes **`CROCHE_DEBUG_KEY`**
 (`cdt_`) to **`./.env`**, returns key metadata and file location (filter out any prefix), creates the file with
 **0600 permissions** for a new file on POSIX, and adds the destination to `.gitignore` in Git.

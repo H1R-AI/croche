@@ -3,22 +3,17 @@
 # Node: one real reply
 
 Use for a Node script or the first local check before adding UI. Node.js 22+ on macOS/Linux;
-Windows verification pending. Use the matching 0.6 SDK/CLI release or checked pre-release artifacts.
-A real first turn on the user's platform still needs verification. Until the matching 0.6
-version is published, install the supplied SDK tarball with permission. Set `CROCHE_RUNTIME_TGZ`
-by resolving `MANIFEST.json` → `roles.runtime_tgz` relative to the bundle root. A null role
-means the artifact is unavailable; do not install a substitute:
+Windows verification pending. Install the SDK at the same exact version as the CLI, with permission:
 
 ```sh
-npm install "$CROCHE_RUNTIME_TGZ"
+npm install @h1r-ai/croche@0.6.0
 ```
 
-Do not install a registry package merely because its name matches; check the artifact version
-against the CLI and native artifacts. After 0.6 is published, use that matching published version.
+Never install a 0.5 package for a 0.6 app.
 
 The user completes only signup, one account key and user-run `croche login`. You obtain the
 public project key from CLI project creation and use the `debug-keys create` command to write the SDK debug key
-into `.env` without exposing it. TODO verify that CLI workflow against the released version.
+into `.env` without exposing it.
 Insert the **public** project key into the placeholder below; do not open or print `.env`.
 Do not use the account `CROCHE_ACCOUNT_KEY` as an SDK option. Ignore `.croche/` as private
 app data and verify `.env` is ignored; preserve existing ignore rules.

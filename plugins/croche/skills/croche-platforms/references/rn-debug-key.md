@@ -247,7 +247,6 @@ module.exports = api => {
 
 ## Verification provenance
 
-Ported from the corrected P14 recipe at `93f34dfa6b9088607d9d9d66b4ec6687fc3f2f82` (#1021).
 Rook verified RN 0.88.1 / New Architecture / Xcode 27: a Debug first turn,
 an iOS Release simulator `.app` (Hermes bundle and binary), Android non-development
 Metro bundle, generated-module and Hermes-bytecode positive controls, and a Babel

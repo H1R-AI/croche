@@ -3,12 +3,10 @@
 # React Native
 
 Requirements: React Native 0.76+ with New Architecture, iOS 15.1+ / Android API 26+.
-Use the matching supplied 0.6 artifacts until published, preserving the app's package manager.
-Resolve `MANIFEST.json.roles.runtime_tgz` and `roles.rn_tgz` relative to the bundle root
-into `CROCHE_RUNTIME_TGZ` and `CROCHE_RN_TGZ`. A null role means not built; stop instead of substituting. With permission:
+Install both packages at the same exact version, preserving the app's package manager. With permission:
 
 ```sh
-npm install "$CROCHE_RUNTIME_TGZ" "$CROCHE_RN_TGZ"
+npm install @h1r-ai/croche@0.6.0 @h1r-ai/croche-react-native@0.6.0
 ```
 
 On the iOS build host, run `pod install` from the app's `ios` directory. No manual native SDK

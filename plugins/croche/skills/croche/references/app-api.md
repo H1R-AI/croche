@@ -176,15 +176,6 @@ export declare class Croche {
   // Delivery and config sync only: opens due instances one at a time and starts no step it cannot finish by its deadline.
   deliverDue(options?: { signal?: AbortSignal }): Promise<{ ran: boolean; delivered: number
     deferred: Array<{ user: string | null; agent: string; instance: string | null; code: 'deadline' | 'cancelled'; message: string }> }>
-  // ALLOWANCE GRANT: NOT IN 0.6.0. It ships in 0.6.3; until then `croche.allowance` is undefined.
-  // Gives THIS Croche's user extra allowance, applied by Cloud
-  // and cut down to the limits (never refused for them). Amounts are credits (1 credit = 1 USD), at most 9 decimals:
-  // amount ∈ (0, 10000] adds; setGranted ∈ [0, 10000] replaces the granted part only. `id` (1-128 chars) is a random id the
-  // app generates and stores with its own record (e.g. next to the purchase), never a user id or a purchase number; it is
-  // scoped per app user. Retry a lost reply (outcome_unknown) with the SAME id; after voided: true, grant again with a NEW id.
-  readonly allowance: {
-    grant(g: { id: string; amount: number } | { id: string; setGranted: number }): Promise<AllowanceGrantResult>
-  }
   agent(id: string, options?: AgentOptions): Promise<Agent>
   readonly agentIds: readonly string[]
   readonly wiki: {                // the project's original documents, IN MEMORY for this Croche: not persisted. The app
@@ -293,12 +284,6 @@ export interface AttachedDebugger { debuggerId: string; capabilities: DebugCapab
 export interface StoragePal { /* key-value read/write, platform-provided */ }
 export type PlatformHandle = unknown               // Android Context
 export declare class CrocheError extends Error { readonly code: string; readonly category: ErrorCategory; readonly retryAfter?: number }
-interface AllowanceGrantResult {   // not yet exported from the SDK entries
-  appliedDelta: number             // signed credits; the first call's on a replay
-  limitedBy: 'max_single_grant' | 'max_granted_allowance' | 'daily_grant_cap' | null | (string & {})
-  voided: boolean                  // true = nothing was ever applied under this id; grant again with a NEW id
-  balance: number                  // credits available now (daily left today + granted), fresh on every reply
-}
 export type ErrorCategory = 'offline' | 'allowance' | 'paused' | 'setup' | 'closed' | 'invalid' | 'internal'   // the ONE closed set
 
 // ---------- REMOVED from the public API (no shims, no aliases) ----------

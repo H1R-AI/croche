@@ -3,26 +3,25 @@
 # Android · Kotlin project API
 
 Use this guide for the native **0.6** App API: `Croche.open` → `agent()` → `request()`.
-Use the supplied artifact until the matching version is published. Verify Gradle integration,
+Install the published 0.6 package. Verify Gradle integration,
 emulator first turn and release credential exclusion; package publication is not proof of those checks.
 
-## Install from the supplied Maven repository
+## Install from the Croche Maven repository
 
-Requires **minSdk 26+**. Set the local repository path from the bundle manifest in the existing
-`settings.gradle.kts` repositories. Resolve `MANIFEST.json.roles.android_maven` relative
-to the bundle root; null means the repository is not built, not a bare-AAR fallback. Preserve the app's current repositories and plugins:
+Requires **minSdk 26+**. Add the Croche Maven repository to the existing
+`settings.gradle.kts` repositories. Preserve the app's current repositories and plugins:
 
 ```kotlin
 dependencyResolutionManagement {
     repositories {
-        maven { url = uri("/path/to/supplied-bundle/android/maven") }
+        maven { url = uri("https://maven.croche.ai") }
         google()
         mavenCentral()
     }
 }
 ```
 
-Set `crocheVersion` in the app's Gradle properties to the exact 0.6 version from the manifest.
+Set `crocheVersion` in the app's Gradle properties to the exact version, `0.6.0`.
 In `app/build.gradle.kts`:
 
 ```kotlin
@@ -32,11 +31,8 @@ dependencies {
 }
 ```
 
-The supplied repository must contain the AAR, native libraries and dependency metadata.
-If it is absent, report that blocker; do not silently fetch an older release or copy a bare
-AAR without its dependencies. After the matching 0.6 version is published, the repository is
-`https://maven.croche.ai`, with the same `ai.croche:croche-android` coordinates. Do not use a
-0.5 version range. No app-side Rust/NDK build is required. Windows verification is pending.
+The repository serves the AAR, native libraries and dependency metadata together; do not copy a
+bare AAR without its dependencies or fetch an older release. Do not use a 0.5 version range. No app-side Rust/NDK build is required. Windows verification is pending.
 
 ## One human step; the agent sets up the project
 
@@ -181,7 +177,7 @@ Choose a model using [Models](https://docs.croche.ai/models.md).
 
 ## Verify before shipping
 
-- Verify the supplied 0.6 artifact version, build Debug and run on the
+- Verify the resolved `ai.croche:croche-android` version, build Debug and run on the
   selected emulator. Confirm a nonempty,
   completed reply; report the real error if it fails. In Studio, inspect **Monitoring → Logs**
   with the development filter. Never paste credentials or private app data into the report.

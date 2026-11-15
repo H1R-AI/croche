@@ -3,15 +3,15 @@
 # iOS · Swift project API
 
 Use this guide for the native **0.6** App API: `Croche.open` → `agent()` → `request()`.
-Use the supplied artifact until the matching version is published. Verify Xcode integration,
+Install the published 0.6 package. Verify Xcode integration,
 simulator first turn and release credential exclusion; package publication is not proof of those checks.
 
-## Install the supplied Swift Package Manager distribution
+## Install the Swift package
 
-Requires iOS 15+ and a Swift 6-capable Xcode. Find the prebuilt Swift distribution in the
-bundle manifest (`roles.swift_package`, resolved relative to the bundle root) and add it with Xcode's **Add Local…** package flow. Add its **CrocheRuntime**
-product to the app target; import `CrocheRuntime`. For a Swift package, use the supplied local
-package path, for example:
+Requires iOS 15+ and a Swift 6-capable Xcode. In Xcode, add the package
+`https://github.com/H1R-AI/croche-swift` with the exact version `0.6.0`, add its **CrocheRuntime**
+product to the app target, and import `CrocheRuntime`. A Swift package can also use a downloaded
+copy of that package by path, for example:
 
 <!-- CI compiles every Swift block in this guide against the SDK (scripts/check-swift-doc-blocks.py); keep each block self-contained. -->
 
@@ -21,13 +21,10 @@ package path, for example:
 .product(name: "CrocheRuntime", package: "CrocheRuntime")
 ```
 
-The bundle contains `swift/CrocheRuntime/`; its package, directory and product are
-`CrocheRuntime`. Adjust only the path to the bundle on this machine. Keep the complete prebuilt package and its binary together; a source-only
+The package, directory and product are `CrocheRuntime`; adjust only the path. Keep the complete prebuilt package and its binary together; a source-only
 checkout is not a substitute. Do not require the app developer to build Rust. If the distribution
 is absent or does not resolve, report that blocker instead of installing an older release.
-After a matching 0.6 version is published, the SPM repository is
-`https://github.com/H1R-AI/croche-swift`; pin the version recorded in the bundle manifest rather
-than a 0.5 range. Preserve the app's existing dependencies.
+Pin the exact 0.6 version, not a 0.5 range. Preserve the app's existing dependencies.
 
 ## One human step; the agent sets up the project
 
@@ -158,7 +155,7 @@ Choose a model using [Models](https://docs.croche.ai/models.md).
 
 ## Verify before shipping
 
-- Verify the supplied 0.6 artifact version, build Debug and run on the
+- Verify the resolved CrocheRuntime version, build Debug and run on the
   selected simulator. Confirm a nonempty,
   completed reply; report the real error if it fails. In Studio, inspect **Monitoring → Logs**
   with the development filter. Never paste credentials or private app data into the report.
