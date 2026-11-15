@@ -2,6 +2,18 @@
 
 # Model selection and known-model tuning
 
+## Which model
+
+- **Default: `deepseek/deepseek-v4.1-flash`.** Cheap and fast; Croche's recommended default.
+- **General alternative: `openai/gpt-6-luna`.**
+- **For quality: `anthropic/claude-sonnet-5.5` or `anthropic/claude-opus-5.5`.**
+
+Claude prompt caching applies only when the agent's model and all of its `fallbacks` are
+`anthropic/*` models; do not mix another provider into a Claude agent's fallbacks.
+
+If a turn fails with `provider_rejected` and the gateway refused the request (404), the model
+ID is usually unknown or not allowed: check the ID against the list below.
+
 ## Temperature
 
 Configure `temperature` in `project.defaults` or an agent's run settings in the schema-7
