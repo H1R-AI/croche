@@ -9,20 +9,20 @@ description: Use the Croche CLI to create an app project and private debug-key f
 
 Do the permitted CLI work and explain the next user action. Node.js 22+ on macOS/Linux;
 Windows verification pending. Check `croche --help` and installed version before relying on
-a command. Install `@h1r-ai/croche-cli@0.6.1`, the CLI for every 0.6 app (a React Native
-app keeps `@h1r-ai/croche@0.6.0`); never a 0.5 CLI for a 0.6 app.
+a command. Install `@h1r-ai/croche-cli@latest`; never a 0.5 CLI for a 0.6 app.
 With installation permission:
 
 ```sh
-npm install --global @h1r-ai/croche-cli@0.6.1
+npm install --global @h1r-ai/croche-cli@latest
 croche --help
 ```
 
-Alternatively install locally with `npm install @h1r-ai/croche-cli@0.6.1`, then prepend
+Alternatively install locally with `npm install @h1r-ai/croche-cli@latest`, then prepend
 `$PWD/node_modules/.bin` to PATH. From the app directory the human uses
 `./node_modules/.bin/croche login` (or `npx --no-install croche login`); don't let npx
 fetch a substitute. For either install, resolve `CROCHE_CLI_BIN="$(command -v croche)"`,
-run `"$CROCHE_CLI_BIN" --version`, and check that it is 0.6.1 before using it.
+run `"$CROCHE_CLI_BIN" --version` before using it. Compare it with the app's installed `@h1r-ai/croche` (`npm ls @h1r-ai/croche`): both must be 0.6.x,
+and on web and Node, where both install at `@latest`, they must be equal.
 A stale PATH command is not proof the installed CLI is broken; stop and select the right binary.
 
 The package is `@h1r-ai/croche-cli`; its executable is `croche`.
