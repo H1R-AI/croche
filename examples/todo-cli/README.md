@@ -38,9 +38,9 @@ status and closes the `Croche`; the tool handler validates current app data.
 
 ## Run in three commands
 
-**Node 22+ on macOS/Linux. Windows verification pending.** The example pins
-**published `@h1r-ai/croche` 0.6.0**. TODO verify: live text/image requests and
-file protections in your own app environment. Publication is not a live integration test.
+**Node 22+ on macOS/Linux.** The example pins
+**published `@h1r-ai/croche` 0.6.0**. Check live text/image requests and
+file protections in your own app environment.
 The offline tests need only Node, not an SDK installation or account.
 
 From this folder, after the account/project setup below:
@@ -71,7 +71,7 @@ Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```
 
 This changes only the current-user policy; follow your organization's policy on a managed
-device. CLI login has been run on Windows; this example's SDK workflow remains unverified there.
+device.
 
 The coding agent can use `croche projects create --name "Todo CLI" --json` and parse the
 response for the project ID and public key, then `croche debug-keys create --project PROJECT_ID --dotenv-file .env` from

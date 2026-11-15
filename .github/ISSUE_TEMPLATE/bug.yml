@@ -27,4 +27,4 @@ body:
     validations: { required: true }
   - type: textarea
     id: evidence
-    attributes: { label: Evidence, description: "Result JSON, runtime debug events (visibility 'runtime'), result.cost / userBudget.get(), screenshots. NEVER keys or tokens." }
+    attributes: { label: Evidence, description: "request() result JSON, the `turn` events' usage and cost, debugger output, screenshots. NEVER keys or tokens." }

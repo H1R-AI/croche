@@ -21,7 +21,7 @@ test('no real credentials, internal endpoints or retired SDK names in example so
     const text = readFileSync(join(root, entry), 'utf8');
     assert.doesNotMatch(text, /(?:cdt_|dk_|sk_)[a-f0-9]{32,}/i, entry);
     for (const term of retired) assert.ok(!text.includes(term), `${entry}: ${term}`);
-    assert.doesNotMatch(text, /H1R-AI\/croche-runtime|api-dev\.|studio-dev\./, entry);
+    assert.doesNotMatch(text, /H1R-AI\/(?!(?:croche|croche-swift)(?![\w-]))[\w-]+|api-dev\.|studio-dev\./, entry);
   }
 });
 
