@@ -314,7 +314,7 @@ export type ErrorCategory = 'offline' | 'allowance' | 'paused' | 'setup' | 'clos
 
 ## Error codes (`CrocheError.code`, with `category`)
 
-[proposed] `retryAfter` is an integer number of seconds, present only on the hourly app-paid-unit `rate_limited` refusal. It is carried by `CrocheError` for `runTool` and by `EventError` in the terminal `RequestResult` for an accepted send. Send receipts remain immediate; terminal handling follows the existing paused-category path (including budget refusal).
+`retryAfter` is an integer number of seconds, present only on the hourly app-paid-unit `rate_limited` refusal. It is carried by `CrocheError` for `runTool` and by `EventError` in the terminal `RequestResult` for an accepted send. Send receipts remain immediate; terminal handling follows the existing paused-category path (including budget refusal).
 Codes come from Core, the SDK and the Cloud codes Core forwards verbatim.
 - **Category:** what the app does about it.
 - **Money refusals:** Core refreshes the balances before any money refusal, so retrying after a top-up works.
@@ -325,8 +325,8 @@ Codes come from Core, the SDK and the Cloud codes Core forwards verbatim.
 |---|---|---|
 | `offline` | Retry later; the input is kept | `network_error`, `request_timeout`, `gateway_unavailable`, `invalid_cloud_response`, `stale_control`, `http_<status>` (a Cloud error without a valid code) |
 | `allowance` | Tell the user that credit or allowance ran out; retry after a top-up | `account_credit_exhausted`, `project_budget_exhausted`, `user_allowance_exhausted`, `development_allowance_exhausted`, `unverified_allowance_exhausted`, `gateway_key_exhausted`, `provider_credit_unavailable` |
-| `paused` | Usage is stopped by the project, an account or a rate limit; wait or contact | `runtime_blocked`, `project_access_disabled`, `account_disabled`, `server_key_revoked`, `debug_token_revoked`, `rate_limited`, `provider_rate_limited`, `debug_device_limit` [proposed] |
-| `setup` | A developer fix: key, config, model or device identity | `invalid_configuration`, `model_missing`, `model_withdrawn`, `model_unavailable`, `project_key_unknown`, `server_key_invalid`, `debug_token_invalid`, `user_required`, `allowance_grants_disabled` (0.6.3), `gateway_key_rejected`, `gateway_unsupported`, `schema_unsupported`, `capability_unsupported`, `invalid_snapshot`, `snapshot_mismatch`, `invalid_tool`, `invalid_wiki`, `installation_unverified`, `attestation_required`, `attestation_rejected`, `attestation_unverifiable`, `attestation_failed`, `attestation_unavailable`, `attestation_unsupported`, `attestation_timeout`, `recovery_required`, `host_unavailable`, `core_unavailable` |
+| `paused` | Usage is stopped by the project, an account or a rate limit; wait or contact | `runtime_blocked`, `project_access_disabled`, `account_disabled`, `server_key_revoked`, `debug_token_revoked`, `rate_limited`, `provider_rate_limited` |
+| `setup` | A developer fix: key, config, model or device identity | `invalid_configuration`, `model_missing`, `model_withdrawn`, `model_unavailable`, `project_key_unknown`, `server_key_invalid`, `debug_token_invalid`, `user_required`, `gateway_key_rejected`, `gateway_unsupported`, `schema_unsupported`, `capability_unsupported`, `invalid_snapshot`, `snapshot_mismatch`, `invalid_tool`, `invalid_wiki`, `installation_unverified`, `attestation_required`, `attestation_rejected`, `attestation_unverifiable`, `attestation_failed`, `attestation_unavailable`, `attestation_unsupported`, `attestation_timeout`, `recovery_required`, `host_unavailable`, `core_unavailable` |
 | `closed` | The work stopped; nothing to fix | `closed`, `target_closed`, `runtime_detached`, `cancelled`, `interrupted`, `preempted`, `aborted` (the wait stopped; the input continues), `observation_lost`, `store_busy`, `instance_busy` |
 | `invalid` | The app's request cannot run as given | `invalid_input`, `input_too_large`, `invalid_memory`, `invalid_response_format`, `invalid_request`, `agent_conflict`, `unknown_id`, `idempotency_conflict`, `identity_conflict`, `busy`, `queue_full`, `cursor_reset`, `context_limit`, `output_limit`, `iteration_limit`, `structured_output_unsupported` |
 | `internal` | Report it; the turn failed for a reason outside the app | `stream_incomplete` (distinct from `provider_error`), `provider_error`, `provider_rejected`, `invalid_provider_response`, `invalid_response`, `output_too_large`, `output_invalid`, `empty_response`, `unexpected_tool_call`, `storage_error`, `store_refused`, `store_full`, `corrupt_store`, `store_too_new`, `fresh_reservation_lost`, `archive_unavailable`, `archive_error`, `host_error`, `host_unresponsive`, `thread_unavailable`, `core_error`, `invalid_abi`, `no_lock`, `handler_failed`, `subscriber_overflow` |
@@ -345,7 +345,3 @@ Codes come from Core, the SDK and the Cloud codes Core forwards verbatim.
 - **Debug and telemetry:** `telemetry_rejected`, `currency_unsupported`, `tool_models_invalid`, `invalid_acknowledgement`, `control_error`, `runtime_error`.
 - **Memory-compaction outcomes:** `collapsed`, `unusable_memory`, `empty_memory`.
 - **Cloud codes only other Cloud clients see.**
-
-**Not covered:**
-- Codes built at run time are covered only by the pass-through rules.
-- The Cloud config codes reached through project lookup, and the iOS/Android host codes, were not traced.
