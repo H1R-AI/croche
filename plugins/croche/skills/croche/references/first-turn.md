@@ -6,7 +6,7 @@ Use for a Node script or the first local check before adding UI. Node.js 22+ on 
 Windows verification pending. Install the SDK at the same exact version as the CLI, with permission:
 
 ```sh
-npm install @h1r-ai/croche@0.6.1
+npm install @h1r-ai/croche@latest
 ```
 
 Never install a 0.5 package for a 0.6 app.

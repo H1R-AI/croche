@@ -6,7 +6,8 @@ Requirements: React Native 0.76+ with New Architecture, iOS 15.1+ / Android API 
 Install both packages at the same exact version, preserving the app's package manager. With permission:
 
 ```sh
-npm install @h1r-ai/croche@0.6.0 @h1r-ai/croche-react-native@0.6.0
+npm install @h1r-ai/croche-react-native@latest
+npm install "@h1r-ai/croche@$(npm view @h1r-ai/croche-react-native@latest 'peerDependencies.@h1r-ai/croche')"
 ```
 
 On the iOS build host, run `pod install` from the app's `ios` directory. No manual native SDK

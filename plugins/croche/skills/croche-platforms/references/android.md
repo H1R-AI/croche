@@ -21,7 +21,8 @@ dependencyResolutionManagement {
 }
 ```
 
-Set `crocheVersion` in the app's Gradle properties to the exact version, `0.6.0`.
+Set `crocheVersion` in the app's Gradle properties to the latest version, the `<release>` in
+https://maven.croche.ai/ai/croche/croche-android/maven-metadata.xml (0.6.0 today).
 In `app/build.gradle.kts`:
 
 ```kotlin
