@@ -72,3 +72,5 @@ login does not supply SDK values. A missing SDK variable is not a reason to requ
 
 Report what was observed, what changed, what was actually rerun, and what the user still needs
 to do. A syntax check, package install, or Studio sign-in alone is not a successful SDK turn.
+
+If `croche debug-keys create --env-file ...` exits 9, use `--dotenv-file PATH` for the CLI destination. Node’s `node --env-file=.env app.mjs` is a separate, unchanged environment loader.

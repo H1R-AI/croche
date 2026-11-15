@@ -24,7 +24,7 @@ for (const failure of [false, true]) test(`one-shot plain text is shell-testable
   const task = run({ args: ['--prompt', 'Add milk'], env, output: out.stream, open: async options => {
     assert.equal(options.debugKey, 'fixture-private');
     return { store: new TodoStore(), async send(input) {
-      assert.deepEqual(input, { text: 'Add milk' });
+      assert.deepEqual(input, [{ type: 'text', text: 'Add milk' }]);
       if (failure) throw new Error('fixture-private');
       return 'Done';
     }, close: async () => { closed++; } };
@@ -36,8 +36,11 @@ for (const failure of [false, true]) test(`one-shot plain text is shell-testable
 
 test('plain text has no implicit state; /list supplies current app state', () => {
   const store = new TodoStore(); store.add('Milk');
-  assert.deepEqual(inputFor('Hi', store), { text: 'Hi' });
-  assert.deepEqual(inputFor('/list', store), { text: 'Show my current tasks.', context: { todos: store.list() } });
+  assert.deepEqual(inputFor('Hi', store), [{ type: 'text', text: 'Hi' }]);
+  assert.deepEqual(inputFor('/list', store), [
+    { type: 'text', kind: 'app_state', text: JSON.stringify({ todos: store.list() }) },
+    { type: 'text', text: 'Show my current tasks.' },
+  ]);
 });
 
 test('/photo stacks typed image, user text, event and current app state into one send', async t => {
@@ -50,17 +53,17 @@ test('/photo stacks typed image, user text, event and current app state into one
   await run({ args: ['--prompt', `/photo ${file}`], env, output: out.stream, open: async () => ({
     store, close: async () => {}, send: async input => {
       sends++;
-      assert.deepEqual(input.context, { todos: store.list() });
-      assert.equal(input.text, undefined);
-      assert.equal(input.images, undefined);
-      assert.equal(input.inputs[0].kind, 'user');
-      assert.match(input.inputs[0].text, /Add everything/);
-      const image = input.inputs[0].images[0];
-      assert.equal(image.mime, 'image/png');
-      assert.equal(image.resolution, 'high');
+      assert.deepEqual(input[0], { type: 'text', kind: 'app_state', text: JSON.stringify({ todos: store.list() }) });
+      assert.equal(input[1].type, 'text');
+      assert.equal(input[1].kind, undefined);
+      assert.match(input[1].text, /Add everything/);
+      const image = input[2];
+      assert.equal(image.type, 'image');
+      assert.equal(image.mediaType, 'image/png');
       assert.equal(image.data, png.toString('base64'));
       assert.doesNotMatch(image.alt, /todo-image-test/);
-      assert.equal(input.inputs[1].kind, 'event');
+      assert.equal(input[3].kind, 'app_event');
+      assert.equal(input.length, 4);
       return 'Added';
     },
   }) });

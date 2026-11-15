@@ -2,41 +2,44 @@
 
 A small conversation with an app-owned task list. **Send** supplies the person's words;
 **tools** let the agent add or complete real tasks. The whole Croche connection is
-[29 lines](src/croche.mjs); terminal handling and JSON storage live separately.
+[27 lines](src/croche.mjs); terminal handling and JSON storage live separately.
 
 These are the two ingredients (excerpt; `store` is the app's task store):
 
 ```js
-const tools = [{ name: 'todos', summary: 'Read and change tasks.', commands: [
-  { key: 'add', name: 'add', summary: 'Add a task only when asked.',
-    flags: [{ name: 'title', type: 'string', required: true }] },
-  { key: 'complete', name: 'complete', summary: 'Complete a task only when asked.',
-    flags: [{ name: 'id', type: 'string', required: true }] },
-  { key: 'list', name: 'list', summary: 'Read tasks and IDs.', reads: true },
-] }];
+import { Croche, FileStorage, defineTool } from '@h1r-ai/croche';
+
 const actions = {
   add: args => store.add(args.title),
   complete: args => store.complete(args.id),
   list: () => ({ tasks: store.list() }),
 };
-const project = await Croche.open({
-  projectKey, debugKey, user, storage: new FileStorage(dataDir),
-  config: { model: 'deepseek/deepseek-v4.1-flash', instructions, tools },
-  handlers: { todos: ({ key, args }) => Object.hasOwn(actions, key)
-    ? actions[key](args ?? {}) : { status: 'rejected' } },
+const todos = defineTool({ manifestVersion: 1, name: 'todos', summary: 'Read and change tasks.', commands: [
+  { key: 'add', name: 'add', summary: 'Add a task only when asked.',
+    flags: [{ name: 'title', type: 'string', required: true }] },
+  { key: 'complete', name: 'complete', summary: 'Complete a task only when asked.',
+    flags: [{ name: 'id', type: 'string', required: true }] },
+  { key: 'list', name: 'list', summary: 'Read tasks and IDs.', reads: true },
+] }, ({ key, args }) => Object.hasOwn(actions, key) ? actions[key](args) : { status: 'rejected' });
+const croche = await Croche.open({
+  projectKey, debugKey, user, storage: new FileStorage(dataDir), tools: [todos],
+  bundledConfig: { schema: 7,
+    project: { defaults: { model: 'deepseek/deepseek-v4.1-flash' }, languages: { default: 'en', supported: ['en'] } },
+    agents: { dori: { instructions } } },
 });
-const agent = await project.agent();
-const result = await agent.request({ id: crypto.randomUUID(), text: 'Add buy milk.' });
+const agent = await croche.agent('dori');
+const result = await agent.request({ id: crypto.randomUUID(), input: [{ type: 'text', text: 'Add buy milk.' }] });
 ```
 
-`request` is the send-and-wait convenience: one input, then its completed reply.
-`agent.send` instead returns a receipt for streaming UIs. The runnable connection checks
-reply status and closes the project; the tool handler validates current app data.
+`request` is the send-and-wait convenience: one input, then its final result; the reply
+is the `message.end` whose `inReplyTo` names that input. `agent.send` instead returns
+once the input is accepted, for streaming UIs. The runnable connection checks reply
+status and closes the `Croche`; the tool handler validates current app data.
 
 ## Run in three commands
 
 **Node 22+ on macOS/Linux. Windows verification pending.** The example pins
-**published `@h1r-ai/croche` 0.5.4**. TODO verify: live text/image requests and
+**published `@h1r-ai/croche` 0.6.0**. TODO verify: live text/image requests and
 file protections in your own app environment. Publication is not a live integration test.
 The offline tests need only Node, not an SDK installation or account.
 
@@ -71,7 +74,7 @@ This changes only the current-user policy; follow your organization's policy on 
 device. CLI login has been run on Windows; this example's SDK workflow remains unverified there.
 
 The coding agent can use `croche projects create --name "Todo CLI" --json` and parse the
-response for the project ID and public key, then `croche debug-keys create --project PROJECT_ID --env-file .env` from
+response for the project ID and public key, then `croche debug-keys create --project PROJECT_ID --dotenv-file .env` from
 **this example's folder**. The CLI writes the debug key directly to `.env`. The agent adds
 `CROCHE_PROJECT_KEY` using the returned public project key, preserving the private line.
 The Account key belongs to CLI login, not to this app.
@@ -94,33 +97,30 @@ Ordinary input is **text only**, with no automatic state or image attachment.
 | Input | What goes into one request |
 | --- | --- |
 | `Add buy milk` | Just the person's text |
-| `/list` | A request to show tasks, plus the current list in `context` |
-| `/photo /path/to/shopping-list.jpg` | Current list in `context`, user text + image, and an optional app event |
+| `/list` | The current list as app state, plus a request to show tasks |
+| `/photo /path/to/shopping-list.jpg` | The current list as app state, user text + image, and an app event |
 | `/quit` | Exits locally; no model request |
 
 The photo command uses this shape in [input.mjs](src/input.mjs):
 
 ```js
-const input = {
-  context: { todos: store.list() },
-  inputs: [
-    { kind: 'user', text: 'Add everything on this list as tasks.', images: [photo] },
-    { kind: 'event', text: 'The user attached a photo from the CLI.' },
-  ],
-};
-// photo = { data: base64, mime: 'image/jpeg', alt: '...', resolution: 'high' }
-// The same agent.request({ id, ...input }) sends all of this together.
+const input = [
+  { type: 'text', kind: 'app_state', text: JSON.stringify({ todos: store.list() }) },
+  { type: 'text', text: 'Add everything on this list as tasks.' },
+  photo, // { type: 'image', mediaType: 'image/jpeg', data: base64, alt: '...' }
+  { type: 'text', kind: 'app_event', text: 'The user attached a photo from the CLI.' },
+];
+// The same agent.request({ id, input }) sends all of this together.
 ```
 
-`context` is app state, kept apart from the person's words. It is useful when the request
+An `app_state` part is app state as opaque text, kept apart from the person's words. It is useful when the request
 needs app state: a command or button acting on app data, or after that state changed.
 Without it, an input carries only the message; earlier states stay as sent until older
 turns are folded. They are not a live view of the task list; tools read current app data.
 
 Use a photo you are allowed to share. The CLI reads one PNG/JPEG/WebP/GIF of at most 3 MB,
-checks its signature, and supplies base64, MIME, useful alt text and **per-image** `high`
-resolution for handwriting. It does not upload a filename or read an arbitrary text file.
-The default model supports images. Unclear handwriting or deadlines call for clarification.
+checks its signature, and supplies base64, media type and useful alt text. It does not upload a filename or read an arbitrary text file.
+The example's model supports images. Unclear handwriting or deadlines call for clarification.
 One input can involve several tool/model calls; it is not a one-charge guarantee.
 
 ## Shell checks and verification
@@ -139,6 +139,6 @@ A real completed reply and the app's task state are the first checks. In Studio,
 this project → **Monitoring → Logs** → **Usage type: Development · Subscription**. Reports
 can arrive later. Development traffic is not in Monitoring → Activity.
 
-Studio drafts replace the whole app config at the next open after sync. For this example,
-a fresh project avoids unrelated drafts; a draft used here needs this complete `todos`
-tool declaration. [Config behavior](https://docs.croche.ai/concepts/config/).
+A Studio draft is a patch over the bundled config, applied at the next open after sync.
+Tools stay in app code (`defineTool`), not in config. For this example, a fresh project
+avoids unrelated drafts. [Config behavior](https://docs.croche.ai/concepts/config/).

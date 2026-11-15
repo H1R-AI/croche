@@ -38,7 +38,7 @@ codex plugin add croche@croche
 For “use Croche”, “build this with Croche”, or “Croche로 개발해줘”, begin the integration.
 
 **The CLI comes first.** Before any other Croche step (project, key file, SDK code), confirm the
-CLI runs (`croche --version`) and install it if missing
+resolved CLI runs (the binary/version check below) and install it if missing
 (below). Croche keys reach the app only through the CLI. If it cannot be installed or run, stop
 and report that release blocker. Never build with a key pasted into chat, an account key in app
 code or a hand-written `.env` instead.
@@ -63,25 +63,18 @@ alone. Asking when the prompt or repo already reveals it is a failure. Omit ever
 persona, tool list or credentials. Use the repo/app name for the project. Required tool/install
 approvals remain separate permission boundaries, not another onboarding questionnaire.
 
-Choose the matching path:
+Choose the matching **0.6** release for the requested platform:
 
-- **Node script or web backend:** `@h1r-ai/croche`, Node.js 22+ on macOS/Linux.
-- **React Native:** `@h1r-ai/croche` + `@h1r-ai/croche-react-native`; same project/agent API.
-- **Native Swift/Kotlin SDKs are published as 0.5.4**, including the shared `Croche.open` project API.
-  Read the `croche-platforms` iOS/Android reference for installation and the first turn.
-  Verify package resolution and native execution in the target app; publication is not a test pass.
-  If its exact release is unavailable, offer TypeScript/React Native as an alternative, not an
-  automatic rewrite of a native app. Never invent native snippets.
-- **Windows:** verification pending; command forms are not a support claim. Use the
-  detected shell rather than assuming Bash; `croche-cli` has PowerShell guidance.
+- Node script/web backend: `@h1r-ai/croche`, Node.js 22+.
+- React Native: `@h1r-ai/croche-react-native`, with the matching native build.
+- Swift/Kotlin: the matching native 0.6 package and its platform setup.
 
-The TypeScript SDK, React Native SDK and CLI **0.5.4 are published on npm**. Use
-`npm install @h1r-ai/croche` and `npm install -g @h1r-ai/croche-cli` without version suffixes;
-for React Native, install `@h1r-ai/croche` and `@h1r-ai/croche-react-native` together. Commit
-the project lockfile to record resolved versions. Check the installed version and command help. Publication alone does not prove the user's platform or first turn.
-TODO verify: the matching release's first-turn and login workflows. The examples use
-`debugKey`, Studio **Debug keys**, and automatic connection setup; do not substitute a
-source build or guessed package. Native project API availability remains a separate gate.
+Check the installed SDK AND CLI versions before coding. This guide describes 0.6;
+a published 0.5 package cannot run these examples. Before a 0.6 release is public,
+use its checked pre-release artifact only with the required installation approval.
+Do not substitute an older package, mix binding versions, claim a release is
+available without checking, or silently change the user's platform. Verify the
+actual target runtime/device; publication alone is not a platform test.
 
 Use a focused companion skill only when that task arises (if installed): `croche-cli` for
 CLI commands, `croche-config` for drafts/language, `croche-platforms` for mobile/web setup,
@@ -90,14 +83,33 @@ installed package help; never guess an API.
 
 ## Install the CLI, then make one combined request
 
-Install a missing CLI yourself with appropriate permission: `npm install -g @h1r-ai/croche-cli`.
+Install a missing CLI yourself with appropriate permission, at the same version as the app's
+`@h1r-ai/croche`: `npm install --global @h1r-ai/croche-cli@0.6.0`.
+For a project-local install instead, run `npm install @h1r-ai/croche-cli@0.6.0` in the app,
+then `export PATH="$PWD/node_modules/.bin:$PATH"` in that shell. Commands below use
+that selected binary. The user runs `./node_modules/.bin/croche login` from the app
+(or `npx --no-install croche login`) for a local install; global installs use `croche login`.
+Do not let npx download a different release. Resolve and check the actual executable:
+
+```sh
+CROCHE_CLI_BIN="$(command -v croche)" || exit 1
+"$CROCHE_CLI_BIN" --version
+"$CROCHE_CLI_BIN" --help
+```
+
+Compare that version to the app's `@h1r-ai/croche` version. A mismatch,
+`unknown_command`, or a missing executable is a blocker: fix PATH/installation before login.
+Never install a 0.5 package for a 0.6 app.
 In PowerShell, use plain `croche` too. If it is refused because running scripts is disabled, that
 is a human step: fold `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` (run once) into the
 login request below; never change the policy yourself. See `croche-cli`'s PowerShell reference.
 Use the host approval mechanism when required, not a setup questionnaire. Check `croche --help`
 for the matching release. **Do not run `croche login`**, even to start a prompt for the user.
-If account access is already configured, re-check with `croche auth whoami --json` and skip login.
-Capture CLI JSON privately and show only the authentication result, never raw output or a key prefix.
+Before asking, run `croche auth whoami --json`. Success means login is already configured: skip it.
+A `missing_credentials` refusal names the Studio that issues this CLI's account keys in
+`error.details.studio_url`, and dev and release builds differ. Write that URL wherever STUDIO appears
+below. If it is null, write "your Croche Studio" and never guess a host.
+Capture CLI JSON privately and show only the authentication result and that URL, never raw output or a key prefix.
 
 Ask **once, in one combined request**, using the matching case below. Skip login when already
 confirmed; still obtain missing app purpose or an unresolved platform in the same question.
@@ -105,7 +117,7 @@ confirmed; still obtain missing app purpose or an unresolved platform in the sam
 ### Empty repo: missing purpose/platform + human setup, together
 
 > What should this app do, and which platform: web (Node backend), React Native,
-> Swift (iOS), or Kotlin (Android)? Sign up at https://studio.croche.ai, create one account key under
+> Swift (iOS), or Kotlin (Android)? Sign up at STUDIO, create one account key under
 > **Account → Account keys** (under **Personal**), then run **`croche login` yourself in a private
 > terminal on this machine and OS user account**. Paste the key only into its hidden prompt,
 > never into chat. If PowerShell refuses `croche` because running scripts is disabled, run
@@ -117,7 +129,7 @@ already supplied. These are parts of one request, not successive questions.
 
 ### Existing app: human setup, plus platform only if unresolved
 
-> Sign up at https://studio.croche.ai, create one account key under **Account → Account keys**
+> Sign up at STUDIO, create one account key under **Account → Account keys**
 > (under **Personal**), then run **`croche login` yourself in a private terminal on this
 > machine and OS user account**. Paste the key only into its hidden prompt, never into chat.
 > If PowerShell refuses `croche` because running scripts is disabled, run
@@ -130,6 +142,8 @@ choice to this request; otherwise ask only the human setup. An existing app alre
 ### Project: new or existing
 
 The person picks the project by answering you; no key is part of this exchange.
+Leave projects belonging to other work unchanged. Unless this app clearly identifies an
+existing intended project, create a new app-specific project; never repurpose another app.
 
 - **Already logged in:** run `croche projects list --json` first (captured; use only names and
   IDs). If projects exist, the combined request also asks:
@@ -149,10 +163,10 @@ the CLI; no key is a user input.
 Stored login works across terminals for that OS account. A remote/container agent has a different credential
 context; explain that genuine mismatch without collecting or transporting the secret yourself.
 
-**Login workflow — TODO verify:** hidden prompt, validation before storage and
-cross-terminal reuse against the matching published CLI. Package `@h1r-ai/croche-cli` provides
+**Login workflow:** a hidden prompt, validation before storage, and reuse across terminals;
+check `croche login --help` on the installed CLI. Package `@h1r-ai/croche-cli` provides
 the `croche` executable. If the command is unavailable, report the release blocker instead of
-inventing a login command or asking for a key in chat. Do not invent an `npx` form. Login is
+inventing a login command or asking for a key in chat. Use the selected local or global executable for the human login request. Login is
 user-run only, accepts no key argument, and stores a protected credential; never read that file
 into the transcript. `croche-cli` covers logout and the CI-only environment alternative.
 
@@ -195,16 +209,17 @@ croche debug-keys create --project PROJECT_ID --json
 ```
 
 Project creation returns its ID and **public project key**. Replace `PROJECT_ID` with that ID;
-put the public key into app configuration yourself. For a picked existing project, take its ID and
+put the public key into app configuration yourself. The **public project key is safe to commit**;
+it identifies the project and is not an account, debug or server credential. Those private keys
+must never be committed. A public key does not authorize privileged account/server operations. For a picked existing project, take its ID and
 public key from `croche projects list --json`; do not create a duplicate. The account `dk_` key never goes into app code or the SDK's `debugKey`.
 
-**CLI workflow — TODO verify:** debug-key commands are implemented; check the installed
-release’s help and verify its behavior before use. If unavailable, report the release blocker; do not improvise a secret-
+**CLI workflow:** check the installed CLI's `croche debug-keys --help` before use. If unavailable, report the release blocker; do not improvise a secret-
 printing command or make the user paste another key. The command writes **`CROCHE_DEBUG_KEY`**
 (`cdt_`) to **`./.env`**, returns key metadata and file location (filter out any prefix), creates the file with
 **0600 permissions** for a new file on POSIX, and adds the destination to `.gitignore` in Git.
 An existing file keeps its permissions; check those without displaying its contents.
-`--env-file PATH` chooses another file; verify that path is ignored too. Windows protection is
+`--dotenv-file PATH` chooses another file; verify that path is ignored too. Windows protection is
 unverified. An existing nonempty value is refused without `--force`: stop for explicit approval,
 not an automatic overwrite. Never use a secret-print mode or display the file.
 
@@ -235,26 +250,30 @@ Do this wiring yourself; do not ask for another key. Do not add a dotenv/build d
 without permission, source the file into a shell, or display its contents. `croche-cli` also
 covers `debug-keys list` and `debug-keys revoke`; check final arguments before acting.
 
-## Choose the model in code
+## Bundle the agents and an explicit model
 
-The app can choose its model through `Croche.open`'s `config.model`. Set it explicitly:
+The 0.6 bundle has schema 7, project defaults/languages, and named agents. Model
+selection is explicit; Cloud supplies no SDK default. Preserve the app's selected
+model and verify that the project allows it. There is no fallback chain to add.
 
 ```ts
-const config = { model: 'deepseek/deepseek-v4.1-flash', instructions: 'Help this user with the app.' };
-// Pass config in Croche.open alongside the existing project/storage/credential options.
+const bundledConfig = {
+  schema: 7,
+  project: {
+    defaults: { model: selectedModel },
+    languages: { default: 'en', supported: ['en'] },
+  },
+  agents: { helper: { instructions: 'Help this user with the app.' } },
+};
+// Pass bundledConfig to Croche.open with the app's project/user/credentials.
+// Node also passes storage: new FileStorage('./.croche'), imported from the root SDK.
+// Then: const helper = await croche.agent('helper');
 ```
 
-Prefer `deepseek/deepseek-v4.1-flash` for text and images; `openai/gpt-6-luna` is an alternative.
-Text-only apps may choose `deepseek/deepseek-v4-flash-0731` for cheaper output. Infer image use
-from the requested app, and preserve an explicit user model choice.
-
-`model` can appear at project, project-language, agent and agent-language levels; an omitted
-override inherits its base. The unset default is
-`deepseek/deepseek-v4.1-flash`, with `openai/gpt-6-luna` fallback only at reasoning `default` or
-`off` (not `low`, `medium`, or `high`). Set the project model explicitly when you need a particular choice.
-Read `croche-config` or the online [Models page](https://docs.croche.ai/models.md) for the full
-allowed list and fallback limits. Use [llms.txt](https://docs.croche.ai/llms.txt) to discover public
-Markdown docs. Do not tell the user model choice is unavailable.
+The default instance uses the bundle plus Cloud patch. A named instance may take
+`instance: {id, config}` in `agent()`; that patch is not saved and must be supplied
+on every open. Do not put tools or wiki documents in config: the app registers
+those with `Croche.open` and selects them in `agent()`.
 
 ## Markers: expressions and scenes without a tool call
 
@@ -263,19 +282,19 @@ letters, digits, `_` and `-`); Croche removes it from the text, and the app reac
 expression, a scene or background change, a sound. There is no tool call and no extra model
 round trip. Markers never execute anything; actions that change app state stay tools.
 
-- **Tell the model which markers exist** with `markerGuide` in the agent config: `config.markerGuide`
-  in `Croche.open`, per agent under `config.agents`, or in the project config in Studio.
+- **Tell the model which markers exist** with `markerGuide` in the agent config: `bundledConfig.agents.helper.markerGuide`, or the agent configuration in Studio.
 - **Read them on `message.end`:** `event.markers` lists the names in reply order. Markers never
   appear in `message.delta` or the message text. Every `:name:` that fits the syntax counts, so
   ignore names the app does not know. Messages replayed before `snapshot` carry their markers too.
 - Structured turns (`responseFormat`) produce no markers.
 
 ```ts
-const config = {
+// Set markerGuide on the named agent in the bundle, e.g. agents.helper:
+const helperConfig = {
   instructions: 'You are Mina, a cheerful guide.',
   markerGuide: 'Show feelings with :happy: or :sad:. Change the scene with :scene-beach: or :scene-night:.',
 };
-// Pass config in Croche.open alongside the existing options; then, for the agent:
+// After opening that helper agent:
 agent.subscribe({ onEvent(event) {
   if (event.type !== 'message.end') return;
   for (const name of event.markers as string[]) {   // setExpression/setScene: app UI functions
@@ -289,12 +308,12 @@ agent.subscribe({ onEvent(event) {
 
 1. Check installed versions and obtain required install permission. For Node, adapt
    [first-turn.md](references/first-turn.md); for RN/web, use `croche-platforms`.
-2. Open one `Croche` project per user, then `croche.agent()`. Keep it open for the app session.
+2. Open one `Croche` project per user, then `croche.agent('helper')`. Keep it open for the app session.
+   Before calling any SDK method, read its exact signature and errors in [app-api.md](references/app-api.md).
    Use new input IDs for new messages; retain an ID and identical payload for delivery retries.
 3. When the app needs actions, read [tools.md](references/tools.md). Add declarations and
    matching handlers; enforce permissions and user approval in the handler/UI.
-   For current web facts, turn on the built-in web search in the project's Studio config instead
-   of writing your own: [web-search.md](references/web-search.md).
+   For current web facts, register `tools.webSearch` in the app's `tools` list: [web-search.md](references/web-search.md).
 4. Write the app's code config and integration code yourself; do not hand the user a list of
    implementation chores. For streaming, multiple agents or memory UI, read [agents.md](references/agents.md).
 5. Run local syntax/type checks first. With live-usage authorization, make one small request.
@@ -315,28 +334,33 @@ make a check pass. Stop at the error and use `croche-troubleshoot`.
 
 ## Watch it in Studio (development only)
 
-The local debugger shows a running app's turns, tools and costs in Studio. It is off by default:
-the app opts in, in a **development build only**, never a release build.
+The app explicitly opts its runtime into an authorized local debugger. Use the
+matching CLI release with `/v2/control`; one connection carries control and
+redacted capture, and the debugger selects agents itself.
 
-- **Collector:** `croche debug start` starts it on `127.0.0.1:8790`. Start it **before**
-  starting or restarting the app; events sent before the collector runs are lost. Delivery is best effort, with no retry.
-- **Pairing token:** a local credential. Read it in the development host from
-  `croche debug token`, or from `pairingToken` in the connection file, never printed or
-  committed:
-  - macOS: `~/Library/Application Support/croche/debugger/connection.json`;
-  - Linux: `${XDG_STATE_HOME:-~/.local/state}/croche/debugger/connection.json`;
-  - Windows: `%LOCALAPPDATA%\croche\debugger\connection.json`.
+```ts
+// The development host privately supplies the control origin and ingest token.
+await croche.debugger.attach({ url: brokerUrl, token: brokerToken });
+// Detach the runtime's consent at the end of its development lifecycle:
+// await croche.debugger.detach();
+```
 
-  Never put it in a browser bundle; a browser app needs a server-side relay (`DEBUGGER.md`).
-- **Wiring, project agents:**
+Attach after `Croche.open`, even before opening an agent. This covers all current
+and future app-opened agents; it never creates an agent or makes a model call.
+The returned `debuggerId` is a connection ID (the CLI shows the same value as
+`attachmentId`), not an agent's stable identity.
+Local consent does not wait for an offline broker; Core owns retries. Only the
+last Croche alias close detaches automatically. Closing one agent updates the
+roster. A repeated attach replaces the old connection. LAN connection waits for
+project verification through normal agent registration; key presence alone does
+not grant LAN access. The attach receipt confirms local consent, not a remote
+connection; use the debugger's attachment view to check it.
 
-  ```ts
-  import { createLocalDebugger } from '@h1r-ai/croche/debug';
-  const debug = createLocalDebugger({ token: pairingToken, appName: 'My app' });
-  const croche = await Croche.open({ /* existing options */ onDebugEvent: debug.onEvent });
-  ```
+Keep the ingest token private: never print, commit, put it in a URL, or bundle it
+in a public browser app. Observer pairing does not grant controller permissions.
+Controllers can send input that makes paid model calls, so attach only when the
+app intends that access. iOS/Android need the OS's debuggable fact; other hosts
+still require explicit app consent. See `DEBUGGER.md` for the lifecycle and capture
+privacy limits.
 
-  For a raw runtime: `runtime.setDebugObserver({ onDebugEvent: debug.onEvent, visibility: 'runtime' })`.
-  These entries are stamped `visibility: 'runtime'`, which is what Studio shows.
-- **Open it:** `croche debug --studio-link` prints a fresh Studio link; open it. Counters at 0 after a turn mean the app is not wired, or
-  started before the collector.
+App `turn.cost` is a nullable credit amount. Unknown is `null`, never zero; preserve the value and precision. Emitted `costStatus` values are `reported`, `unknown`, and `none`; `unknown` means `cost: null`. Accept future status strings. Deduplicate call events before summing.

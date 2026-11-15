@@ -9,13 +9,21 @@ description: Use the Croche CLI to create an app project and private debug-key f
 
 Do the permitted CLI work and explain the next user action. Node.js 22+ on macOS/Linux;
 Windows verification pending. Check `croche --help` and installed version before relying on
-a command. CLI 0.5.4 is published on npm; platform and login verification remain separate.
+a command. Install `@h1r-ai/croche-cli` at the same version as the app's `@h1r-ai/croche`
+(for 0.6.0: `@h1r-ai/croche-cli@0.6.0`); never a 0.5 CLI for a 0.6 app.
 With installation permission:
 
 ```sh
-npm install -g @h1r-ai/croche-cli
+npm install --global @h1r-ai/croche-cli@0.6.0
 croche --help
 ```
+
+Alternatively install locally with `npm install @h1r-ai/croche-cli@0.6.0`, then prepend
+`$PWD/node_modules/.bin` to PATH. From the app directory the human uses
+`./node_modules/.bin/croche login` (or `npx --no-install croche login`); don't let npx
+fetch a substitute. For either install, resolve `CROCHE_CLI_BIN="$(command -v croche)"`,
+run `"$CROCHE_CLI_BIN" --version`, and compare with the app's `@h1r-ai/croche` version before using it.
+A stale PATH command is not proof the installed CLI is broken; stop and select the right binary.
 
 The package is `@h1r-ai/croche-cli`; its executable is `croche`.
 
@@ -59,7 +67,7 @@ not the key. The account key is different from the SDK debug key (`cdt_`).
 
 **Never run login as the agent**, feed a key to its stdin, put one in argv, or open stored
 credentials into the transcript. The user runs login; no shell export or agent restart is required.
-TODO verify: the login/logout/identity contract against the matching released CLI:
+The login/logout/identity contract (check `croche login --help` on the installed CLI):
 
 - `croche login` validates the key before storing it and prints the account. Non-TTY login can
   read stdin but never argv; that is for user-controlled private automation, not agent collection.
@@ -73,11 +81,13 @@ TODO verify: the login/logout/identity contract against the matching released CL
   secret-manager-provided `CROCHE_ACCOUNT_KEY` takes precedence over stored login. Do not print
   its value or introduce an export as another onboarding step.
 
-If login is unavailable, report a release blocker, not a guessed `npx` form or a secret-printing
+If login is unavailable, report a release blocker, not a substitute release or a secret-printing
 workaround. An agent on another machine/container has a separate credential context; never copy
 keys through chat to connect it. Then run `croche projects list --json`; reuse a project only
 when the app clearly identifies it. Otherwise create an app-specific project in the requested
-setup instead of asking the user to fetch/select keys. A **project ID** is not a public project key.
+setup instead of asking the user to fetch/select keys. Leave unrelated projects untouched; create a separate project for this app.
+A **project ID** is not a public project key. The public project key is safe to commit;
+account, debug and server keys are private and must not be committed.
 
 ## Create the app setup without exposing the debug key
 
@@ -94,12 +104,12 @@ never run a broad diff that could expose its contents. Project creation returns 
 and `data.project.public_key` with `--json`. Reuse an existing intended project when appropriate
 and keep account identity out of unnecessary reports.
 
-**Candidate commands — TODO verify** against the matching published CLI:
+**Commands** (check each one's `--help` on the installed CLI):
 
 - `croche debug-keys create --project PROJECT_ID --json` writes `CROCHE_DEBUG_KEY` (`cdt_`)
-  to `./.env`. Use only `data.debug_key.id` and `data.env_file` from privately captured
+  to `./.env`. Use only `data.debug_key.id` and `data.dotenv_file` from privately captured
   JSON result, **never a secret or prefix**. Do not treat this SDK credential as the CLI account key.
-- `--env-file PATH` selects another file in an existing directory. A new file is **0600** on
+- `--dotenv-file PATH` selects another file in an existing directory. A new file is **0600** on
   POSIX; an existing file preserves its permissions and warns if too permissive. Check/fix
   permissions without printing contents. Windows protection is unverified. The destination
   is added to `.gitignore` in a Git repo, including custom paths; verify it is not tracked.
@@ -120,7 +130,9 @@ for example `node --env-file=.env first-turn.mjs`, without exposing it in chat o
 | Task | Command (replace `PROJECT_ID` locally) |
 | --- | --- |
 | Project details | `croche projects get PROJECT_ID --json` |
-| Usage and remaining allowance | `croche projects usage PROJECT_ID --period week --json` |
+| Account development allowance and per-user/agent usage | `croche projects usage PROJECT_ID --period week --json` |
+| Project production cost | `croche projects cost PROJECT_ID --purpose production --json` |
+| Project development cost | `croche projects cost PROJECT_ID --purpose development --json` |
 | Recent reported operations | `croche projects operations PROJECT_ID --limit 20 --json` |
 | Debug-key metadata | `croche debug-keys list --project PROJECT_ID --json` |
 | Server-key metadata | `croche keys server list PROJECT_ID --json` |
@@ -128,6 +140,15 @@ for example `node --env-file=.env first-turn.mjs`, without exposing it in chat o
 | Draft to a local file | `croche config get --project PROJECT_ID -o draft.json` |
 | Save requested draft edits | `croche config save draft.json --project PROJECT_ID --note "Update instructions"` |
 | Draft and released versions | `croche config list --project PROJECT_ID` |
+
+`projects cost` shows all-time reported operation cost; usage your runtimes did not report is not included.
+Development credits are consumption of the development allowance, not extra charges.
+Read `data.cost.purpose`, `period`, `charged_cost_usd`, `known_charged_cost_usd`,
+`unknown_operations` and `operations`. A null total means an unknown amount;
+zero operations means no received reports, not free usage. The default purpose is
+production. `projects usage` remains the account allowance view; it has no purpose flag.
+For a per-call figure in the SDK, read the `turn` event's `cost` (`turn.cost`);
+do not treat an unknown amount as zero.
 
 For config edits, load `croche-config` if installed: drafts replace the entire config and
 reach development installs. Read the draft before editing; preserve its other fields. On
@@ -144,7 +165,7 @@ pause/archive or production release. A `dk_` credential does not authorize bypas
 ## Debug the app already running
 
 `croche debug` lists running apps for the user to choose. For an agent/noninteractive session,
-use `croche debug runtimes --json`, then `croche debug connect --runtime-id RUNTIME_ID` after
+use `croche debug runtimes --json`, then `croche debug connect --attachment-id ATTACHMENT_ID` after
 selecting the intended app. No account key is needed for this local debugger path. Keep the
 printed viewer/pairing link private. Do not attach an unrelated app, expose the local viewer
 publicly, or send/reset user conversations merely to obtain a trace.

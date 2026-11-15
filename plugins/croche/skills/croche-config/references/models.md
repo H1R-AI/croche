@@ -1,19 +1,18 @@
 <!-- Generated Croche skill content. -->
 
-# Allowed model IDs
+# Model selection and known-model tuning
 
-## Temperature (0.5.3)
+## Temperature
 
-The app's `config.temperature` is a finite number 0–2. Absent uses a tuned default;
-null omits the parameter, overriding an inherited value. Structured calls always
-omit it, even when the app set a number; summaries keep their current behavior.
-Use project document schema 4 for this field. Cloud delivers schema 4 only to SDK
-0.5.3+ that report support; existing schema-2/3 documents keep their identities.
-Local code config needs no explicit schema number. This is app configuration,
-not a Croche setting or a host credential option.
+Configure `temperature` in `project.defaults` or an agent's run settings in the schema-7
+bundle. Core validates the value: finite 0–2, or null to omit the parameter. Do not put run
+settings in a language entry. Keep structured-output and model capability constraints in mind;
+verify the chosen model on the app's actual workload rather than assuming every parameter works.
 
-Use an exact ID below for the `model` field in a Croche project config. These are the IDs
-supported by the current SDK candidate; public package availability remains pending verification.
+The app chooses its model explicitly in `project.defaults.model`. There is no SDK default.
+The IDs below are projected from the SDK's known-model tuning data, not an allowlist. Other
+model IDs can be used; verify the exact identifier and capabilities with the selected service.
+Do not infer input support from a different model's tuning row.
 
 - `anthropic/claude-opus-5.5`
 - `anthropic/claude-sonnet-5.5`
@@ -34,8 +33,6 @@ supported by the current SDK candidate; public package availability remains pend
 - `z-ai/glm-5.3`
 - `z-ai/glm-5.3-flash`
 
-A model ID outside this list is not a supported app config choice. Match the list to the SDK
-version you actually ship; do not invent IDs or infer input support from another product's catalog.
-For recommendations, config levels and default/fallback behavior, read
-[the config skill](../SKILL.md) or the online [Models page](https://docs.croche.ai/models.md).
+Match the tuning data to the SDK version you ship. For configuration and language behavior,
+read [the config skill](../SKILL.md) or the online [Models page](https://docs.croche.ai/models.md).
 The [documentation index](https://docs.croche.ai/llms.txt) lists every public Markdown page.

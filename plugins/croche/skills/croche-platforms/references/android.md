@@ -2,44 +2,42 @@
 
 # Android · Kotlin project API
 
-Use this guide for a native Android app, not the single-agent API. It targets **0.5.4** and
-`Croche.open` → `agent()` → `request()`.
+Use this guide for the native **0.6** App API: `Croche.open` → `agent()` → `request()`.
+Install the published 0.6 package. Verify Gradle integration,
+emulator first turn and release credential exclusion; package publication is not proof of those checks.
 
-> Version 0.5.4 is published on Maven. Verify Gradle integration, emulator first turn and
-> release credential exclusion in the target app; package publication is not proof of those checks.
-> If the package cannot be resolved within the declared range, report that blocker; do not downgrade the API.
+## Install from the Croche Maven repository
 
-## Install from Maven
-
-Requires **minSdk 26+**. Add the repository to the existing `settings.gradle.kts` repositories:
+Requires **minSdk 26+**. Add the Croche Maven repository to the existing
+`settings.gradle.kts` repositories. Preserve the app's current repositories and plugins:
 
 ```kotlin
 dependencyResolutionManagement {
     repositories {
+        maven { url = uri("https://maven.croche.ai") }
         google()
         mavenCentral()
-        maven("https://maven.croche.ai")
     }
 }
 ```
 
-Add the dependency range in `app/build.gradle.kts`:
+Set `crocheVersion` in the app's Gradle properties to the exact version, `0.6.0`.
+In `app/build.gradle.kts`:
 
 ```kotlin
+val crocheVersion = providers.gradleProperty("crocheVersion").get()
 dependencies {
-    implementation("ai.croche:croche-android:0.5.+")
+    implementation("ai.croche:croche-android:$crocheVersion")
 }
 ```
 
-The distribution supplies the native binary and dependency metadata. No manual Rust/NDK build
-or copied AAR is needed for this install path. Preserve the app's existing Android/Kotlin setup.
-Minor releases in 0.x may break compatibility, so `0.5.+` stays within 0.5.x.
-Windows verification is pending; these Gradle examples are not a Windows support claim.
+The repository serves the AAR, native libraries and dependency metadata together; do not copy a
+bare AAR without its dependencies or fetch an older release. Do not use a 0.5 version range. No app-side Rust/NDK build is required. Windows verification is pending.
 
 ## One human step; the agent sets up the project
 
 The coding agent installs the CLI with permission. The human signs up at
-[Studio](https://studio.croche.ai), creates one account key under **Account → Account keys**, and
+the Studio that `croche auth whoami --json` names (`studio_url`, or `error.details.studio_url` before login), creates one account key under **Account → Account keys**, and
 runs **`croche login`** privately. Never ask for a key in chat or run login for them. Reuse a
 confirmed login. After the human says done, re-check authentication and the private key file,
 then continue setup and the first authorized live turn in the same turn. Capture CLI JSON
@@ -60,7 +58,7 @@ Android does not load the CLI's default `.env`. From the Android project root, v
 `local.properties` is git-ignored and not tracked, then have the agent run:
 
 ```sh
-croche debug-keys create --project PROJECT_ID --env-file local.properties --json
+croche debug-keys create --project PROJECT_ID --dotenv-file local.properties --json
 ```
 
 Use the project ID returned above. The CLI preserves existing entries such as `sdk.dir` and
@@ -108,41 +106,41 @@ Keep verbose build output and build caches containing Debug artifacts private. S
 
 Put this in your app module, importing the **app's own namespace** `BuildConfig` if the source
 package differs. Replace `projectKey` with the public key obtained by the agent and `userID`
-with the app's stable user ID. Call from the app's existing coroutine scope and render the result.
+with the app's stable user ID. Supply the schema-7 `bundledConfig`, its declared `agentID`,
+and the Android `Context`. Call from the app's existing coroutine scope and render the result.
 This one-shot check closes its project; a real app keeps one project open for the user session.
 
 ```kotlin
-import com.google.gson.JsonParser
+import android.content.Context
+import com.google.gson.JsonObject
+import dev.croche.AppStreamContract
 import dev.croche.Croche
-import dev.croche.InputStatus
-import dev.croche.MessageStatus
 import dev.croche.OpenOptions
 import dev.croche.SendInput
+import dev.croche.TextInput
 import java.util.UUID
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
 
-suspend fun firstCrocheReply(projectKey: String, userID: String): String {
+suspend fun firstCrocheReply(context: Context, projectKey: String, userID: String, bundledConfig: JsonObject, agentID: String): String {
     val debugKey = if (BuildConfig.DEBUG) {
         BuildConfig.CROCHE_DEBUG_KEY.also {
             check(it.isNotBlank()) { "Debug key is not loaded." }
         }
     } else null
-    val config = JsonParser.parseString(
-        """{"model":"deepseek/deepseek-v4.1-flash","instructions":"Help the user with this app."}"""
-    ).asJsonObject
     val croche = Croche.open(OpenOptions(
         projectKey = projectKey,
-        config = config,
+        bundledConfig = bundledConfig,
+        platform = context.applicationContext,
         user = userID,
         debugKey = debugKey,
     ))
     try {
-        val agent = croche.agent()
-        val result = agent.request(SendInput(id = UUID.randomUUID().toString(), text = "Hello!"))
-        val text = result.messages.filter { it.status == MessageStatus.COMPLETED }
+        val agent = croche.agent(agentID)
+        val result = agent.request(SendInput(id = UUID.randomUUID().toString(), input = listOf(TextInput("Hello!"))))
+        val text = result.messages.filter { it.status == AppStreamContract.MessageStatus.COMPLETED }
             .joinToString("\n") { it.text }
-        check(result.status == InputStatus.ANSWERED && text.isNotEmpty()) {
+        check(result.status == AppStreamContract.InputDisposition.ANSWERED && text.isNotEmpty()) {
             "No completed reply; inspect the result status."
         }
         return text
@@ -162,24 +160,24 @@ authorization before a paid turn.
 | Option | App-visible meaning |
 | --- | --- |
 | `projectKey` | Public project key returned by CLI project creation |
-| `config` | Complete app code config; set `model` explicitly when you want a particular model |
+| `bundledConfig` | Schema-7 bundle declaring agent IDs; choose `project.defaults.model` explicitly |
+| `platform` | Android application Context |
 | `user` | Stable app user ID; do not mix different users in one open project |
 | `debugKey` | SDK debug credential loaded only for Debug; `null` in Release |
-| `language` | User's BCP-47 language; defaults to the device locale when omitted in 0.5.1 |
+| `language` | User's BCP-47 language; defaults to the device locale when omitted |
 
-`language` selects `config.languages.<tag>` by exact tag, then primary subtag. If none matches,
-the base config is used as is, written in `config.defaultLanguage` (default `en`): that is the
-config's authored language, **not** the user's. An English-only config can serve a Korean user.
-The model is not told `language`; it replies in the language the user writes unless instructions
-say otherwise. See [config and language](https://docs.croche.ai/concepts/config.md).
+`language` selects the supported wording in `bundledConfig.project.languages` and
+`agents.<id>.languages`; the authored default must be in the supported set. It does not force
+the model's reply language. See [config and language](https://docs.croche.ai/concepts/config.md).
 
-A Studio config replaces the whole code config at the **next open after sync**, never mid-session.
-Debug-key installs follow drafts. Include **every tool** the app uses and register its handlers.
+The Cloud supplies a patch over the schema-7 bundle; it does not replace the app's entire
+bundle. Debug-key installs follow development drafts. Reopen the agent after synchronization
+and verify the applied config. Register tools in app code, not config.
 Choose a model using [Models](https://docs.croche.ai/models.md).
 
 ## Verify before shipping
 
-- Resolve the latest available 0.5.x patch, record the resolved version, build Debug and run on the
+- Verify the resolved `ai.croche:croche-android` version, build Debug and run on the
   selected emulator. Confirm a nonempty,
   completed reply; report the real error if it fails. In Studio, inspect **Monitoring → Logs**
   with the development filter. Never paste credentials or private app data into the report.
