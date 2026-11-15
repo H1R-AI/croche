@@ -21,9 +21,13 @@
 invited developers; [request access](https://croche.ai/en#waitlist)
 ([Korean](https://croche.ai/#waitlist)).
 
-This is Croche’s developer home and coding-agent marketplace. Version 0.5.4 supports
+This is Croche’s developer home and coding-agent marketplace. Version 0.6.0 supports
 TypeScript web backends, React Native, native Swift, and Kotlin; this repository contains
 no SDK or Core source.
+
+**Upgrading from 0.5.x?** 0.6.0 is a breaking release: update the SDK, CLI and plugin
+together and follow the [update guide](https://docs.croche.ai/updating/). 0.6 starts
+with a new local store; it does not read 0.5 conversations or memory.
 
 ## Install in 3 steps
 
@@ -66,11 +70,11 @@ no SDK or Core source.
    Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
    ```
 
-   Native Swift: choose **Up to Next Minor Version** from **0.5.2** in Xcode,
+   Native Swift: choose **Up to Next Minor Version** from **0.6.0** in Xcode,
    or add this dependency in `Package.swift`:
 
    ```swift
-   .package(url: "https://github.com/H1R-AI/croche-swift", .upToNextMinor(from: "0.5.2"))
+   .package(url: "https://github.com/H1R-AI/croche-swift", .upToNextMinor(from: "0.6.0"))
    ```
 
    Native Kotlin: add the Maven repository to the existing
@@ -88,20 +92,19 @@ no SDK or Core source.
    }
    // app/build.gradle.kts
    dependencies {
-       implementation("ai.croche:croche-android:0.5.+")
+       implementation("ai.croche:croche-android:0.6.+")
    }
    ```
 
    npm installs the latest published version; commit your project’s lockfile to
    pin its resolved dependencies. Because 0.x minor releases may break compatibility,
-   native dependencies stay within 0.5.x with the ranges above.
+   native dependencies stay within 0.6.x with the ranges above.
 
    With an invite, sign in to [Studio](https://studio.croche.ai) and create an
    account key. Run
    `croche login` yourself in your terminal. Its prompt hides the key; never paste
-   it into chat. An environment override uses `CROCHE_ACCOUNT_KEY`;
-   `CROCHE_DEVELOPER_KEY` is still read. If both are set and differ, the CLI refuses
-   with `invalid_configuration`. For React Native on iOS, also run
+   it into chat. An environment override uses `CROCHE_ACCOUNT_KEY`
+   (`CROCHE_DEVELOPER_KEY` is no longer read). For React Native on iOS, also run
    `cd ios && pod install`.
 
 3. **Ask your coding agent to build the feature.** For example: “Add a Croche agent

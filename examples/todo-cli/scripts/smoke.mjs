@@ -13,12 +13,12 @@ export async function smoke({ options = settings(), open = openSession, report =
   let session;
   try {
     session = await open(smokeOptions);
-    await session.send({ text: 'Add exactly one task titled "Smoke check task" with no deadline.' });
+    await session.send([{ type: 'text', text: 'Add exactly one task titled "Smoke check task" with no deadline.' }]);
     assert.equal(session.store.list().length, 1);
     const task = session.store.list()[0];
     assert.equal(task.title, 'Smoke check task');
     assert.equal(task.due, null);
-    await session.send({ text: `Mark task ${task.id} as complete.` });
+    await session.send([{ type: 'text', text: `Mark task ${task.id} as complete.` }]);
     assert.equal(session.store.get(task.id)?.done, true);
     await session.close();
     session = undefined;
@@ -26,7 +26,7 @@ export async function smoke({ options = settings(), open = openSession, report =
     // Reopen the same isolated local profile to verify persisted state.
     session = await open(smokeOptions);
     assert.equal(session.store.get(task.id)?.done, true);
-    const reply = await session.send({ text: 'Add a task titled "Ambiguous deadline" with a deadline.' });
+    const reply = await session.send([{ type: 'text', text: 'Add a task titled "Ambiguous deadline" with a deadline.' }]);
     assert.ok(session.store.list().every(t => t.due === null), 'Do not invent a deadline.');
     assert.match(reply, /[?？]/, 'Ask the person for the missing deadline.');
   } finally {

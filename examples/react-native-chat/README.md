@@ -1,6 +1,6 @@
 # React Native chat
 
-One screen with one Croche agent: open a project, send, and render streamed replies. It is a
+One screen with one Croche agent: open a `Croche`, send, and render streamed replies. It is a
 single `App.tsx` you drop into a new React Native app.
 
 ## Run it
@@ -10,7 +10,7 @@ single `App.tsx` you drop into a new React Native app.
    ```sh
    npx @react-native-community/cli init CrocheChat
    cd CrocheChat
-   npm install @h1r-ai/croche @h1r-ai/croche-react-native   # the native Core is inside
+   npm install @h1r-ai/croche@^0.6.0 @h1r-ai/croche-react-native@^0.6.0   # the native Core is inside
    cd ios && pod install && cd ..
    ```
 
@@ -23,7 +23,8 @@ single `App.tsx` you drop into a new React Native app.
 
 - `Croche.open` with the defaults for React Native: storage on the device, and platform
   attestation for release builds. The debug key is used only in `__DEV__` builds.
-- `agent.send` returns at once; the reply arrives through `agent.subscribe` as `message.delta`
+  `bundledConfig` declares the model and one agent, `chat`, opened with `croche.agent('chat')`.
+- `agent.send` returns once the input is accepted; the reply arrives through `agent.subscribe` as `message.delta`
   pieces and one final `message.end`.
 - `project.close()` when the screen goes away.
 

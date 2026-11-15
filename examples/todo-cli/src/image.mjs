@@ -21,6 +21,6 @@ export function readImage(file) {
       : ['GIF87a', 'GIF89a'].includes(bytes.subarray(0, 6).toString()) ? 'image/gif'
       : bytes.subarray(0, 4).toString() === 'RIFF' && bytes.subarray(8, 12).toString() === 'WEBP' ? 'image/webp' : null;
     if (!mime) throw new AppError('Not a supported image. Never pass a credential or text file as an image.');
-    return { data: bytes.toString('base64'), mime, alt: 'Photo of a handwritten shopping list supplied by the person.', resolution: 'high' };
+    return { type: 'image', mediaType: mime, data: bytes.toString('base64'), alt: 'Photo of a handwritten shopping list supplied by the person.' };
   } finally { closeSync(fd); }
 }

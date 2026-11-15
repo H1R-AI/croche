@@ -1,5 +1,43 @@
 # Release notes
 
+## 0.6.0 - 2026-11-15
+
+**Breaking release.** 0.6 replaces the 0.5 app API; there are no compatibility
+aliases. Update the SDK, CLI, native packages and plugin together, then follow the
+[update guide](https://docs.croche.ai/updating/).
+
+- **One session per user, named agents.** `Croche.open({projectKey, user, bundledConfig, ...})`
+  opens one user's session; `await croche.agent('helper')` opens an agent declared in
+  `bundledConfig.agents`. Named copies use `agent(id, {instance: {id, config}})`.
+- **Explicit configuration bundle.** `bundledConfig` (schema 7) holds `project` and
+  `agents`; the model is set explicitly, e.g. `project.defaults.model`. There is no
+  SDK default model. Tools, modes and wiki documents no longer live in config.
+- **Tools with `defineTool`.** A tool is a manifest plus its handler, registered with
+  `Croche.open({tools: [...]})`. Handler maps on `open()` are removed. Agents select
+  tools and documents with list scopes; `bind` hides app-supplied arguments from the model.
+  Croche's web search is registered as `tools.webSearch`.
+- **Wiki documents** are registered with `Croche.open({wiki: [...]})` and changed with
+  `croche.wiki.put/remove/list`.
+- **Input and replies.** `send('text')` or `send({id, input: [{type: 'text', text}]})`;
+  images are `{type: 'image', data | uri, mediaType, alt}` parts in the same list.
+  `send()` resolves on acceptance; `request()` resolves with the input's final result.
+  Replies always stream through `agent.subscribe()` as `message.start`, `message.delta`
+  and `message.end`; match replies to inputs with `message.end.inReplyTo`.
+- **Usage and errors.** Model-call usage and cost arrive as `turn` events (`onUsage` is
+  removed). `CrocheError` carries a `code` and one closed `category`.
+- **Debugging and data.** Attach the local debugger with `croche.debugger.attach()`.
+  Delete a user's local data with `croche.deleteData(scope?)`; a store that cannot open
+  is recovered with `Croche.open(options, {recover: 'delete'})`.
+- **Storage.** 0.6 uses a new local store and does not read 0.5 conversations or memory.
+  On Node, import `FileStorage` from `@h1r-ai/croche` (the `@h1r-ai/croche/node` entry
+  is removed).
+- **CLI.** `croche debug-keys create --dotenv-file PATH` replaces `--env-file`; use
+  `--project` or `CROCHE_PROJECT` to select a project. `CROCHE_DEVELOPER_KEY` is no
+  longer read; use `CROCHE_ACCOUNT_KEY`.
+- **Packages.** `@h1r-ai/croche`, `@h1r-ai/croche-react-native` and
+  `@h1r-ai/croche-cli` 0.6.0 on npm, `ai.croche:croche-android:0.6.0` from
+  https://maven.croche.ai, and `H1R-AI/croche-swift` tag `0.6.0`.
+
 ## 0.5.4 - 2026-10-15
 
 - **JavaScript SDK: memory released on close.** A closed Runtime's memory is now

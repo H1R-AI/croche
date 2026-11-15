@@ -5,8 +5,7 @@ import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { join } from 'node:path';
-import { Croche } from '@h1r-ai/croche';
-import { FileStorage } from '@h1r-ai/croche/node';
+import { Croche, FileStorage } from '@h1r-ai/croche';
 
 const { CROCHE_PROJECT_KEY, CROCHE_DEBUG_KEY, PORT = '3000' } = process.env;
 const production = process.env.NODE_ENV === 'production';
@@ -22,9 +21,16 @@ const croche = await Croche.open({
   serverKey: process.env.CROCHE_SERVER_KEY,               // production backend; never sent to the browser
   user: 'demo-user',                                      // your app's id for the signed-in person
   storage: new FileStorage(join(import.meta.dirname, '.croche')),
-  config: { instructions: 'You are a friendly assistant. Answer in a few short sentences.' },
+  bundledConfig: {
+    schema: 7,
+    project: {
+      defaults: { model: 'deepseek/deepseek-v4.1-flash' },        // your app chooses the model; there is no SDK default
+      languages: { default: 'en', supported: ['en'] },
+    },
+    agents: { chat: { instructions: 'You are a friendly assistant. Answer in a few short sentences.' } },
+  },
 });
-const agent = await croche.agent();
+const agent = await croche.agent('chat');
 
 // Every open page gets every stream event (snapshot, message.delta, message.end, state, ...).
 const pages = new Set();
@@ -43,7 +49,7 @@ const server = createServer(async (req, res) => {
     for await (const chunk of req) body += chunk;
     const text = String(JSON.parse(body || '{}').text ?? '').trim().slice(0, 4000);
     if (!text) { res.writeHead(400).end(); return; }
-    const receipt = await agent.send({ id: randomUUID(), text });   // returns at once; the reply streams
+    const receipt = await agent.send({ id: randomUUID(), input: [{ type: 'text', text }] });   // returns once accepted; the reply streams
     res.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify(receipt));
   } else {
     res.writeHead(404).end();

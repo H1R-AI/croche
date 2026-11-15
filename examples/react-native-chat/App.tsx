@@ -2,14 +2,14 @@
 // Copy this file over App.tsx in a new React Native app (see README.md).
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, FlatList, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
-import { Croche, type AgentEvent, type CrocheAgent } from '@h1r-ai/croche-react-native';
+import { Croche, type Agent, type AgentEvent } from '@h1r-ai/croche-react-native';
 import croche from './croche.config.json';   // { projectKey, debugKey }: gitignored, never committed
 
 type Line = { id: string; who: 'you' | 'agent'; text: string };
 const describe = (e: any) => e?.code ? `${e.code}: ${e.message}` : String(e);   // CrocheError has code and message
 
 export default function App() {
-  const agent = useRef<CrocheAgent | null>(null);
+  const agent = useRef<Agent | null>(null);
   const [lines, setLines] = useState<Line[]>([]);
   const [text, setText] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -22,20 +22,29 @@ export default function App() {
         projectKey: croche.projectKey,
         debugKey: __DEV__ ? croche.debugKey : undefined,   // development only
         user: 'demo-user',                                       // your app's id for the person
-        config: { instructions: 'You are a friendly assistant. Answer in a few short sentences.' },
+        language: 'en',                                          // one of the bundle's supported languages
+        bundledConfig: {
+          schema: 7,
+          project: {
+            defaults: { model: 'deepseek/deepseek-v4.1-flash' }, // your app chooses the model; there is no SDK default
+            languages: { default: 'en', supported: ['en'] },
+          },
+          agents: { chat: { instructions: 'You are a friendly assistant. Answer in a few short sentences.' } },
+        },
       });
-      agent.current = await project.agent();
+      agent.current = await project.agent('chat');
       subscription = agent.current.subscribe({ onEvent: (event: AgentEvent) => {
         // The stream replays the conversation after a restart, then continues live: the person's
         // inputs as `input`, the agent's replies as message.delta pieces and one final message.end.
-        const id = String(event.id), piece = String(event.text ?? '');
         if (event.type === 'input' && event.kind === 'user') {
+          const id = event.id, piece = event.text ?? '';
           setLines(all => all.some(l => l.id === id) ? all : [...all, { id, who: 'you', text: piece }]);
         } else if (event.type === 'message.delta' || event.type === 'message.end') {
+          const id = event.id, piece = event.text, final = event.type === 'message.end';
           setLines(all => {
             const found = all.find(l => l.id === id);
             if (!found) return [...all, { id, who: 'agent', text: piece }];
-            return all.map(l => l.id !== id ? l : { ...l, text: event.type === 'message.end' ? piece : l.text + piece });
+            return all.map(l => l.id !== id ? l : { ...l, text: final ? piece : l.text + piece });
           });
         }
       } });
@@ -48,7 +57,7 @@ export default function App() {
     if (!value || !agent.current) return;
     setText('');
     const id = `in-${Date.now()}`;   // input ids are yours and unique; the stream echoes it as an `input`
-    await agent.current.send({ id, text: value }).catch(e => setError(describe(e)));
+    await agent.current.send({ id, input: [{ type: 'text', text: value }] }).catch(e => setError(describe(e)));
   };
 
   return (
