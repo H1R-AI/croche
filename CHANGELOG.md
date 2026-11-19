@@ -1,5 +1,11 @@
 # Release notes
 
+## 0.6.2 - 2026-11-19
+
+- Fixed a Node `FileStorage` race: when several agents ran in one process, one agent releasing
+  its lock could make another agent's write fail with `storage_error` ("Runtime could not
+  persist state"). Update with `npm install @h1r-ai/croche@0.6.2`. No API changes.
+
 ## 0.6.0 - 2026-11-15
 
 **Breaking release.** 0.6 replaces the 0.5 app API; there are no compatibility

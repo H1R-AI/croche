@@ -39,7 +39,7 @@ status and closes the `Croche`; the tool handler validates current app data.
 ## Run in three commands
 
 **Node 22+ on macOS/Linux.** The example pins
-**published `@h1r-ai/croche` 0.6.1**. Check live text/image requests and
+**published `@h1r-ai/croche` 0.6.2**. Check live text/image requests and
 file protections in your own app environment.
 The offline tests need only Node, not an SDK installation or account.
 
