@@ -1,6 +1,6 @@
 <!-- Generated Croche skill content. -->
 
-# App actions in 0.6
+# App actions
 
 A tool is a JSON manifest plus an app handler. Create it with `defineTool`, then
 register the returned definition in `Croche.open({tools:[definition]})`. Tools do
@@ -39,6 +39,11 @@ export function inventoryTool(load: (sku: string, signal: AbortSignal) => Promis
 - `setTools(list)` takes effect from the next turn and may select from all
   registered tools. `resetTools()` restores the scope used at agent open.
 
+Croche's built-in tools need no handler: `tools.webSearch` ([web-search.md](web-search.md)) and
+`tools.image` ([images-and-decisions.md](images-and-decisions.md)). `croche.runTool(key, args, {id})`
+calls a command directly from app code and keeps only its last call (same ID and arguments return
+that result without buying again).
+
 Verify one successful action and one denied action against authoritative app
 state. Never infer that a business mutation succeeded from the assistant's words.
 
@@ -58,6 +63,7 @@ export async function classify(agent: Agent, text: string): Promise<string[]> {
         required: ['label'], additionalProperties: false},
     },
   }});
+  if (result.error) throw new Error(`${result.error.code}: ${result.error.message}`);
   const replies = result.messages.filter(message => message.inReplyTo.includes(result.id));
   if (result.status !== 'answered' || result.gap || replies.length === 0)
     throw new Error('No complete structured result');

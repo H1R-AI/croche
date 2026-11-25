@@ -2,17 +2,17 @@
 
 # Web: keep app secrets on the backend
 
-Never put a debug key or server key in the browser, **including local development**. Run
+Never put a development key or server key in the browser, **including local development**. Run
 `Croche.open` in your Node backend and let the page call your authenticated app endpoint.
 Do not expose secrets through frontend `VITE_`, `NEXT_PUBLIC_` or similar public build variables.
 
 ## Local development: use the CLI-created private file on the server
 
-The agent creates the debug-key `.env` through the core skill's CLI flow. Load it into the
+The agent creates the development-key `.env` through the core skill's CLI flow. Load it into the
 **server process** with `node --env-file=.env server/app.mjs`, substituting the actual server
 entry point/file path, or use the project's existing server-side dotenv setup before opening
 Croche. Plain Node does not load it automatically. The flag exists from Node 20.6; Croche
-requires Node 22+. Use its value as `debugKey` on that local backend, never in browser code.
+requires Node 22.13+. Use its value as `developmentKey` on that local backend, never in browser code.
 Refuse a missing server-process value locally without printing it. The user does not need to
 create a second credential for this first-turn check; `croche login` does not populate SDK values.
 
@@ -33,7 +33,7 @@ PowerShell is syntax guidance only; Windows verification is pending. Do not use 
 `VITE_`, `NEXT_PUBLIC_` or similar public build variables for secrets.
 
 ```ts
-import { Croche, FileStorage } from '@h1r-ai/croche';
+import { Croche, LocalStateStore } from '@h1r-ai/croche';
 
 // userId comes from a verified app session; userStoragePath is an app-owned isolated path.
 const croche = await Croche.open({
@@ -41,7 +41,7 @@ const croche = await Croche.open({
   serverKey: process.env.CROCHE_SERVER_KEY!,
   user: userId,
   language: userLocale,
-  storage: new FileStorage(userStoragePath),
+  adapters: [new LocalStateStore(userStoragePath)],
   bundledConfig: {
     schema: 7,
     project: {defaults: {model: 'deepseek/deepseek-v4.1-flash'}, languages: {default: 'en', supported: ['en']}},

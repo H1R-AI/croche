@@ -1,11 +1,11 @@
 <!-- Generated Croche skill content. -->
 
-# React Native: the Croche debug key in Debug builds, never in Release
+# React Native: the Croche development key in Debug builds, never in Release
 
 This recipe adds no dependency. It is two app-owned files, `scripts/croche-dev-key.mjs` and an
 addition to `babel.config.js`, plus a few lines elsewhere.
 
-- **Debug:** the script copies `CROCHE_DEBUG_KEY` from the CLI-written, git-ignored `.env` into a
+- **Debug:** the script copies `CROCHE_DEVELOPMENT_KEY` from the CLI-written, git-ignored `.env` into a
   git-ignored module. Metro serves that module to the Debug app.
 - **Release:** every non-development Metro bundle (Xcode Release, Gradle release,
   `react-native bundle --dev false`) replaces the module with `undefined`, whatever the file
@@ -23,8 +23,7 @@ Keep `.env` and the generated module untracked. Create `src/` if the app does no
 a key.
 
 `babel.config.js`: use the complete Babel addition below, including `crocheReleaseKeyStrip` and the `api.env('development')` switch. Keep
-any plugins the app already has in both branches. For example, 0.6.0-dev.3 needs
-`@babel/plugin-transform-class-static-block` until P12 ships.
+any plugins the app already has in both branches.
 
 ```js
 module.exports = api => {
@@ -59,22 +58,22 @@ too; without a `.env` it writes `undefined`:
 import { Croche } from '@h1r-ai/croche-react-native';
 import { developmentKey } from './croche-dev-key.generated';
 
-// Debug: no key means `croche debug-keys create` has not run, or Metro started before it did.
+// Debug: no key means `croche development-keys create` has not run, or Metro started before it did.
 if (__DEV__ && !developmentKey) {
-  throw new Error('No Croche debug key: run `croche debug-keys create`, then restart Metro.');
+  throw new Error('No Croche development key: run `croche development-keys create`, then restart Metro.');
 }
 const croche = await Croche.open({
   projectKey: publicProjectKey,
-  debugKey: __DEV__ ? developmentKey : undefined,
+  developmentKey: __DEV__ ? developmentKey : undefined,
   // user, language, bundledConfig, tools as usual
 });
 ```
 
 ## 3. Agent workflow
 
-1. `croche debug-keys create --project PROJECT_ID --json`, run from the app root. It writes
+1. `croche development-keys create --project PROJECT_ID --json`, run from the app root. It writes
    `./.env` with mode 0600 and git-ignores it; use the default output path.
-2. `node scripts/croche-dev-key.mjs`. It prints `debug key written`, never the key.
+2. `node scripts/croche-dev-key.mjs`. It prints `development key written`, never the key.
 3. Start Metro, build and launch Debug on the simulator, then verify a real first turn.
 4. Release proof. Do not ship a build unless this passes:
    - iOS: `xcodebuild -workspace ios/App.xcworkspace -scheme App -configuration Release -sdk iphonesimulator -derivedDataPath build/rel build`,
@@ -85,7 +84,7 @@ const croche = await Croche.open({
    - Quick check without a native build:
      `npx react-native bundle --platform ios --dev false --entry-file index.js --bundle-output /tmp/rel.js`,
      then `node scripts/croche-dev-key.mjs --check /tmp/rel.js`.
-   - `--check` looks for any string matching `cdt_[a-f0-9]{64}` (the CLI's debug-key format:
+   - `--check` looks for any string matching `cdt_[a-f0-9]{64}` (the CLI's development-key format:
      `cdt_` plus 64 lowercase hex digits), and for this `.env`'s own key byte for byte. The
      Babel guard and the script use the same lowercase-hex pattern. `.env` values outside that
      format are not loaded: the script writes `undefined`, and a Debug build then stops at the
@@ -93,9 +92,9 @@ const croche = await Croche.open({
 
 ## What Release does
 
-A Release build never holds a debug key. It opens Croche through the normal production
+A Release build never holds a development key. It opens Croche through the normal production
 credential path: App Attest or Play Integrity, or the unverified-install allowance when the
-platform cannot attest. It does not raise a missing-debug-key error. Do not launch a Release build
+platform cannot attest. It does not raise a missing-development-key error. Do not launch a Release build
 against Cloud to "prove" the strip; the proof is `--check` on the built artifact.
 
 ## Why each piece
@@ -122,14 +121,14 @@ against Cloud to "prove" the strip; the proof is `--check` on the built artifact
 
 ```js
 #!/usr/bin/env node
-// Croche debug key for a React Native app. Node built-ins only; never prints a key.
+// Croche development key for a React Native app. Node built-ins only; never prints a key.
 //
 //   node scripts/croche-dev-key.mjs             Writes src/croche-dev-key.generated.ts from the
-//                                               CROCHE_DEBUG_KEY line of the CLI-written ./.env.
+//                                               CROCHE_DEVELOPMENT_KEY line of the CLI-written ./.env.
 //                                               With no .env or no key, it writes `undefined`.
 //   node scripts/croche-dev-key.mjs --check P…  Exits 1 if any file under the paths P (a release
 //                                               bundle, .app, .ipa, .apk or .aab) holds a Croche
-//                                               debug key. Archives are read with `unzip -p`.
+//                                               development key. Archives are read with `unzip -p`.
 //
 // The generated module and .env are git-ignored. babel.config.js replaces the module with
 // `undefined` in every non-development Metro bundle, so a Release build never carries the key,
@@ -146,7 +145,7 @@ const KEY = /cdt_[a-f0-9]{64}/;
 function envKey() {
   const file = join(root, '.env');
   if (!existsSync(file)) return undefined;
-  const line = readFileSync(file, 'latin1').match(/^(?:export[ \t]+)?CROCHE_DEBUG_KEY[ \t]*=([^\r\n]*)/m);
+  const line = readFileSync(file, 'latin1').match(/^(?:export[ \t]+)?CROCHE_DEVELOPMENT_KEY[ \t]*=([^\r\n]*)/m);
   const value = line?.[1].trim().replace(/^(['"])(.*)\1$/, '$2');
   return value && KEY.test(value) ? value : undefined;
 }
@@ -158,7 +157,7 @@ function write() {
     + `export const developmentKey: string | undefined = ${key ? JSON.stringify(key) : 'undefined'};\n`;
   writeFileSync(out, body, { mode: 0o600 });
   chmodSync(out, 0o600);
-  console.log(`croche-dev-key: ${key ? 'debug key written' : 'no CROCHE_DEBUG_KEY in .env; wrote undefined'} (${out})`);
+  console.log(`croche-dev-key: ${key ? 'development key written' : 'no CROCHE_DEVELOPMENT_KEY in .env; wrote undefined'} (${out})`);
 }
 
 function* files(path) {
@@ -188,11 +187,11 @@ function check(paths) {
   }
   if (!scanned) throw new Error('--check found no files to scan');
   if (hits.length) {
-    console.error(`FAIL croche-dev-key: a Croche debug key is in ${hits.length} file(s):`);
+    console.error(`FAIL croche-dev-key: a Croche development key is in ${hits.length} file(s):`);
     for (const file of hits) console.error(`  ${file}`);
     process.exitCode = 1;
   } else {
-    console.log(`PASS croche-dev-key: no Croche debug key in ${scanned} file(s)`);
+    console.log(`PASS croche-dev-key: no Croche development key in ${scanned} file(s)`);
   }
 }
 
@@ -211,9 +210,9 @@ try {
 const fs = require('fs');
 const path = require('path');
 
-// Croche debug key: in every non-development bundle (Metro --dev false: Xcode Release, Gradle
+// Croche development key: in every non-development bundle (Metro --dev false: Xcode Release, Gradle
 // release, `react-native bundle --dev false`), replace the generated module with `undefined`, and
-// fail the bundle if any other file still holds a Croche debug key.
+// fail the bundle if any other file still holds a Croche development key.
 const DEV_KEY_MODULE = path.join(__dirname, 'src', 'croche-dev-key.generated.ts');
 // Compare real paths: a symlinked project dir (macOS /var -> /private/var) must still match.
 const real = file => { try { return fs.realpathSync(file); } catch { return path.resolve(file); } };
@@ -227,10 +226,10 @@ function crocheReleaseKeyStrip({ types: t }) {
           t.variableDeclarator(t.identifier('developmentKey'), t.identifier('undefined'))]), [])];
       },
       StringLiteral(literal, state) {
-        if (KEY.test(literal.node.value)) throw literal.buildCodeFrameError(`A Croche debug key is in ${state.filename}; Release bundles must not carry one.`);
+        if (KEY.test(literal.node.value)) throw literal.buildCodeFrameError(`A Croche development key is in ${state.filename}; Release bundles must not carry one.`);
       },
       TemplateElement(element, state) {
-        if (KEY.test(element.node.value.raw)) throw element.buildCodeFrameError(`A Croche debug key is in ${state.filename}; Release bundles must not carry one.`);
+        if (KEY.test(element.node.value.raw)) throw element.buildCodeFrameError(`A Croche development key is in ${state.filename}; Release bundles must not carry one.`);
       },
     },
   };
@@ -248,4 +247,4 @@ module.exports = api => {
 ## Verify your build
 
 Check the Release artifacts of your own app and target: the bundle and binary must not
-contain the debug key. Do not substitute `__DEV__` folding for the Babel swap.
+contain the development key. Do not substitute `__DEV__` folding for the Babel swap.

@@ -12,7 +12,7 @@ npm install "@h1r-ai/croche@$(npm view @h1r-ai/croche-react-native@latest 'peerD
 
 On the iOS build host, run `pod install` from the app's `ios` directory. No manual native SDK
 build is required. Import `Croche` from the RN package. The SDK supplies storage: do not pass
-Node `FileStorage`, `storage`, `secretStorage`, or a server key to the RN integration.
+Node `LocalStateStore`, `storage`, `secretStorage`, or a server key to the RN integration.
 
 ```ts
 import { Croche } from '@h1r-ai/croche-react-native';
@@ -21,7 +21,7 @@ import { Croche } from '@h1r-ai/croche-react-native';
 if (__DEV__ && !developmentKey) throw new Error('Load the private debug-only app configuration.');
 const croche = await Croche.open({
   projectKey: publicProjectKey,
-  debugKey: __DEV__ ? developmentKey : undefined,
+  developmentKey: __DEV__ ? developmentKey : undefined,
   user: appUserId,
   language: userLocale,
   bundledConfig: {
@@ -37,10 +37,10 @@ const result = await agent.request({ id: messageId, input: [{ type: 'text', text
 ```
 
 The variables above are app inputs, not new SDK helpers. You obtain the public project key
-from project creation and the SDK debug key through the CLI file-writing workflow;
-the user only runs the signup/developer-key/login step. Neither the CLI-created `.env` nor
-`process.env.CROCHE_DEBUG_KEY` automatically populates a React Native app. Inspect the existing
-build configuration and use the [dependency-free Debug key recipe](rn-debug-key.md):
+from project creation and the SDK development key through the CLI file-writing workflow;
+the user only runs the signup/account-key/login step. Neither the CLI-created `.env` nor
+`process.env.CROCHE_DEVELOPMENT_KEY` automatically populates a React Native app. Inspect the existing
+build configuration and use the [dependency-free Development key recipe](rn-development-key.md):
 a generated, ignored module plus a Babel Release swap, not a loader dependency.
 The recipe includes the complete app script, Babel addition, npm hooks and artifact checks.
 
@@ -49,7 +49,7 @@ from every Release artifact. The recipe's `--check` scans the built artifact, in
 `__DEV__` gating alone is not evidence that a bundled secret was removed. Its format guard expects
 the CLI's `cdt_` plus 64 lowercase hex digits. Never commit a literal secret or embed the CLI
 account credential. Release uses the normal production credential path (App Attest / Play Integrity,
-or the unverified-install allowance when attestation is unavailable), not a missing-debug-key error.
+or the unverified-install allowance when attestation is unavailable), not a missing-development-key error.
 Do not launch Release against Cloud to prove stripping; inspect the artifact instead.
 
 Pass the app user's BCP-47 locale explicitly and verify locale behavior on the target RN runtime. Use the core skill's messages/tools references for the shared project/agent surface.
