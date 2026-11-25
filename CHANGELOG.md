@@ -1,5 +1,56 @@
 # Release notes
 
+## 0.7.0 - 2026-11-25
+
+**Breaking release.** 0.7 changes the stored format and several APIs. Update the SDK, CLI,
+native packages and plugin together, then follow the
+[update guide](https://docs.croche.ai/updating/).
+
+### Before you upgrade
+
+- **Data saved on devices by 0.6 does not carry over.** 0.7 starts with a new local store; it
+  does not read 0.6 conversations or memory.
+- **Rotate your project key.** We recommend switching your project key to the new format as
+  you upgrade: in Studio, open **Manage → Project keys** and choose **Rotate project key**.
+- **Development key.** The `debugKey` option is now `developmentKey`, the env variable is
+  `CROCHE_DEVELOPMENT_KEY`, and the CLI command is `croche development-keys create`.
+- **Node storage.** Pass `adapters: [new LocalStateStore(dir)]` to `Croche.open`.
+  `FileStorage` and the `storage` option are gone.
+- **Credentials on Node and Workers.** `Croche.open` needs a `serverKey` or a
+  `developmentKey`.
+- **Paged lists.** `listAttachments`, `memory.list` and `wiki.list` take `{limit?, cursor?}`
+  and return `{items, cursor?}`.
+
+### New
+
+- **Image generation.** Register the built-in image tool (`tools.image`; `CrocheTools.image`
+  on Swift and Kotlin). An agent can then create an image during a conversation, or your app
+  can generate one directly with `runTool('image.generate', …)`. You need no image API key of
+  your own. Each image is stored as an attachment your app can show, list and delete, and its
+  cost is reported with it.
+- **Decision agents.** A new agent type for yes/no, multiple-choice and score judgments.
+  Give it the state and your questions, call `agent.decide()`, and get typed answers. They
+  include a confidence when the model reports one. A decision agent keeps no conversation or
+  past answers, so each call is judged only on the state you pass. Available on Node,
+  Workers, React Native, Swift and Kotlin.
+
+### Faster, and steady over long use
+
+- Turns are faster.
+- Storage is bounded per conversation, and history is archived automatically instead of
+  growing without limit.
+- Many fixes for apps that run for weeks, in retries, cancellation, background delivery and
+  storage cleanup.
+
+### Packages
+
+- `@h1r-ai/croche`, `@h1r-ai/croche-react-native` and `@h1r-ai/croche-cli` 0.7.0 on npm.
+- `ai.croche:croche-android:0.7.0` from https://maven.croche.ai.
+- `H1R-AI/croche-swift` tag `0.7.0`.
+- The coding-agent plugin is 0.7.0. It covers image generation, decision agents and the
+  upgrade steps, including the key switch.
+- The examples in this repository pin 0.7.0.
+
 ## 0.6.2 - 2026-11-19
 
 - Fixed a Node `FileStorage` race: when several agents ran in one process, one agent releasing

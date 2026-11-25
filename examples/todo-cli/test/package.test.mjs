@@ -4,9 +4,9 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 const root = fileURLToPath(new URL('../', import.meta.url));
-test('package pins SDK 0.6.2, uses native env loading and ignores credentials/data', () => {
+test('package pins SDK 0.7.0, uses native env loading and ignores credentials/data', () => {
   const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
-  assert.deepEqual(pkg.dependencies, { '@h1r-ai/croche': '0.6.2' });
+  assert.deepEqual(pkg.dependencies, { '@h1r-ai/croche': '0.7.0' });
   assert.equal(pkg.scripts.start, 'node --env-file=.env src/main.mjs');
   assert.equal(pkg.scripts.smoke, 'node --env-file=.env scripts/smoke.mjs');
   const ignored = readFileSync(join(root, '.gitignore'), 'utf8').split('\n');
@@ -16,7 +16,7 @@ test('package pins SDK 0.6.2, uses native env loading and ignores credentials/da
   assert.equal(readFileSync(join(root, 'src/croche.mjs'), 'utf8').trim().split('\n').length, 27);
 });
 test('no real credentials, internal endpoints or retired SDK names in example source', () => {
-  const retired = ['debug' + 'Token', ['CROCHE', 'CLOUD', 'URL'].join('_'), 'cloud' + 'Url'];
+  const retired = ['debug' + 'Token', 'debug' + 'Key', 'DEBUG' + '_KEY', 'debug' + '-keys', 'File' + 'Storage', ['CROCHE', 'CLOUD', 'URL'].join('_'), 'cloud' + 'Url'];
   for (const entry of readdirSync(root, { recursive: true }).filter(p => /\.(?:mjs|md|json)$/.test(p) && !p.startsWith('node_modules/'))) {
     const text = readFileSync(join(root, entry), 'utf8');
     assert.doesNotMatch(text, /(?:cdt_|dk_|sk_)[a-f0-9]{32,}/i, entry);
@@ -27,7 +27,7 @@ test('no real credentials, internal endpoints or retired SDK names in example so
 
 test('published setup uses Account key, one-time PowerShell policy and JSON only for agent-parsed project creation', () => {
   const guide = readFileSync(join(root, 'README.md'), 'utf8');
-  assert.match(guide, /published `@h1r-ai\/croche` 0\.6\.2/);
+  assert.match(guide, /published `@h1r-ai\/croche` 0\.7\.0/);
   assert.match(guide, /Account → Account keys/);
   assert.match(guide, /Set-ExecutionPolicy -Scope CurrentUser RemoteSigned/);
   assert.match(guide, /uses plain `croche`/);

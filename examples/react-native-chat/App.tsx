@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, FlatList, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Croche, type Agent, type AgentEvent } from '@h1r-ai/croche-react-native';
-import croche from './croche.config.json';   // { projectKey, debugKey }: gitignored, never committed
+import croche from './croche.config.json';   // { projectKey, developmentKey }: gitignored, never committed
 
 type Line = { id: string; who: 'you' | 'agent'; text: string };
 const describe = (e: any) => e?.code ? `${e.code}: ${e.message}` : String(e);   // CrocheError has code and message
@@ -20,7 +20,7 @@ export default function App() {
     (async () => {
       project = await Croche.open({
         projectKey: croche.projectKey,
-        debugKey: __DEV__ ? croche.debugKey : undefined,   // development only
+        developmentKey: __DEV__ ? croche.developmentKey : undefined,   // development only
         user: 'demo-user',                                       // your app's id for the person
         language: 'en',                                          // one of the bundle's supported languages
         bundledConfig: {

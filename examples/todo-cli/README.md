@@ -7,7 +7,7 @@ A small conversation with an app-owned task list. **Send** supplies the person's
 These are the two ingredients (excerpt; `store` is the app's task store):
 
 ```js
-import { Croche, FileStorage, defineTool } from '@h1r-ai/croche';
+import { Croche, LocalStateStore, defineTool } from '@h1r-ai/croche';
 
 const actions = {
   add: args => store.add(args.title),
@@ -22,7 +22,7 @@ const todos = defineTool({ manifestVersion: 1, name: 'todos', summary: 'Read and
   { key: 'list', name: 'list', summary: 'Read tasks and IDs.', reads: true },
 ] }, ({ key, args }) => Object.hasOwn(actions, key) ? actions[key](args) : { status: 'rejected' });
 const croche = await Croche.open({
-  projectKey, debugKey, user, storage: new FileStorage(dataDir), tools: [todos],
+  projectKey, developmentKey, user, adapters: [new LocalStateStore(dataDir)], tools: [todos],
   bundledConfig: { schema: 7,
     project: { defaults: { model: 'deepseek/deepseek-v4.1-flash' }, languages: { default: 'en', supported: ['en'] } },
     agents: { dori: { instructions } } },
@@ -39,7 +39,7 @@ status and closes the `Croche`; the tool handler validates current app data.
 ## Run in three commands
 
 **Node 22+ on macOS/Linux.** The example pins
-**published `@h1r-ai/croche` 0.6.2**. Check live text/image requests and
+**published `@h1r-ai/croche` 0.7.0**. Check live text/image requests and
 file protections in your own app environment.
 The offline tests need only Node, not an SDK installation or account.
 
@@ -74,8 +74,8 @@ This changes only the current-user policy; follow your organization's policy on 
 device.
 
 The coding agent can use `croche projects create --name "Todo CLI" --json` and parse the
-response for the project ID and public key, then `croche debug-keys create --project PROJECT_ID --dotenv-file .env` from
-**this example's folder**. The CLI writes the debug key directly to `.env`. The agent adds
+response for the project ID and public key, then `croche development-keys create --project PROJECT_ID --dotenv-file .env` from
+**this example's folder**. The CLI writes the development key directly to `.env`. The agent adds
 `CROCHE_PROJECT_KEY` using the returned public project key, preserving the private line.
 The Account key belongs to CLI login, not to this app.
 

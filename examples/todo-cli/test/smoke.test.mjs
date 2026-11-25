@@ -13,7 +13,7 @@ for (const failAt of ['none', 'open', 'turn', 'close']) test(`smoke cleans only 
   t.after(() => rmSync(unrelatedDir, { recursive: true, force: true }));
   const keep = join(unrelatedDir, 'keep.txt');
   writeFileSync(keep, 'real user data');
-  const action = smoke({ options: { projectKey: 'fixture-public', debugKey: 'fixture-private', user: 'real-user' },
+  const action = smoke({ options: { projectKey: 'fixture-public', developmentKey: 'fixture-private', user: 'real-user' },
     report: () => {}, open: async options => {
       smokeDir = options.dataDir;
       assert.match(options.user, /^smoke-/);
