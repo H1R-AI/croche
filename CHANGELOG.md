@@ -14,8 +14,9 @@ native packages and plugin together, then follow the
   you upgrade: in Studio, open **Manage → Project keys** and choose **Rotate project key**.
 - **Development key.** The `debugKey` option is now `developmentKey`, the env variable is
   `CROCHE_DEVELOPMENT_KEY`, and the CLI command is `croche development-keys create`.
-- **Node storage.** Pass `adapters: [new LocalStateStore(dir)]` to `Croche.open`.
-  `FileStorage` and the `storage` option are gone.
+- **Node storage.** `FileStorage` and the `storage` option are gone. To choose where data
+  is kept, pass both stores in `adapters`, so attachments stay beside the conversation:
+  `` adapters: [new LocalStateStore(dir), new LocalBlobStore(`${dir}/blobs`)] ``.
 - **Credentials on Node and Workers.** `Croche.open` needs a `serverKey` or a
   `developmentKey`.
 - **Paged lists.** `listAttachments`, `memory.list` and `wiki.list` take `{limit?, cursor?}`
