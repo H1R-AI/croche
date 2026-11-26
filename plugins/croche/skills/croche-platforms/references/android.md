@@ -2,8 +2,8 @@
 
 # Android · Kotlin project API
 
-Use this guide for the native **0.6** App API: `Croche.open` → `agent()` → `request()`.
-Install the published 0.6 package. Verify Gradle integration,
+Use this guide for the native **0.7** App API: `Croche.open` → `agent()` → `request()`.
+Verify Gradle integration,
 emulator first turn and release credential exclusion; package publication is not proof of those checks.
 
 ## Install from the Croche Maven repository
@@ -21,8 +21,9 @@ dependencyResolutionManagement {
 }
 ```
 
-Set `crocheVersion` in the app's Gradle properties to the latest version, the `<release>` in
-https://maven.croche.ai/ai/croche/croche-android/maven-metadata.xml (0.6.0 today).
+Pin an exact published 0.7 release for `crocheVersion` in the app's Gradle properties. Use a
+version listed in https://maven.croche.ai/ai/croche/croche-android/maven-metadata.xml.
+If no 0.7 release is available or it does not resolve, report that blocker instead of installing an older release.
 In `app/build.gradle.kts`:
 
 ```kotlin
@@ -33,7 +34,7 @@ dependencies {
 ```
 
 The repository serves the AAR, native libraries and dependency metadata together; do not copy a
-bare AAR without its dependencies or fetch an older release. Do not use a 0.5 version range. No app-side Rust/NDK build is required. Windows verification is pending.
+bare AAR without its dependencies. No app-side Rust/NDK build is required. Windows verification is pending.
 
 ## One human step; the agent sets up the project
 
@@ -50,20 +51,20 @@ croche auth whoami --json
 croche projects create --name "My app" --json
 ```
 
-Do not request a public project key or SDK debug key from the user. The account key
+Do not request a public project key or SDK development key from the user. The account key
 is only for CLI authentication; it never goes in the app.
 
-## Keep the debug key in local.properties, Debug only
+## Keep the development key in local.properties, Debug only
 
 Android does not load the CLI's default `.env`. From the Android project root, verify that
 `local.properties` is git-ignored and not tracked, then have the agent run:
 
 ```sh
-croche debug-keys create --project PROJECT_ID --dotenv-file local.properties --json
+croche development-keys create --project PROJECT_ID --dotenv-file local.properties --json
 ```
 
 Use the project ID returned above. The CLI preserves existing entries such as `sdk.dir` and
-writes `CROCHE_DEBUG_KEY` without printing its secret. It refuses an existing nonempty key
+writes `CROCHE_DEVELOPMENT_KEY` without printing its secret. It refuses an existing nonempty key
 unless force is explicitly approved. Never use secret-print output or show the file. Existing
 file permissions are preserved: restrict them to the user without displaying contents; Windows
 file-protection verification is still pending. Git-ignore is not release protection.
@@ -84,14 +85,14 @@ android {
     buildFeatures { buildConfig = true }
     buildTypes {
         getByName("debug") {
-            val key = crocheLocal.getProperty("CROCHE_DEBUG_KEY", "")
+            val key = crocheLocal.getProperty("CROCHE_DEVELOPMENT_KEY", "")
             require(key.isEmpty() || Regex("cdt_[a-f0-9]{64}").matches(key)) {
-                "Invalid Croche debug-key format."
+                "Invalid Croche development-key format."
             }
-            buildConfigField("String", "CROCHE_DEBUG_KEY", "\"$key\"")
+            buildConfigField("String", "CROCHE_DEVELOPMENT_KEY", "\"$key\"")
         }
         getByName("release") {
-            buildConfigField("String", "CROCHE_DEBUG_KEY", "\"\"")
+            buildConfigField("String", "CROCHE_DEVELOPMENT_KEY", "\"\"")
         }
     }
 }
@@ -124,9 +125,9 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
 
 suspend fun firstCrocheReply(context: Context, projectKey: String, userID: String, bundledConfig: JsonObject, agentID: String): String {
-    val debugKey = if (BuildConfig.DEBUG) {
-        BuildConfig.CROCHE_DEBUG_KEY.also {
-            check(it.isNotBlank()) { "Debug key is not loaded." }
+    val developmentKey = if (BuildConfig.DEBUG) {
+        BuildConfig.CROCHE_DEVELOPMENT_KEY.also {
+            check(it.isNotBlank()) { "Development key is not loaded." }
         }
     } else null
     val croche = Croche.open(OpenOptions(
@@ -134,7 +135,7 @@ suspend fun firstCrocheReply(context: Context, projectKey: String, userID: Strin
         bundledConfig = bundledConfig,
         platform = context.applicationContext,
         user = userID,
-        debugKey = debugKey,
+        developmentKey = developmentKey,
     ))
     try {
         val agent = croche.agent(agentID)
@@ -164,7 +165,7 @@ authorization before a paid turn.
 | `bundledConfig` | Schema-7 bundle declaring agent IDs; choose `project.defaults.model` explicitly |
 | `platform` | Android application Context |
 | `user` | Stable app user ID; do not mix different users in one open project |
-| `debugKey` | SDK debug credential loaded only for Debug; `null` in Release |
+| `developmentKey` | The development key, loaded only in Debug; `null` in Release |
 | `language` | User's BCP-47 language; defaults to the device locale when omitted |
 
 `language` selects the supported wording in `bundledConfig.project.languages` and
@@ -172,7 +173,7 @@ authorization before a paid turn.
 the model's reply language. See [config and language](https://docs.croche.ai/concepts/config.md).
 
 The Cloud supplies a patch over the schema-7 bundle; it does not replace the app's entire
-bundle. Debug-key installs follow development drafts. Reopen the agent after synchronization
+bundle. Development-key installs follow development drafts. Reopen the agent after synchronization
 and verify the applied config. Register tools in app code, not config.
 Choose a model using [Models](https://docs.croche.ai/models.md).
 
@@ -182,7 +183,7 @@ Choose a model using [Models](https://docs.croche.ai/models.md).
   selected emulator. Confirm a nonempty,
   completed reply; report the real error if it fails. In Studio, inspect **Monitoring → Logs**
   with the development filter. Never paste credentials or private app data into the report.
-- Inspect a clean Release APK/AAB without printing secrets: no debug key in classes/resources,
+- Inspect a clean Release APK/AAB without printing secrets: no development key in classes/resources,
   no `local.properties`/`.env` bundled, no CLI credential. Git-ignore alone is not enough.
 - Production uses the app's verification setup under **Settings → App verification**, not a
-  shipped debug key. An emulator run does not prove real-device production verification.
+  shipped development key. An emulator run does not prove real-device production verification.

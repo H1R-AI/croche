@@ -6,12 +6,19 @@ Croche runs inside the customer's deployment, not a hosted app backend supplied 
 Use the [published TypeScript guide](https://docs.croche.ai/sdks/typescript/#cloudflare-workers)
 as the **single deployment walkthrough**, and only when its displayed SDK/source version matches
 the `@h1r-ai/croche` version you install.
-If the installed package or docs lack Workers support, install the matching 0.6 package; do not
+If the installed package or docs lack Workers support, install the matching 0.7 package; do not
 substitute an older SDK, a custom WASM loader, or an unverified serverless host.
+
+Pass both a durable StateStore and a BlobStore in `adapters` for Workers
+`Croche.open`, `Croche.wakeTimes` and `Croche.registerBackground`. The SDK
+returns `invalid_configuration` if either is missing. Use the same two stores
+for the same owner on each call. A SQLite Durable Object and an R2-backed
+BlobStore are the guide’s example.
 
 Follow that guide's app files, user authentication, Durable Object ownership/storage,
 secret provisioning, fixed request-ID retry receipts, timeouts, iteration sizing and cost
-checks. Keep the server/debug credential in the customer's Worker secrets, never vars or
+checks. Supply a `serverKey` (or a `developmentKey` in development) to `Croche.open`; without one, open
+fails with `invalid_configuration`. Keep that credential in the customer's Worker secrets, never vars or
 frontend code. Verify one completed turn, retained history and a genuine code redeploy;
 never reset state to force a pass. Obtain the customer's approval before deploying or spending.
 

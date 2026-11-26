@@ -1,6 +1,6 @@
 <!-- Generated Croche skill content. -->
 
-# Built-in web search in 0.6
+# Built-in web search
 
 Register Croche's built-in definition in app code. There is no app handler or
 separate search API key. It is a billed Croche tool, not a config declaration.
@@ -26,6 +26,6 @@ A source reference is not proof that a summary describes it accurately.
 
 Do not add search settings to a legacy config tools field. Instructions and
 `toolGuide` belong to agent config; registration and access belong to app code.
-Measure latency in the app and search spend in Studio; the 0.6.0 App API reports no
-per-call search cost. There is no fixed per-search price or guaranteed response time. A tool failure must
+Measure latency in the app. Each search's charge is the `cost` on its `tool` event (null while
+running or when unknown); Studio shows the totals. There is no fixed per-search price or guaranteed response time. A tool failure must
 not be described as successful research.

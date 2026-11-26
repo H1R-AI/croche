@@ -2,15 +2,15 @@
 
 # iOS · Swift project API
 
-Use this guide for the native **0.6** App API: `Croche.open` → `agent()` → `request()`.
-Install the published 0.6 package. Verify Xcode integration,
+Use this guide for the native **0.7** App API: `Croche.open` → `agent()` → `request()`.
+Verify Xcode integration,
 simulator first turn and release credential exclusion; package publication is not proof of those checks.
 
 ## Install the Swift package
 
-Requires iOS 15+ and a Swift 6-capable Xcode. In Xcode, add the package
-`https://github.com/H1R-AI/croche-swift` at its latest version (0.6.0 today), add its **CrocheRuntime**
-product to the app target, and import `CrocheRuntime`. A Swift package can also use a downloaded
+Requires iOS 15+ and a Swift 6-capable Xcode. Pin an exact published 0.7 release of
+`https://github.com/H1R-AI/croche-swift` in Xcode, add its **CrocheRuntime** product to the
+app target, and import `CrocheRuntime`. A Swift package can also use a downloaded
 copy of that package by path, for example:
 
 ```swift
@@ -22,7 +22,7 @@ copy of that package by path, for example:
 The package, directory and product are `CrocheRuntime`; adjust only the path. Keep the complete prebuilt package and its binary together; a source-only
 checkout is not a substitute. Do not require the app developer to build Rust. If the distribution
 is absent or does not resolve, report that blocker instead of installing an older release.
-Pin the exact 0.6 version, not a 0.5 range. Preserve the app's existing dependencies.
+Preserve the app's existing dependencies.
 
 ## One human step; the agent sets up the project
 
@@ -39,17 +39,17 @@ croche auth whoami --json
 croche projects create --name "My app" --json
 ```
 
-Do not request a public project key or SDK debug key from the user. The account key
+Do not request a public project key or SDK development key from the user. The account key
 is only for CLI authentication; it never goes in the app.
 
-## Keep the debug key in a private, Debug-only configuration
+## Keep the development key in a private, Debug-only configuration
 
-The CLI can write its `CROCHE_DEBUG_KEY` assignment directly to an `.xcconfig` file; Xcode does
+The CLI can write its `CROCHE_DEVELOPMENT_KEY` assignment directly to an `.xcconfig` file; Xcode does
 not load the CLI's default `.env`. The agent creates the `Config` directory first, verifies the
 file is not tracked by Git, and runs:
 
 ```sh
-croche debug-keys create --project PROJECT_ID --dotenv-file Config/Croche.Debug.xcconfig --json
+croche development-keys create --project PROJECT_ID --dotenv-file Config/Croche.Debug.xcconfig --json
 ```
 
 Use the project ID returned above. The CLI prints metadata only and adds the destination to
@@ -66,8 +66,8 @@ Wire this up in the app's existing Xcode project:
    expansion enabled. Release keeps a separate plist **without this entry**.
 
    ```xml
-   <key>CROCHE_DEBUG_KEY</key>
-   <string>$(CROCHE_DEBUG_KEY)</string>
+   <key>CROCHE_DEVELOPMENT_KEY</key>
+   <string>$(CROCHE_DEVELOPMENT_KEY)</string>
    ```
 
 3. Keep the private `.xcconfig` outside target resource membership / Copy Bundle Resources.
@@ -92,23 +92,23 @@ import Foundation
 import CrocheRuntime
 
 func firstCrocheReply(projectKey: String, userID: String, bundledConfig: JSON, agentID: String) async throws -> String {
-    let debugKey: String?
+    let developmentKey: String?
     #if DEBUG
-    guard let value = Bundle.main.object(forInfoDictionaryKey: "CROCHE_DEBUG_KEY") as? String,
+    guard let value = Bundle.main.object(forInfoDictionaryKey: "CROCHE_DEVELOPMENT_KEY") as? String,
           !value.isEmpty, !value.contains("$(") else {
         throw NSError(domain: "CrocheSetup", code: 1,
-                      userInfo: [NSLocalizedDescriptionKey: "Debug key is not loaded."])
+                      userInfo: [NSLocalizedDescriptionKey: "Development key is not loaded."])
     }
-    debugKey = value
+    developmentKey = value
     #else
-    debugKey = nil
+    developmentKey = nil
     #endif
 
     let croche = try await Croche.open(OpenOptions(
         projectKey: projectKey,
         bundledConfig: bundledConfig,
         user: userID,
-        debugKey: debugKey
+        developmentKey: developmentKey
     ))
     do {
         let agent = try await croche.agent(agentID)
@@ -139,7 +139,7 @@ payload when retrying the same input. Respect the app's usage authorization befo
 | `projectKey` | Public project key returned by CLI project creation |
 | `bundledConfig` | Schema-7 bundle declaring agent IDs; choose `project.defaults.model` explicitly |
 | `user` | Stable app user ID; do not mix different users in one open project |
-| `debugKey` | SDK debug credential loaded only for Debug; `nil` in Release |
+| `developmentKey` | The development key, loaded only in Debug; `nil` in Release |
 | `language` | User's BCP-47 language; defaults to the device locale when omitted |
 
 `language` selects the supported wording in `bundledConfig.project.languages` and
@@ -147,7 +147,7 @@ payload when retrying the same input. Respect the app's usage authorization befo
 the model's reply language. See [config and language](https://docs.croche.ai/concepts/config.md).
 
 The Cloud supplies a patch over the schema-7 bundle; it does not replace the app's entire
-bundle. Debug-key installs follow development drafts. Reopen the agent after synchronization
+bundle. Development-key installs follow development drafts. Reopen the agent after synchronization
 and verify the applied config. Register tools in app code, not config.
 Choose a model using [Models](https://docs.croche.ai/models.md).
 
@@ -157,7 +157,7 @@ Choose a model using [Models](https://docs.croche.ai/models.md).
   selected simulator. Confirm a nonempty,
   completed reply; report the real error if it fails. In Studio, inspect **Monitoring → Logs**
   with the development filter. Never paste credentials or private app data into the report.
-- Inspect a clean Release archive without printing secrets: no debug key in the binary/plist,
+- Inspect a clean Release archive without printing secrets: no development key in the binary/plist,
   no private `.xcconfig`/`.env` bundled, no CLI credential. Git-ignore alone is not enough.
 - Production uses the app's verification setup under **Settings → App verification**, not a
-  shipped debug key. A simulator run does not prove real-device production verification.
+  shipped development key. A simulator run does not prove real-device production verification.

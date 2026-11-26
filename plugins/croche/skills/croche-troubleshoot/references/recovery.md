@@ -1,12 +1,15 @@
 <!-- Generated Croche skill content. -->
 
-# An older store was refused
+# A store was refused
 
-Use only for `memory_store_too_old`. `Croche.open` can succeed while `croche.agent(id)` refuses
-that agent's store; other agents can still open. The refused open does not change the data.
+Use for `store_refused`, `store_too_new`, `corrupt_store` or `store_full`. 0.7 does not migrate
+stores written by 0.6 or by 0.7 pre-release builds older than the released 0.7 store format.
+Stores written by a released 0.7 build reopen in later 0.7 releases, so act on the error code,
+never on the SDK version alone. The refused open does not change the data. In development, the
+simplest fix is a fresh store path; for real users' data, follow the steps below.
 
-Tell the user plainly: **This agent's saved data cannot be opened by this SDK. Nothing was
-changed. Resetting this agent permanently deletes its conversation, memories and stored
+Tell the user plainly: **This saved data cannot be opened by this SDK. Nothing was
+changed. Resetting it permanently deletes the conversation, memories and stored
 agent state for this user. Only an older build that still runs can export them first.**
 Do not suggest that the current build can migrate or export a store it cannot open.
 
@@ -14,8 +17,8 @@ Do not suggest that the current build can migrate or export a store it cannot op
    build when available; never claim an export happened without checking it.
 2. Get explicit consent for that scoped, permanent loss. Without consent, leave the store
    intact and report the version/error. Do not automatically reset inside an error handler.
-3. For the **project API**, use the already-open Croche for the same user and storage.
-   Delete through that open instance, then acquire a fresh agent:
+3. When `Croche.open` succeeds but one agent's store is the problem, use the already-open Croche
+   for the same user and storage. Delete through it, then acquire a fresh agent:
 
 ```ts
 await croche.deleteData({ agent: agentId });

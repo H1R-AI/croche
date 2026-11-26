@@ -13,20 +13,22 @@ use the usage and limits shown in Studio, not a separate model-service setup.
 
 | Target | Path | Read when needed |
 | --- | --- | --- |
-| Local Node check | `@h1r-ai/croche`, durable `FileStorage`, SDK debug key | Core `croche` skill |
+| Local Node check | `@h1r-ai/croche`, durable `LocalStateStore`, SDK development key | Core `croche` skill |
 | React Native | `Croche` from `@h1r-ai/croche-react-native`, SDK-managed storage | [react-native.md](references/react-native.md) |
 | Web (local and production) | `Croche` on the app's Node backend, server key stays there | [web-backend.md](references/web-backend.md) |
-| Serverless · Workers + Durable Objects | Customer-deployed Worker, explicit durable StoragePal | [serverless.md](references/serverless.md) |
+| Serverless · Workers + Durable Objects | Customer-deployed Worker, explicit durable StateStore and BlobStore | [serverless.md](references/serverless.md) |
 | iOS · Swift | SPM `https://github.com/H1R-AI/croche-swift`, `Croche.open` | [ios.md](references/ios.md) |
 | Android · Kotlin | Maven `ai.croche:croche-android` from `https://maven.croche.ai`, `Croche.open` | [android.md](references/android.md) |
 
 Install the latest published packages, preserving the app's package manager and lockfile: web and
 Node `@h1r-ai/croche@latest` and `@h1r-ai/croche-cli@latest`; React Native
 `@h1r-ai/croche-react-native@latest` with the `@h1r-ai/croche` version it requires; Android and iOS
-the latest published version. Do not resolve an older 0.5 package.
+the latest published version. Do not resolve an older 0.6 or 0.5 package. For an existing app
+moving from 0.6, follow [Upgrading from 0.6](https://docs.croche.ai/updating/), including the
+project key switch.
 Both plugin formats follow the SDK version.
 
-Node.js 22+ on macOS/Linux; Windows verification pending. PowerShell syntax does not establish
+Node.js 22.13+ on macOS/Linux; Windows verification pending. PowerShell syntax does not establish
 Windows support. Verify the installed version and platform behavior.
 Node and RN do not automatically load the CLI-created `.env`: Node needs `--env-file` or an
 existing dotenv loader, web secrets stay server-side only, and RN needs debug-only build config
@@ -46,13 +48,13 @@ Use `croche-config` for the complete selection rules.
 
 ## Native gate
 
-Use the matching native **0.6** artifacts, not an older published SDK. Installation and
+Use the matching native **0.7** artifacts, not an older published SDK. Installation and
 `Croche.open` first-turn examples are in [ios.md](references/ios.md) and
 [android.md](references/android.md). Publication is not proof of platform behavior.
 Verify a simulator/emulator first turn and release credential exclusion in the target app.
 Never claim an example was run without running it. Use git-ignored `.xcconfig` (iOS) or
 `local.properties` (Android), wired only into Debug and excluded from Release at build time.
-If the 0.6 native package does not resolve, report that blocker; do not downgrade the API or
+If the 0.7 native package does not resolve, report that blocker; do not downgrade the API or
 rewrite an existing native app into a different stack unasked.
 
 ## Verify the actual target
