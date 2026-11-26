@@ -3,7 +3,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, FlatList, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Croche, type Agent, type AgentEvent } from '@h1r-ai/croche-react-native';
-import croche from './croche.config.json';   // { projectKey, developmentKey }: gitignored, never committed
+// The secret development key comes from a generated, git-ignored module. babel.config.js replaces
+// it with `undefined` in every Release bundle (see README.md). Never put the key in JSON or source.
+import { developmentKey } from './src/croche-dev-key.generated';
+
+// The public project key is not a secret: it ships in every build.
+const PROJECT_KEY = 'YOUR-PUBLIC-PROJECT-KEY';
 
 type Line = { id: string; who: 'you' | 'agent'; text: string };
 const describe = (e: any) => e?.code ? `${e.code}: ${e.message}` : String(e);   // CrocheError has code and message
@@ -18,9 +23,12 @@ export default function App() {
     let project: Croche | undefined;
     let subscription: { close(): void } | undefined;
     (async () => {
+      if (__DEV__ && !developmentKey) {
+        throw new Error('No Croche development key: run `croche development-keys create`, then restart Metro.');
+      }
       project = await Croche.open({
-        projectKey: croche.projectKey,
-        developmentKey: __DEV__ ? croche.developmentKey : undefined,   // development only
+        projectKey: PROJECT_KEY,
+        developmentKey: __DEV__ ? developmentKey : undefined,   // Debug only; Release bundles have none
         user: 'demo-user',                                       // your app's id for the person
         language: 'en',                                          // one of the bundle's supported languages
         bundledConfig: {

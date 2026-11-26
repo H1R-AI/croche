@@ -7,7 +7,7 @@ A small conversation with an app-owned task list. **Send** supplies the person's
 These are the two ingredients (excerpt; `store` is the app's task store):
 
 ```js
-import { Croche, LocalStateStore, defineTool } from '@h1r-ai/croche';
+import { Croche, LocalStateStore, LocalBlobStore, defineTool } from '@h1r-ai/croche';
 
 const actions = {
   add: args => store.add(args.title),
@@ -22,7 +22,9 @@ const todos = defineTool({ manifestVersion: 1, name: 'todos', summary: 'Read and
   { key: 'list', name: 'list', summary: 'Read tasks and IDs.', reads: true },
 ] }, ({ key, args }) => Object.hasOwn(actions, key) ? actions[key](args) : { status: 'rejected' });
 const croche = await Croche.open({
-  projectKey, developmentKey, user, adapters: [new LocalStateStore(dataDir)], tools: [todos],
+  projectKey, developmentKey, user, tools: [todos],
+  // Both stores under one directory: State, and attachments such as images.
+  adapters: [new LocalStateStore(dataDir), new LocalBlobStore(`${dataDir}/blobs`)],
   bundledConfig: { schema: 7,
     project: { defaults: { model: 'deepseek/deepseek-v4.1-flash' }, languages: { default: 'en', supported: ['en'] } },
     agents: { dori: { instructions } } },
@@ -38,7 +40,7 @@ status and closes the `Croche`; the tool handler validates current app data.
 
 ## Run in three commands
 
-**Node 22+ on macOS/Linux.** The example pins
+**Node 22.13+ on macOS/Linux.** The example pins
 **published `@h1r-ai/croche` 0.7.0**. Check live text/image requests and
 file protections in your own app environment.
 The offline tests need only Node, not an SDK installation or account.

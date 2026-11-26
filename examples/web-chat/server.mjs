@@ -5,7 +5,7 @@ import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { join } from 'node:path';
-import { Croche, LocalStateStore } from '@h1r-ai/croche';
+import { Croche, LocalBlobStore, LocalStateStore } from '@h1r-ai/croche';
 
 const { CROCHE_PROJECT_KEY, CROCHE_DEVELOPMENT_KEY, PORT = '3000' } = process.env;
 const production = process.env.NODE_ENV === 'production';
@@ -20,7 +20,8 @@ const croche = await Croche.open({
   developmentKey: production || process.env.CROCHE_SERVER_KEY ? undefined : CROCHE_DEVELOPMENT_KEY,
   serverKey: process.env.CROCHE_SERVER_KEY,               // production backend; never sent to the browser
   user: 'demo-user',                                      // your app's id for the signed-in person
-  adapters: [new LocalStateStore(join(import.meta.dirname, '.croche'))],
+  // State and attachments both under .croche/; choosing a directory means passing both stores.
+  adapters: [new LocalStateStore(join(import.meta.dirname, '.croche')), new LocalBlobStore(join(import.meta.dirname, '.croche', 'blobs'))],
   bundledConfig: {
     schema: 7,
     project: {

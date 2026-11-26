@@ -5,7 +5,7 @@ of server code and one HTML file.
 
 ## Run it
 
-1. In this folder, run `npm install` (Node 22 or later); it installs the SDK declared
+1. In this folder, run `npm install` (Node 22.13 or later); it installs the SDK declared
    in this example’s `package.json`. For a new app, use `npm install @h1r-ai/croche`
    and commit its lockfile.
 2. For development, put your keys in this folder's `.env`, the same way as the CLI and
@@ -33,8 +33,9 @@ without a server key. Choose one proof, never both. Neither secret goes to the b
 
 ## What it shows
 
-- `Croche.open` with a `LocalStateStore` directory (`.croche/`) in `adapters`: the conversation and memory survive
-  a restart. `bundledConfig` declares the model and one agent, `chat`, opened with
+- `Croche.open` with a `LocalStateStore` and a `LocalBlobStore` under one directory (`.croche/`), passed
+  in `adapters`: the conversation, memory and attachments survive a restart. When you choose your own
+  directory, pass both stores, so attachments stay beside the conversation. `bundledConfig` declares the model and one agent, `chat`, opened with
   `croche.agent('chat')`.
 - `agent.send` returns once the input is accepted; the reply arrives through `agent.subscribe` as `message.delta`
   pieces and one final `message.end`, which the server forwards to the page as server-sent events.

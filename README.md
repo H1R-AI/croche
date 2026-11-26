@@ -53,8 +53,8 @@ Project keys** and choose **Rotate project key**. See the [release notes](CHANGE
    Without plugins, copy all five folders from [the skills directory](plugins/croche/skills/)
    into your project’s `.claude/skills/` or `.agents/skills/`.
 
-2. **Install your platform’s SDK and the CLI, then sign in.** The CLI requires
-   Node 22 or later. Choose the SDK for your app:
+2. **Install your platform’s SDK and the CLI, then sign in.** The CLI and the Node SDK
+   require Node 22.13 or later. Choose the SDK for your app:
 
    ```sh
    npm install @h1r-ai/croche
