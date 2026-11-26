@@ -21,13 +21,15 @@
 invited developers; [request access](https://croche.ai/en#waitlist)
 ([Korean](https://croche.ai/#waitlist)).
 
-This is Croche’s developer home and coding-agent marketplace. Version 0.6.0 supports
+This is Croche’s developer home and coding-agent marketplace. Version 0.7.0 supports
 TypeScript web backends, React Native, native Swift, and Kotlin; this repository contains
 no SDK or Core source.
 
-**Upgrading from 0.5.x?** 0.6.0 is a breaking release: update the SDK, CLI and plugin
-together and follow the [update guide](https://docs.croche.ai/updating/). 0.6 starts
-with a new local store; it does not read 0.5 conversations or memory.
+**Upgrading from 0.6?** 0.7.0 is a breaking release: update the SDK, CLI, native packages
+and plugin together and follow the [update guide](https://docs.croche.ai/updating/). 0.7
+starts with a new local store; data saved on devices by 0.6 does not carry over. We
+recommend switching your project key to the new format: in Studio, open **Manage →
+Project keys** and choose **Rotate project key**. See the [release notes](CHANGELOG.md).
 
 ## Install in 3 steps
 
@@ -51,8 +53,8 @@ with a new local store; it does not read 0.5 conversations or memory.
    Without plugins, copy all five folders from [the skills directory](plugins/croche/skills/)
    into your project’s `.claude/skills/` or `.agents/skills/`.
 
-2. **Install your platform’s SDK and the CLI, then sign in.** The CLI requires
-   Node 22 or later. Choose the SDK for your app:
+2. **Install your platform’s SDK and the CLI, then sign in.** Use Node 22.13 or later
+   for the CLI, the Node SDK and these examples. Choose the SDK for your app:
 
    ```sh
    npm install @h1r-ai/croche
@@ -70,11 +72,11 @@ with a new local store; it does not read 0.5 conversations or memory.
    Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
    ```
 
-   Native Swift: choose **Up to Next Minor Version** from **0.6.0** in Xcode,
+   Native Swift: choose **Up to Next Minor Version** from **0.7.0** in Xcode,
    or add this dependency in `Package.swift`:
 
    ```swift
-   .package(url: "https://github.com/H1R-AI/croche-swift", .upToNextMinor(from: "0.6.0"))
+   .package(url: "https://github.com/H1R-AI/croche-swift", .upToNextMinor(from: "0.7.0"))
    ```
 
    Native Kotlin: add the Maven repository to the existing
@@ -92,13 +94,13 @@ with a new local store; it does not read 0.5 conversations or memory.
    }
    // app/build.gradle.kts
    dependencies {
-       implementation("ai.croche:croche-android:0.6.+")
+       implementation("ai.croche:croche-android:0.7.+")
    }
    ```
 
    npm installs the latest published version; commit your project’s lockfile to
    pin its resolved dependencies. Because 0.x minor releases may break compatibility,
-   native dependencies stay within 0.6.x with the ranges above.
+   native dependencies stay within 0.7.x with the ranges above.
 
    With an invite, sign in to [Studio](https://studio.croche.ai) and create an
    account key. Run
@@ -109,8 +111,8 @@ with a new local store; it does not read 0.5 conversations or memory.
 
 3. **Ask your coding agent to build the feature.** For example: “Add a Croche agent
    that can read and update the user’s tasks.” The plugin guides project setup,
-   tool handlers, a debug key, and a first live check. Keep secrets out of Git and
-   debug keys out of release builds.
+   tool handlers, a development key, and a first live check. Keep secrets out of Git and
+   development keys out of release builds.
 
 ## What’s in this repo
 

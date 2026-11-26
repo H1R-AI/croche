@@ -1,1 +1,2 @@
-croche.config.json
+.env
+src/croche-dev-key.generated.ts

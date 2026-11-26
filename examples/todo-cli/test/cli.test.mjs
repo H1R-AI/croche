@@ -11,7 +11,7 @@ import { inputFor } from '../src/input.mjs';
 import { readImage } from '../src/image.mjs';
 import { TodoStore } from '../src/todos.mjs';
 
-const env = { CROCHE_PROJECT_KEY: 'fixture-project', CROCHE_DEBUG_KEY: 'fixture-private' };
+const env = { CROCHE_PROJECT_KEY: 'fixture-project', CROCHE_DEVELOPMENT_KEY: 'fixture-private' };
 function output() {
   let text = '';
   return { stream: new Writable({ write(chunk, _, done) { text += chunk; done(); } }), text: () => text };
@@ -22,7 +22,7 @@ for (const failure of [false, true]) test(`one-shot plain text is shell-testable
   const out = output();
   let closed = 0;
   const task = run({ args: ['--prompt', 'Add milk'], env, output: out.stream, open: async options => {
-    assert.equal(options.debugKey, 'fixture-private');
+    assert.equal(options.developmentKey, 'fixture-private');
     return { store: new TodoStore(), async send(input) {
       assert.deepEqual(input, [{ type: 'text', text: 'Add milk' }]);
       if (failure) throw new Error('fixture-private');
@@ -90,10 +90,10 @@ test('configuration and noninteractive usage fail before SDK work; safe errors o
 test('the documented Node --env-file flag actually loads private configuration', t => {
   const dir = mkdtempSync(join(tmpdir(), 'todo-env-test-'));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
-  writeFileSync(join(dir, '.env'), 'CROCHE_PROJECT_KEY=fixture-project\nCROCHE_DEBUG_KEY=fixture-private\n', { mode: 0o600 });
+  writeFileSync(join(dir, '.env'), 'CROCHE_PROJECT_KEY=fixture-project\nCROCHE_DEVELOPMENT_KEY=fixture-private\n', { mode: 0o600 });
   const app = new URL('../src/app.mjs', import.meta.url).href;
-  const script = `import {settings} from ${JSON.stringify(app)}; if (settings().debugKey !== 'fixture-private') throw new Error('not loaded'); console.log('configuration present');`;
-  const clean = { ...process.env }; delete clean.CROCHE_DEBUG_KEY; delete clean.CROCHE_PROJECT_KEY; delete clean.TODO_USER;
+  const script = `import {settings} from ${JSON.stringify(app)}; if (settings().developmentKey !== 'fixture-private') throw new Error('not loaded'); console.log('configuration present');`;
+  const clean = { ...process.env }; delete clean.CROCHE_DEVELOPMENT_KEY; delete clean.CROCHE_PROJECT_KEY; delete clean.TODO_USER;
   const result = spawnSync(process.execPath, ['--env-file=.env', '--input-type=module', '-e', script], { cwd: dir, env: clean, encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
   assert.equal(result.stdout.trim(), 'configuration present');

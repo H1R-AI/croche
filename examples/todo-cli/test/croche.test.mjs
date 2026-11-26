@@ -7,7 +7,7 @@ for (const outcome of ['answered', 'failed', 'empty', 'agent-error']) test(`SDK 
   let options, count = 0, closes = 0;
   const store = new TodoStore();
   const defineTool = (manifest, execute) => ({ name: manifest.name, manifest, execute });
-  const sdk = { FileStorage: class {}, defineTool, Croche: { open: async input => {
+  const sdk = { LocalStateStore: class { constructor(dir) { this.dir = dir; } }, LocalBlobStore: class { constructor(dir) { this.dir = dir; } }, defineTool, Croche: { open: async input => {
     options = input;
     return { agent: async id => {
       assert.equal(id, 'dori');
@@ -21,10 +21,12 @@ for (const outcome of ['answered', 'failed', 'empty', 'agent-error']) test(`SDK 
       } };
     }, close: async () => { closes++; } };
   } } };
-  const connecting = connect({ projectKey: 'fixture-project', debugKey: 'fixture-private', user: 'test', dataDir: 'test', store }, sdk);
+  const connecting = connect({ projectKey: 'fixture-project', developmentKey: 'fixture-private', user: 'test', dataDir: 'test', store }, sdk);
   if (outcome === 'agent-error') { await assert.rejects(connecting); assert.equal(closes, 1); return; }
   const session = await connecting;
   const [todos] = options.tools;
+  // Both stores live under the profile's own directory, so deleting it removes all local data.
+  assert.deepEqual(options.adapters.map(a => a.dir), ['test', 'test/blobs']);
   const handler = call => todos.execute({ args: {}, ...call }, {});
   assert.equal(todos.manifest.manifestVersion, 1);
   assert.equal(options.bundledConfig.project.defaults.model, 'deepseek/deepseek-v4.1-flash');

@@ -5,13 +5,13 @@ import { TodoStore } from './todos.mjs';
 export class AppError extends Error {}
 
 export function settings(env = process.env) {
-  const { CROCHE_PROJECT_KEY: projectKey, CROCHE_DEBUG_KEY: debugKey } = env;
-  if (!projectKey?.trim() || !debugKey?.trim()) {
-    throw new AppError('Load the CLI-created .env with both project and debug keys using npm start.');
+  const { CROCHE_PROJECT_KEY: projectKey, CROCHE_DEVELOPMENT_KEY: developmentKey } = env;
+  if (!projectKey?.trim() || !developmentKey?.trim()) {
+    throw new AppError('Load the CLI-created .env with both project and development keys using npm start.');
   }
   const user = env.TODO_USER ?? 'local-user';
   if (!/^[\w-]{1,64}$/.test(user)) throw new AppError('TODO_USER must use 1–64 letters, numbers, underscores or hyphens.');
-  return { projectKey, debugKey, user };
+  return { projectKey, developmentKey, user };
 }
 
 export async function openSession({ dataDir, ...options }) {
